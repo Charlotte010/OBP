@@ -27,4 +27,4 @@ def arrivals_rate (situation, table, list_situation_1_care, list_situation_1_med
         for medical range (medical): 
             arrival_rate = table[care][medical]
         
-    
+    do you see
