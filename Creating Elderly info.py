@@ -19,7 +19,8 @@ import numpy as np
 
 def arrival_per_day(table, care_level, medical):
     arrival_rate = table_arrival_rates.loc[medical, care_level]
-    if arrival_rate== float:
+    
+    if arrival_rate> 0:
         arrivals_per_day = np.random.poisson(arrival_rate)
        
         return arrivals_per_day
@@ -29,17 +30,17 @@ def arrival_per_day(table, care_level, medical):
 def probability_goes_where(table_probability, care_level, medical):
     
     #check if right value
-    probabilities = table_probability[medical]
-    selected_index = np.random.choice(len(probabilities), p=probabilities)
-    goes_where = table_probability[selected_index]
-    
+    probabilities = table_probability[care_level]
+    goes_where =np.random.choice(probabilities.index, p=probabilities)
+      
     return goes_where
 
-def service_time(table_E_service_rate,care_level, medical):
+def service_time(table_E_service_rate,care_level, goes_where):
     
-    arrival_rate = table_E_service_rate[care_level][medical]
-    service_time = np.random.exponential(scale=1/arrival_rate)
+    service_time = table_E_service_rate.loc[goes_where, care_level]
     
+    service_time = np.random.exponential(scale=service_time)
+
     return service_time
 
     
@@ -47,7 +48,8 @@ def service_time(table_E_service_rate,care_level, medical):
 def getting_info_elderly(table_probability,table_arrival_rates, table_E_service_rate, care_level ,medical):
     
     goes_where = probability_goes_where(table_probability, care_level, medical)
-    service_time_elderly = service_time(table_E_service_rate, care_level, medical)
+
+    service_time_elderly = service_time(table_E_service_rate, care_level, goes_where)
     list_elderly = [care_level ,medical, service_time_elderly, goes_where]
     
     return list_elderly
@@ -56,14 +58,18 @@ def getting_info_elderly(table_probability,table_arrival_rates, table_E_service_
 table_probability = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Outflow_probabilities.xlsx',index_col='Unnamed: 0')
 table_arrival_rates = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Arrival_rates.xlsx', index_col='Unnamed: 0')
 table_E_service_rate = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBp\\Service_Rates.xlsx',index_col='Unnamed: 0')
+    
+care_level = "Low_Complex"
+medical = "General_Practitioner"
 
+arrival_rate = table_arrival_rates.loc[medical, care_level]
 
 arrivale_rate_elderly  = arrival_per_day(table_arrival_rates, care_level, medical)
 
+
+
 list_elderly_info =  getting_info_elderly(table_probability,table_arrival_rates, 
                                           table_E_service_rate, care_level ,medical)
-
-HALLO =  "HALLO"
 
 list_situation_1_care = ["Low_complex, Respite_care"]
 list_situation_1_medical = ['General_practitioner']
