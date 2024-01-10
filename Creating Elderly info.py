@@ -9,12 +9,15 @@ Created on Wed Jan 10 12:25:18 2024
 import pandas as pd
 import numpy as np
 
+#files we need
+table_probability = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Outflow_probabilities.xlsx',index_col='Unnamed: 0')
+table_arrival_rates = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Arrival_rates.xlsx', index_col='Unnamed: 0')
+table_E_service_rate = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBp\\Service_Rates.xlsx',index_col='Unnamed: 0')
 
 
 #Care level is High complex, low complex etc. (Represents the columns)
 #Medical, is through which medical "department" does the patient goes through,
 #So for example GP, Emergency departments etc. 
-
 
 
 def arrival_per_day(table, care_level, medical):
@@ -43,7 +46,6 @@ def service_time(table_E_service_rate,care_level, goes_where):
 
     return service_time
 
-    
 
 def getting_info_elderly(table_probability,table_arrival_rates, table_E_service_rate, care_level ,medical):
     
@@ -55,9 +57,7 @@ def getting_info_elderly(table_probability,table_arrival_rates, table_E_service_
     return list_elderly
 
 
-table_probability = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Outflow_probabilities.xlsx',index_col='Unnamed: 0')
-table_arrival_rates = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Arrival_rates.xlsx', index_col='Unnamed: 0')
-table_E_service_rate = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBp\\Service_Rates.xlsx',index_col='Unnamed: 0')
+
     
 care_level = "Low_Complex"
 medical = "General_Practitioner"
