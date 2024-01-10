@@ -8,23 +8,76 @@ Created on Wed Jan 10 12:25:18 2024
 
 import pandas as pd
 import numpy as np
-from scipy.stats import gamma
-from scipy import stats
 
 
-excel_file_path = r"C:\Users\charl\OneDrive\Documents\VU vakken\OBP\procedures.csv"
 
-df = pd.read_csv(excel_file_path)
+#Care level is High complex, low complex etc. (Represents the columns)
+#Medical, is through which medical "department" does the patient goes through,
+#So for example GP, Emergency departments etc. 
+
+
+
+def arrival_per_day(table, care_level, medical):
+    arrival_rate = table[medical][care_level]
+    arrivals_per_day = np.random.poisson(arrival_rate)
+       
+    return arrivals_per_day
+
+def probability_goes_where(table_probability, care_level, medical):
+    
+    #check if right value
+    probabilities = table_probability[medical]
+    selected_index = np.random.choice(len(probabilities), p=probabilities)
+    goes_where = table_probability[selected_index]
+    
+    return goes_where
+
+def service_time(table_E_service_rate,care_level, medical):
+    
+    arrival_rate = table_E_service_rate[care_level][medical]
+    service_time = np.random.exponential(scale=1/arrival_rate)
+    
+    return service_time
+
+    
+
+def getting_info_elderly(table_probability,table_arrival_rates, table_E_service_rate, care_level ,medical):
+    
+    goes_where = probability_goes_where(table_probability, care_level, medical)
+    service_time_elderly = service_time(table_E_service_rate, care_level, medical)
+    list_elderly = [care_level ,medical, service_time_elderly, goes_where]
+    
+    return list_elderly
+
+
+table_probability = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBM\\Probabilities.xlsx')
+table_arrival_rates = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBM\\arrival_rates.xlsx')
+table_E_service_rate = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBM\\Service_Rates2.xlsx')
+    
+
+arrivale_rate_elderly  = arrivals_rate(table_arrival_rates, care_level, medical)
+
+list_elderly_info =  getting_info_elderly(table_probability,table_arrival_rates, 
+                                          table_E_service_rate, care_level ,medical)
+
+HALLO =  "HALLO"
 
 list_situation_1_care = ["Low_complex, Respite_care"]
 list_situation_1_medical = ['General_practitioner']
 
 
-def arrivals_rate (situation, table, list_situation_1_care, list_situation_1_medical):
-    
-    
-    for care in range(list_situation_1_care):
-        for medical range (medical): 
-            arrival_rate = table[care][medical]
-        
-    do you see
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
