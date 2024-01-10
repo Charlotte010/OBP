@@ -18,10 +18,13 @@ import numpy as np
 
 
 def arrival_per_day(table, care_level, medical):
-    arrival_rate = table[medical][care_level]
-    arrivals_per_day = np.random.poisson(arrival_rate)
+    arrival_rate = table_arrival_rates.loc[medical, care_level]
+    if arrival_rate== float:
+        arrivals_per_day = np.random.poisson(arrival_rate)
        
-    return arrivals_per_day
+        return arrivals_per_day
+    else :
+        return print("NOT POSSIBLE")
 
 def probability_goes_where(table_probability, care_level, medical):
     
@@ -50,12 +53,12 @@ def getting_info_elderly(table_probability,table_arrival_rates, table_E_service_
     return list_elderly
 
 
-table_probability = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBM\\Probabilities.xlsx')
-table_arrival_rates = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBM\\arrival_rates.xlsx')
-table_E_service_rate = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBM\\Service_Rates2.xlsx')
-    
+table_probability = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Outflow_probabilities.xlsx',index_col='Unnamed: 0')
+table_arrival_rates = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Arrival_rates.xlsx', index_col='Unnamed: 0')
+table_E_service_rate = pd.read_excel('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBp\\Service_Rates.xlsx',index_col='Unnamed: 0')
 
-arrivale_rate_elderly  = arrivals_rate(table_arrival_rates, care_level, medical)
+
+arrivale_rate_elderly  = arrival_per_day(table_arrival_rates, care_level, medical)
 
 list_elderly_info =  getting_info_elderly(table_probability,table_arrival_rates, 
                                           table_E_service_rate, care_level ,medical)
