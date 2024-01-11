@@ -14,17 +14,6 @@ os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code
 # main.py
 from functions import *
 import pandas as pd
-
-
-def arrival_per_day(table, care_level, medical):
-    arrival_rate = table.loc[medical, care_level]
-
-    if arrival_rate > 0:
-        arrivals_per_day = np.random.poisson(arrival_rate)
-        return arrivals_per_day
-    else:
-        
-        return print("NOT POSSIBLE")
     
  
 table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
@@ -47,7 +36,7 @@ handled_cases_queue_1 = []
 #Parameters 
 amount_beds_available = 50
 
-
+# SIMPLE QUEUE
 for i in range(0,300):    
     
     #check if someone can be discharged and go out the queue
@@ -88,7 +77,9 @@ for i in range(0,300):
         first_elderly = waiting_list_1.pop(0)
         bed_queue_1.append(first_elderly)
 
-    
+
+
+
  
     
  
