@@ -43,18 +43,27 @@ list_medical_queue1 = ['General_Practitioner']
 
 waiting_list_1 = []
 
-#START FOR 1 DAY
 
-for care in list_care_queue1:
-    print(care)
-    for medical in list_medical_queue1:
-        amount_arrive = arrival_per_day(table_arrival_rates, care, medical)
-        print(amount_arrive)
-
-        for i in range(0,amount_arrive):
-            e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical)
-            waiting_list_1.append(e1)
+for i in range(0,300):    
     
+    #Update the waiting time for all the elderly in the waiting list
+    for p in range(0,len(waiting_list_1)):
+        
+        waiting_list_1[p].increment_waiting_time()
+        
+        
+    #Here we check for new arrivals and add them to the waiting list  
+    for care in list_care_queue1:
+        print(care)
+        for medical in list_medical_queue1:
+            amount_arrive = arrival_per_day(table_arrival_rates, care, medical)
+            print(amount_arrive)
+    
+            for i in range(0,amount_arrive):
+                e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical)
+                waiting_list_1.append(e1)
+    
+
     
     
  
