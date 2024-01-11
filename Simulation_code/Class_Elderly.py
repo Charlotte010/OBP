@@ -19,3 +19,4 @@ class elderly:
     
     def increment_waiting_time(self):
         self.waiting_time += 1
+

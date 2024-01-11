@@ -14,22 +14,9 @@ os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code
 
 # main.py
 from functions import *
+from Class_Elderly import *
 import pandas as pd
 
-class elderly:
-  def __init__(self, care_level, medical,service_time_elderly, goes_where  ):
-    self.care_level = care_level
-    self.medical = medical
-    self.service_time_elderly = service_time_elderly
-    self.goes_where = goes_where
-    self.days_in_bed = 0  # Initialize days_in_bed to 0
-    self.waiting_time = 0  # Initialize days_in_bed to 0
-    
-    def increment_days_in_bed(self):
-        self.days_in_bed += 1
-    
-    def increment_waiting_time(self):
-        self.waiting_time += 1
 
  
 table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
@@ -42,8 +29,5 @@ care_level = "Low_Complex"
 medical = "General_Practitioner"
 
 
-# Example usage
-list_elderly_info = getting_info_elderly(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical)
-
-e1 = elderly(care_level, medical, list_elderly_info[2],list_elderly_info[3] )
+e2 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical)
 
