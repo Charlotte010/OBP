@@ -32,6 +32,7 @@ def probability_goes_where(table, care_level, medical):
 
 def service_time(table, care_level, goes_where):
     service_time = table.loc[goes_where, care_level]
+    
     service_time = np.random.exponential(scale=service_time)
     return service_time
 
