@@ -13,11 +13,15 @@ class elderly:
         self.medical = medical
         self.service_time_elderly = service_time_elderly
         self.goes_where = goes_where
-        self.days_in_bed = 0  # Initialize days_in_bed to 0
-        self.waiting_time = 0  # Initialize waiting_time to 0
+        self.days_in_bed = 0  
+        self.waiting_time = 0  
+        self.waiting_time_in_list_3 = 0
     
     def increment_days_in_bed(self):
         self.days_in_bed += 1
     
     def increment_waiting_time(self):
         self.waiting_time += 1
+        
+    def increment_waiting_time_in_list_3(self):
+        self.waiting_time_in_list_3 += 1

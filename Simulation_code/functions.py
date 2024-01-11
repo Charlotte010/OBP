@@ -18,7 +18,7 @@ def arrival_per_day(table, care_level, medical):
         return arrivals_per_day
     else:
         
-        return print("NOT POSSIBLE")
+        return 0
 
 # probability_functions.py
 
