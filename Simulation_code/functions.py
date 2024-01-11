@@ -7,6 +7,8 @@ Created on Wed Jan 10 21:08:43 2024
 
 # arrival_functions.py
 import numpy as np
+from Class_Elderly import elderly
+
 
 def arrival_per_day(table, care_level, medical):
     arrival_rate = table.loc[medical, care_level]
@@ -43,3 +45,9 @@ def getting_info_elderly(table_probability, table_arrival_rates, table_E_service
     list_elderly = [care_level, medical, service_time_elderly, goes_where]
     return list_elderly
 
+
+def make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical):
+    list_elderly_info = getting_info_elderly(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical)
+    e1 = elderly(care_level, medical, list_elderly_info[2],list_elderly_info[3] )
+    
+    return e1
