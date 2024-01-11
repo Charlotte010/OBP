@@ -16,16 +16,7 @@ from functions import *
 import pandas as pd
 
 
-def arrival_per_day(table, care_level, medical):
-    arrival_rate = table.loc[medical, care_level]
 
-    if arrival_rate > 0:
-        arrivals_per_day = np.random.poisson(arrival_rate)
-        return arrivals_per_day
-    else:
-        
-        return print("NOT POSSIBLE")
-    
  
 table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
 table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
