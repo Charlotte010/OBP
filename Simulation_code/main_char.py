@@ -31,8 +31,6 @@ amount_of_simulations = 20
 #plot_probabilities ("GRZ", info_handled_elderly_queue_2, table_probability)
 
 
-
-
 def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations):
     info_handled_elderly =[]
     for i in range(0,amount_of_simulations):

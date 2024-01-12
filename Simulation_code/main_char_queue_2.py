@@ -70,16 +70,19 @@ def simulation_qeueue_2(amount_of_runs, amount_beds_available_2):
         #Here we check for new arrivals and add them to the waiting list 2
         #BUT if they go through hospital Admission then to waitling list 3 (STILL NEED TO ADD)
         for care in list_care_queue2:
+           
             for medical in list_medical_queue2:
                 amount_arrive = arrival_per_day(table_arrival_rates, care, medical)  
                 
                     
                 for i in range(0,amount_arrive):
-                    if care == 'Hospital':
-                        e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical)
+                    if medical == 'Hospital':
+                        e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical, 0)
+                        
                         waiting_list_3.append(e1)
                     else:
-                        e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical)
+                        e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical, 1)
+                        
                         waiting_list_2.append(e1)
                         
             

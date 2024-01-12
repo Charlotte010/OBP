@@ -54,7 +54,7 @@ def simulation_qeueue_1(amount_of_runs,amount_beds_available):
             for medical in list_medical_queue1:
                 amount_arrive = arrival_per_day(table_arrival_rates, care, medical)    
                 for i in range(0,amount_arrive):
-                    e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical)
+                    e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical,0)
                     waiting_list_1.append(e1)
                     
         
