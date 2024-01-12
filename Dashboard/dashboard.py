@@ -1,14 +1,14 @@
 import streamlit as st
 import pandas as pd
-
-if 'sidebar_state' not in st.session_state:
-    st.session_state.sidebar_state = 'collapsed'
+#
+# if 'sidebar_state' not in st.session_state:
+#     st.session_state.sidebar_state = 'collapsed'
 
 st.set_page_config(
     # page_title='page1',
     # page_icon='📋',
     layout='wide',
-    initial_sidebar_state=st.session_state.sidebar_state #'collapsed'
+    initial_sidebar_state='collapsed' #st.session_state.sidebar_state #'collapsed'
 )
 
 def main():
@@ -166,10 +166,10 @@ def cs_body():
     container_low_respite.number_input('Number of nurses', min_value=0, max_value=None, value=8)
     container_low_respite.number_input('Number of beds 1 nurse can handle', min_value=0, max_value=None, value=8)
 
-    if st.button('Click here to change other parameters'):
-        st.session_state.sidebar_state = 'expanded' if st.session_state.sidebar_state == 'collapsed' else 'collapsed'
-        # Force an app rerun after switching the sidebar state.
-        st.experimental_rerun()
+    # if st.button('Click here to change other parameters'):
+    #     st.session_state.sidebar_state = 'expanded' if st.session_state.sidebar_state == 'collapsed' else 'collapsed'
+    #     # Force an app rerun after switching the sidebar state.
+    #     st.experimental_rerun()
 
 # container_arrivals = st.container(border=True)
 # container_arrivals.subheader('Low complex & respite care')
