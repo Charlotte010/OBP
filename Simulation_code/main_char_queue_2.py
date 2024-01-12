@@ -7,9 +7,7 @@ Created on Thu Jan 11 13:43:49 2024
 
 
 def simulation_qeueue_2(amount_of_runs, amount_beds_available_2):
-    import os
-    os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
-    
+
       #list_elderly = [care_level, medical, service_time_elderly, goes_where]
     
     

@@ -17,8 +17,7 @@ def simulation_qeueue_1(amount_of_runs,amount_beds_available):
     list_care_queue1 = ["Low_Complex", "Respite_Care"]
     list_medical_queue1 = ['General_Practitioner']
     
-    import os
-    os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
+
     
     table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
     table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')

@@ -52,3 +52,46 @@ def make_elderly_class(table_probability, table_arrival_rates, table_E_service_r
     e1 = elderly(care_level, medical, list_elderly_info[2],list_elderly_info[3] )
     
     return e1
+
+#CHECK IF WE GET THE SAME INFO WE EXPECTED-----------------------------------------------------
+import matplotlib.pyplot as plt
+import pandas as pd
+
+def plot_probabilities(care_level, info_handled_elderly_queue_1,table_probability):
+    # Filter instances with care_level 'Low_Complex'
+    low_complex_instances = [elderly_instance for elderly_instance in info_handled_elderly_queue_1 if elderly_instance.care_level == care_level]
+    
+    # Get the next locations for 'Low_Complex' instances
+    next_locations = [elderly_instance.goes_where for elderly_instance in low_complex_instances]
+    # Count the occurrences of each next location
+    location_counts = {location: next_locations.count(location) for location in set(next_locations)}
+    
+    # Calculate probabilities
+    total_instances = len(low_complex_instances)
+    location_probabilities_sim = {location: count / total_instances for location, count in location_counts.items()}
+    
+    # Create a DataFrame from the dictionary
+    df_sim = pd.DataFrame.from_dict(location_probabilities_sim, orient='index', columns=['Simulated Probabilities'])
+    
+    low_complex_probabilities = table_probability[care_level]
+    
+    merged_df = pd.merge(low_complex_probabilities, df_sim, left_index=True, right_index=True, how='left')
+    
+    
+    fig, ax = plt.subplots()
+    
+    bar_width = 0.35
+    locations_shifted = range(len(merged_df.index))
+    
+    ax.bar(locations_shifted, merged_df[care_level], width=bar_width, color='b', align='center', label=care_level)
+    ax.bar([pos + bar_width for pos in locations_shifted], merged_df['Simulated Probabilities'], width=bar_width, color='g', align='center', alpha=0.5, label='Simulated Probabilities')
+    
+    ax.set_xlabel('Location')
+    ax.set_ylabel('Probability')
+    ax.set_title('Comparison of Low Complex and Simulated Probabilities')
+    ax.set_xticks([pos + bar_width/2 for pos in locations_shifted])
+    ax.set_xticklabels(merged_df.index,  rotation=90)
+    
+    ax.legend()
+    
+    plt.show()
