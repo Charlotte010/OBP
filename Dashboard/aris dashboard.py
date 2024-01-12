@@ -73,12 +73,23 @@ def cs_body_high_complex(bed_sharing_option, centralizing_option):
 
     st.write('Bed Sharing Option:', bed_sharing_option)
     st.write('Centralizing Option:', centralizing_option)
+
 def plot_low_complex_chart():
     # This function creates an interactive sunburst chart using Plotly
     fig = px.sunburst(names=['Number of Beds', 'Number of Nurses'],
                       parents=['', ''],
                       values=[8,8],
                       title='Low Complex & Respite Care: Beds and Nurses')
+
+    # Display the chart using st.plotly_chart
+    st.plotly_chart(fig)
+
+def plot_high_complex_chart():
+    # This function creates an interactive sunburst chart using Plotly
+    fig = px.sunburst(names=['Number of Beds', 'Number of Nurses'],
+                      parents=['', ''],
+                      values=[8, 8],  # Replace with the actual values
+                      title='High Complex & Geriatric Rehabiliation: Beds and Nurses')
 
     # Display the chart using st.plotly_chart
     st.plotly_chart(fig)
@@ -91,3 +102,4 @@ def run_simulation(selected_scenario, bed_sharing_option):
 
 if __name__ == '__main__':
     main()
+
