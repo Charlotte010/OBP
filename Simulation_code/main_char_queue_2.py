@@ -47,8 +47,9 @@ def simulation_qeueue_2(amount_of_runs, amount_beds_available_2):
         #Update the waiting time/service time for all the elderly in the waiting list3
         for p in range(0,len(waiting_list_3)):
             waiting_list_3[p].increment_days_in_bed()
+           
             waiting_list_3[p].increment_waiting_time_in_list_3()
-            
+            #print(waiting_list_3[p].waiting_time_in_list_3)
         
         #Update the waiting time for all the elderly in the waiting list
         for p in range(0,len(waiting_list_2)):
@@ -62,8 +63,11 @@ def simulation_qeueue_2(amount_of_runs, amount_beds_available_2):
     
             if bed_queue_2[p].days_in_bed >= bed_queue_2[p].service_time_elderly:
                 # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
-                handled_cases_queue_2.append(bed_queue_2.pop(p))        
+                handled_cases_queue_2.append(bed_queue_2.pop(p))  
             
+        for p in range(len(waiting_list_3) - 1, -1, -1):    
+            if waiting_list_3[p].waiting_time_in_list_3 >= waiting_list_3[p].service_time_elderly:
+                handled_cases_queue_2.append(waiting_list_3.pop(p)) 
          
             
             

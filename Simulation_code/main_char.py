@@ -21,15 +21,15 @@ import pandas as pd
 from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
-amount_beds_available_1 = 5
-amount_beds_available_2 = 10
+amount_beds_available_1 = 3
+amount_beds_available_2 = 120
 
-amount_of_runs = 500
-amount_of_simulations = 20
+amount_of_runs = 100000
+amount_of_simulations = 2
 
 
 
-info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1, amount_of_simulations)
+#info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1, amount_of_simulations)
 info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_2, amount_of_simulations)
 
 
@@ -40,18 +40,11 @@ def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue):
         total_waiting_time = sum(elderly.waiting_time for elderly in info_handled_elderly_queue_1) 
 
     if  waiting_queue == 'waiting_time_in_list_3':
-      
+        
         total_waiting_time = sum(elderly.waiting_time_in_list_3 for elderly in info_handled_elderly_queue_1) 
         
         
-        
-    if len(info_handled_elderly_queue_1) >0:
-        Expected_waiting_time = total_waiting_time / len(info_handled_elderly_queue_1)
-    
-    else:
-        Expected_waiting_time = 0
-        
-    return Expected_waiting_time, len(info_handled_elderly_queue_1)
+    return total_waiting_time, len(info_handled_elderly_queue_1)
 
 
 def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting_queue):
@@ -60,13 +53,15 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
     
     for i in info_handled_elderly_queue_1:
         expected_waiting_times, elderly_handled = compute_expected_waiting_time(i, waiting_queue)
+        
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
+        
     
     Excpected_waiting_times = total_expected_waiting_times / total_elderly_handled
     return Excpected_waiting_times
 
-queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
+#queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
 queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3")
 
     

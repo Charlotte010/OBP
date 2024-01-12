@@ -13,9 +13,9 @@ class elderly:
         self.medical = medical
         self.service_time_elderly = service_time_elderly
         self.goes_where = goes_where
+        self.through_waiting_2 = binary
         self.days_in_bed = 0  
         self.waiting_time = 0  
-        self.through_waiting_2 = binary
         self.waiting_time_in_list_3 = 0
     
     def increment_days_in_bed(self):

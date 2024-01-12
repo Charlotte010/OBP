@@ -32,7 +32,6 @@ def probability_goes_where(table, care_level, medical):
 
 def service_time(table, care_level, goes_where):
     service_time = table.loc[goes_where, care_level]
-    
     service_time = np.random.exponential(scale=service_time)
     return service_time
 
@@ -80,9 +79,9 @@ def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot_probabilities(care_level, info_handled_elderly_queue_1,table_probability):
+def plot_probabilities(care_level, info_handled_elderly_queue_1_list,table_probability):
     # Filter instances with care_level 'Low_Complex'
-    low_complex_instances = [elderly_instance for elderly_instance in info_handled_elderly_queue_1 if elderly_instance.care_level == care_level]
+    low_complex_instances = [elderly_instance for elderly_instance in info_handled_elderly_queue_1_list if elderly_instance.care_level == care_level]
     
     # Get the next locations for 'Low_Complex' instances
     next_locations = [elderly_instance.goes_where for elderly_instance in low_complex_instances]
@@ -147,7 +146,6 @@ def compute_expected_waiting_time_multiple_simulations(queue_simulation, amount_
         
         total_expected_waiting_times += expected_waiting_times
         total_elderly_handled += elderly_handled
-        print(total_expected_waiting_times)
     expected_waiting_time = total_expected_waiting_times/total_elderly_handled
     
     return expected_waiting_time
