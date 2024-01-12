@@ -24,6 +24,8 @@ from main_char_queue_2 import simulation_qeueue_2
 #parameters
 amount_beds_available_1 = 50
 amount_beds_available_2 = 120
+
+#Constraint 1
 max_expected_waiting_time_1 = 3
 max_expected_waiting_time_2 = 5
 
@@ -75,6 +77,7 @@ queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elder
     
  #-----------------------------------------------------------------------------------------------------------------------
  #Constraints
+ 
 def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available,info_handled_elderly_queue,waiting, max_expected_waiting_time):
     
     queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting)
