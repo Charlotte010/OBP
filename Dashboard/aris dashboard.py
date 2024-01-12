@@ -1,8 +1,5 @@
 import streamlit as st
-import matplotlib.pyplot as plt
-import numpy as np
 import plotly.express as px
-
 
 def main():
     cs_sidebar()
@@ -12,23 +9,22 @@ def main():
 
     # Get the selected bed sharing option
     bed_sharing_option = cs_bed_sharing_selection()
-    centralizing_option=cs_centralize_selection()
+    centralizing_option = cs_centralize_selection()
 
     if selected_scenario == 'Low Complex & Respite Care':
-        cs_body_low_respite(bed_sharing_option)
-        cs_body_low_respite(centralizing_option)
+        cs_body_low_respite(bed_sharing_option, centralizing_option)
         plot_low_complex_chart()
     elif selected_scenario == 'High Complex & Geriatric Rehabilitation':
-        cs_body_high_complex(bed_sharing_option)
-        cs_body_high_complex(centralizing_option)
+        cs_body_high_complex(bed_sharing_option, centralizing_option)
         plot_high_complex_chart()
 
-        # Add a button to run the simulation
+    # Add a button to run the simulation
     if st.button("Run Simulation"):
-        run_simulation(selected_scenario, bed_sharing_option)
+        run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
 
 
 def cs_sidebar():
+    # Add any sidebar components if needed
     pass
 
 def cs_scenario_selection():
@@ -42,12 +38,11 @@ def cs_bed_sharing_selection():
     return bed_sharing_option
 
 def cs_centralize_selection():
-    # Display a radio button for centralize selection
+    #Display a radio button for centralize selection
     centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'])
     return centralizing_option
 
-
-def cs_body_low_respite(bed_sharing_option):
+def cs_body_low_respite(bed_sharing_option, centralizing_option):
     container_low_respite = st.container(border=True)
 
     container_low_respite.subheader('Low complex & respite care')
@@ -57,12 +52,13 @@ def cs_body_low_respite(bed_sharing_option):
     container_low_respite.number_input('Number of beds 1 nurse can handle', min_value=0, max_value=None, value=8)
 
     st.write('Bed Sharing Option:', bed_sharing_option)
+    st.write('Centralizing Option:', centralizing_option)
 
     slider_beds = st.slider(
         'Select a range of number of beds',
         0, 100, (25, 75))
 
-def cs_body_high_complex(bed_sharing_option):
+def cs_body_high_complex(bed_sharing_option, centralizing_option):
     container_high_complex = st.container(border=True)
 
     container_high_complex.subheader('High Complex & Geriatric Rehabilitation')
@@ -76,36 +72,22 @@ def cs_body_high_complex(bed_sharing_option):
     container_high_complex.checkbox('24/7 Monitoring')
 
     st.write('Bed Sharing Option:', bed_sharing_option)
-
-    # Other input components related to high complex care can be added as needed
-
-
+    st.write('Centralizing Option:', centralizing_option)
 def plot_low_complex_chart():
     # This function creates an interactive sunburst chart using Plotly
     fig = px.sunburst(names=['Number of Beds', 'Number of Nurses'],
                       parents=['', ''],
-                      values=[8, 8],  # Replace with the actual values
+                      values=[8,8],
                       title='Low Complex & Respite Care: Beds and Nurses')
 
     # Display the chart using st.plotly_chart
     st.plotly_chart(fig)
 
-def plot_high_complex_chart():
-    # This function creates an interactive sunburst chart using Plotly
-    fig = px.sunburst(names=['Number of Beds', 'Number of Nurses'],
-                      parents=['', ''],
-                      values=[8, 8],  # Replace with the actual values
-                      title='High Complex & Geriatric Rehabiliation: Beds and Nurses')
-
-    # Display the chart using st.plotly_chart
-    st.plotly_chart(fig)
-
-
 def run_simulation(selected_scenario, bed_sharing_option):
-    # Your simulation logic goes here
-    st.write(f"Running simulation for scenario: {selected_scenario}")
-    st.write(f"Bed Sharing Option: {bed_sharing_option}")
-    # Add your simulation code here
+    # Perform simulation based on selected_scenario and bed_sharing_option
+    st.write('Simulation is running for:', selected_scenario)
+    st.write('Bed Sharing Option:', bed_sharing_option)
+    # Add simulation logic here
 
 if __name__ == '__main__':
     main()
