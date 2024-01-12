@@ -12,12 +12,15 @@ def main():
 
     # Get the selected bed sharing option
     bed_sharing_option = cs_bed_sharing_selection()
+    centralizing_option=cs_centralize_selection()
 
     if selected_scenario == 'Low Complex & Respite Care':
         cs_body_low_respite(bed_sharing_option)
+        cs_body_low_respite(centralizing_option)
         plot_low_complex_chart()
     elif selected_scenario == 'High Complex & Geriatric Rehabilitation':
         cs_body_high_complex(bed_sharing_option)
+        cs_body_high_complex(centralizing_option)
         plot_high_complex_chart()
 
         # Add a button to run the simulation
@@ -26,115 +29,7 @@ def main():
 
 
 def cs_sidebar():
-    with st.sidebar:
-        st.write('**Low complex**')
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write('Arrival rate GP')
-            st.write('Outflow home rate')
-            st.write('outflow home with adjustments rate')
-            st.write('Outflow long term care rate')
-            st.write('outflow geriatric care rate')
-            st.write('Outflow hospice rate')
-            st.write('outflow death rate')
-        with col2:
-            st.number_input('rate GP for low complex', min_value=0.0, max_value=None, value=1.34, label_visibility='collapsed')
-            st.number_input("home rate for low complex", min_value=0.0, max_value=1.0,
-                        value=0.7, label_visibility='collapsed')
-            st.number_input("home with adjustments rate for low complex", min_value=0.0, max_value=1.0,
-                        value=0.14, label_visibility='collapsed')
-            st.number_input("Outflow long term care rate for low complex", min_value=0.0, max_value=1.0,
-                        value=0.1, label_visibility='collapsed')
-            st.number_input("outflow geriatric care rate for low complex", min_value=0.0, max_value=1.0,
-                        value=0.02, label_visibility='collapsed')
-            st.number_input("Outflow hospice rate for low complex", min_value=0.0, max_value=1.0,
-                        value=0.02, label_visibility='collapsed')
-            st.number_input("Outflow death rate for low complex", min_value=0.0, max_value=1.0,
-                        value=0.02, label_visibility='collapsed')
-
-        st.write('**Respite care**')
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write('Arrival rate')
-            st.write('Outflow home rate')
-            st.write('outflow home with adjustments rate')
-            st.write('Outflow long term care rate')
-            st.write('outflow geriatric care rate')
-            st.write('Outflow hospice rate')
-            st.write('outflow death rate')
-        with col2:
-            st.number_input("rate GP respite", min_value=0.0, max_value=1.0, value=0.57,
-                            label_visibility='collapsed')
-            st.number_input("home rate respite", min_value=0.0, max_value=1.0,
-                            value=0.9, label_visibility='collapsed')
-            st.number_input("home with adjustments rate respite", min_value=0.0, max_value=1.0,
-                            value=0.05, label_visibility='collapsed')
-            st.number_input("Outflow long term care rate respite", min_value=0.0, max_value=1.0,
-                            value=0.03, label_visibility='collapsed')
-            st.number_input("outflow geriatric care rate respite", min_value=0.0, max_value=1.0,
-                            value=0.01, label_visibility='collapsed')
-            st.number_input("Outflow hospice rate respite", min_value=0.0, max_value=1.0,
-                            value=0.005, label_visibility='collapsed')
-            st.number_input("Outflow death rate respite", min_value=0.0, max_value=1.0,
-                            value=0.005, label_visibility='collapsed')
-
-        st.write('**High complex**')
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write('Arrival rate GP')
-            st.write('Arrival rate Emergency Department')
-            st.write('Arrival rate Hospital')
-            st.write('Outflow home rate')
-            st.write('outflow home with adjustments rate')
-            st.write('Outflow long term care rate')
-            st.write('outflow geriatric care rate')
-            st.write('Outflow hospice rate')
-            st.write('outflow death rate')
-        with col2:
-            st.number_input("rate GP high", min_value=0.0, max_value=None, value=1.34,
-                            label_visibility='collapsed')
-            st.number_input("rate ED high", min_value=0.0, max_value=None, value=0.83,
-                            label_visibility='collapsed')
-            st.number_input("rate hospital high", min_value=0.0, max_value=None, value=0.94,
-                            label_visibility='collapsed')
-            st.number_input("home rate respite", min_value=0.0, max_value=1.0,
-                            value=0.578, label_visibility='collapsed')
-            st.number_input("home with adjustments rate respite", min_value=0.0, max_value=1.0,
-                            value=0.107, label_visibility='collapsed')
-            st.number_input("Outflow long term care rate respite", min_value=0.0, max_value=1.0,
-                            value=0.198, label_visibility='collapsed')
-            st.number_input("outflow geriatric care rate respite", min_value=0.0, max_value=1.0,
-                            value=0.034, label_visibility='collapsed')
-            st.number_input("Outflow hospice rate respite", min_value=0.0, max_value=1.0,
-                            value=0.023, label_visibility='collapsed')
-            st.number_input("Outflow death rate respite", min_value=0.0, max_value=1.0,
-                            value=0.06, label_visibility='collapsed')
-
-        st.write('**Geriatric rehabilitation**')
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write('Arrival rate hospital')
-            st.write('Outflow home rate')
-            st.write('outflow home with adjustments rate')
-            st.write('Outflow long term care rate')
-            st.write('outflow geriatric care rate')
-            st.write('Outflow hospice rate')
-            st.write('outflow death rate')
-        with col2:
-            st.number_input("rate hospital Geriatric", min_value=0.0, max_value=None, value=0.54,
-                            label_visibility='collapsed')
-            st.number_input("home rate Geriatric", min_value=0.0, max_value=1.0,
-                            value=0.6, label_visibility='collapsed')
-            st.number_input("home with adjustments rate Geriatric", min_value=0.0, max_value=1.0,
-                            value=0.107, label_visibility='collapsed')
-            st.number_input("Outflow long term care rate Geriatric", min_value=0.0, max_value=1.0,
-                            value=0.21, label_visibility='collapsed')
-            st.number_input("outflow geriatric care rate Geriatric", min_value=0.0, max_value=0.0,
-                            value=0.0, label_visibility='collapsed') # not possible
-            st.number_input("Outflow hospice rate Geriatric", min_value=0.0, max_value=1.0,
-                            value=0.023, label_visibility='collapsed')
-            st.number_input("Outflow death rate Geriatric", min_value=0.0, max_value=1.0,
-                            value=0.06, label_visibility='collapsed')
+    pass
 
 def cs_scenario_selection():
     # Display a radio button for scenario selection
@@ -145,6 +40,12 @@ def cs_bed_sharing_selection():
     # Display a radio button for bed sharing selection
     bed_sharing_option = st.radio("Bed Sharing Option", ['Bed Sharing', 'No Bed Sharing'])
     return bed_sharing_option
+
+def cs_centralize_selection():
+    # Display a radio button for centralize selection
+    centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'])
+    return centralizing_option
+
 
 def cs_body_low_respite(bed_sharing_option):
     container_low_respite = st.container(border=True)
@@ -208,4 +109,3 @@ def run_simulation(selected_scenario, bed_sharing_option):
 
 if __name__ == '__main__':
     main()
-
