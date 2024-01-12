@@ -168,7 +168,7 @@ def cs_body():
 
     # if st.button('Click here to change other parameters'):
     #     st.session_state.sidebar_state = 'expanded' if st.session_state.sidebar_state == 'collapsed' else 'collapsed'
-    #     # Force an app rerun after switching the sidebar state.
+    #     # Force an app rerun after switching the sidebar state
     #     st.experimental_rerun()
 
 # container_arrivals = st.container(border=True)
