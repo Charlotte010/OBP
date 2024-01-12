@@ -72,7 +72,9 @@ queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elder
 #TO DO 
 # - Percentage of how often are all the beds occupied?
 # - What is the percentage of people going from W2 to W3? 
-# - 
+# - Check how much average servise time is and compare with waiting
+
+
 
 
 
