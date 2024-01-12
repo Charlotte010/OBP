@@ -95,3 +95,42 @@ def plot_probabilities(care_level, info_handled_elderly_queue_1,table_probabilit
     ax.legend()
     
     plt.show()
+    
+    
+    
+    
+    
+    def compute_expected_waiting_time(info_handled_elderly_queue_1):
+        total_waiting_time = sum(elderly.waiting_time for elderly in info_handled_elderly_queue_1) 
+
+        
+        if len(info_handled_elderly_queue_1) >0:
+            Expected_waiting_time = total_waiting_time / len(info_handled_elderly_queue_1)
+        
+        else:
+            Expected_waiting_time = 0
+            
+        return Expected_waiting_time, len(info_handled_elderly_queue_1)
+
+    def compute_expected_waiting_time_multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations):
+        total_expected_waiting_times = 0
+        total_elderly_handled = 0
+        
+        for i in range(0,amount_of_simulations):
+            
+            info_handled_elderly = queue_simulation(amount_of_runs, amount_beds_available)
+            expected_waiting_times, elderly_handled = compute_expected_waiting_time(info_handled_elderly)
+            
+            
+            total_expected_waiting_times += expected_waiting_times
+            total_elderly_handled += elderly_handled
+            print(total_expected_waiting_times)
+        expected_waiting_time = total_expected_waiting_times/total_elderly_handled
+        
+        return expected_waiting_time
+        
+        
+        
+
+
+
