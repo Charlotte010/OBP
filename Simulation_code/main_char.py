@@ -22,29 +22,58 @@ from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
 amount_beds_available_1 = 5
-amount_beds_available_2 = 100
+amount_beds_available_2 = 10
 
 amount_of_runs = 500
 amount_of_simulations = 20
 
 
-#plot_probabilities ("GRZ", info_handled_elderly_queue_2, table_probability)
-
-
-def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations):
-    info_handled_elderly =[]
-    for i in range(0,amount_of_simulations):
-        
-        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available))
-
-# Or using list comprehension
-    return info_handled_elderly
-    
 
 info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1, amount_of_simulations)
 info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_2, amount_of_simulations)
 
 
+    
+def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue):
+    
+    if waiting_queue == 'waiting_time':
+        total_waiting_time = sum(elderly.waiting_time for elderly in info_handled_elderly_queue_1) 
+
+    if  waiting_queue == 'waiting_time_in_list_3':
+      
+        total_waiting_time = sum(elderly.waiting_time_in_list_3 for elderly in info_handled_elderly_queue_1) 
+        
+        
+        
+    if len(info_handled_elderly_queue_1) >0:
+        Expected_waiting_time = total_waiting_time / len(info_handled_elderly_queue_1)
+    
+    else:
+        Expected_waiting_time = 0
+        
+    return Expected_waiting_time, len(info_handled_elderly_queue_1)
+
+
+def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting_queue):
+    total_expected_waiting_times = 0
+    total_elderly_handled = 0
+    
+    for i in info_handled_elderly_queue_1:
+        expected_waiting_times, elderly_handled = compute_expected_waiting_time(i, waiting_queue)
+        total_expected_waiting_times +=expected_waiting_times
+        total_elderly_handled += elderly_handled
+    
+    Excpected_waiting_times = total_expected_waiting_times / total_elderly_handled
+    return Excpected_waiting_times
+
+queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
+queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3")
+
+    
+    
+    
+    
+    
 #TO DO 
 # - Percentage of how often are all the beds occupied?
 # - What is the percentage of people going from W2 to W3? 

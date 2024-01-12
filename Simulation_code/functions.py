@@ -55,7 +55,15 @@ def make_elderly_class(table_probability, table_arrival_rates, table_E_service_r
 
 
 
+def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations):
+    info_handled_elderly =[]
+    for i in range(0,amount_of_simulations):
+        
+        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available))
 
+# Or using list comprehension
+    return info_handled_elderly
+    
 
 
 
