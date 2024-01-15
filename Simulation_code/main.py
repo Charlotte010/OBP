@@ -1,87 +1,153 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jan 10 21:29:35 2024
+Created on Thu Jan 11 17:13:06 2024
 
 @author: charl
 """
+import pandas as pd
 
 import os
 os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
 
-  #list_elderly = [care_level, medical, service_time_elderly, goes_where]
-
+    
+table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
+table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
+table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0')
+    
 
 # main.py
 from functions import *
 import pandas as pd
+from main_char_queue_1 import simulation_qeueue_1
+from main_char_queue_2 import simulation_qeueue_2
+
+#parameters
+amount_beds_available_1 = 50
+amount_beds_available_2 = 160
+
+#parameters for Constraint 1 (C1)
+max_expected_waiting_time_1 = 3
+max_expected_waiting_time_2 = 5
+
+#up to us
+amount_of_runs = 10000
+amount_of_simulations = 2
 
 
 
+info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1, amount_of_simulations)
+info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_2, amount_of_simulations)
+
+
+    
+
+    
+ #-----------------------------------------------------------------------------------------------------------------------
+ #Constraints
  
-table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
-table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
-table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0')
-   
-
-#care_level = "Low_Complex"
-#medical = "General_Practitioner"
-
-list_care_queue1 = ["Low_Complex", "Respite_Care"]
-list_medical_queue1 = ['General_Practitioner']
-
-
-
-waiting_list_1 = []
-bed_queue_1 = []
-handled_cases_queue_1 = []
-
-#Parameters 
-amount_beds_available = 50
-
-
-for i in range(0,300):    
+def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available,info_handled_elderly_queue,waiting, max_expected_waiting_time):
     
-    #check if someone can be discharged and go out the queue
+    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting)
     
-    #we fo the for loop like this because then we start from the end go from right to left. 
-    for p in range(len(bed_queue_1) - 1, -1, -1):
+    while queue_1_waiting_time > max_expected_waiting_time:
+        amount_beds_available += 1
+        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available, amount_of_simulations)
+        queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting)
+        
+    return queue_1_waiting_time, amount_beds_available
 
-        if bed_queue_1[p].days_in_bed >= bed_queue_1[p].service_time_elderly:
-            # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
-            handled_cases_queue_1.append(bed_queue_1.pop(p))        
-        
-        
-        
-    #Update the waiting time for all the elderly in the waiting list
-    for p in range(0,len(waiting_list_1)):
-        
-        waiting_list_1[p].increment_waiting_time()
-        
-        
-    #Here we check for new arrivals and add them to the waiting list  
-    for care in list_care_queue1:
-        for medical in list_medical_queue1:
-            amount_arrive = arrival_per_day(table_arrival_rates, care, medical)    
-            for i in range(0,amount_arrive):
-                e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical)
-                waiting_list_1.append(e1)
+
+
+c1_queue1_wait, c1_queue1_beds  = c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1, 
+                                                                  info_handled_elderly_queue_1, 'waiting_time', max_expected_waiting_time_1) 
+
+c1_queue2_wait, c1_queue2_beds  = c1_on_max_expected_waiting_time(simulation_qeueue_2, amount_beds_available_2, 
+                                                                  info_handled_elderly_queue_2, 'waiting_time_in_list_3', max_expected_waiting_time_2) 
                 
+   
     
+ 
+
+#---------------------------------------------------------------------------------------------------------------------------
+#Getting information
+
+# Count how many have through_waiting_2 equal to 0 and 1
+
+percentage_1 = 0
+percentage_0 = 0
+for i in info_handled_elderly_queue_2:
     
-    #Update the waiting time for all the elderly in the waiting list
-    #print(len(bed_queue_1))
-    for p in range(0,len(bed_queue_1)):
-        bed_queue_1[p].increment_days_in_bed()
+    count_through_0 = sum(1 for elderly in i if elderly.through_waiting_2 == 0)
+    count_through_1 = sum(1 for elderly in i if elderly.through_waiting_2 == 1)
+    total = count_through_0 + count_through_1
+    
+    percentage_1 += count_through_1 /total
+    percentage_0 += count_through_0/ total
+
+percentage_1 = percentage_1 / len(info_handled_elderly_queue_2)   
+percentage_0 = percentage_0 / len(info_handled_elderly_queue_2) 
+
+
+def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue):
+    
+    if waiting_queue == 'waiting_time':
+        total_waiting_time = sum(elderly.waiting_time for elderly in info_handled_elderly_queue_1) 
+
+    if  waiting_queue == 'waiting_time_in_list_3':
+        
+        total_waiting_time = sum(elderly.waiting_time_in_list_3 for elderly in info_handled_elderly_queue_1) 
         
         
-    #want to send a elderly from the waiting list to the bed if there is space
-    while len(bed_queue_1) < amount_beds_available and len(waiting_list_1)> 0:
-        first_elderly = waiting_list_1.pop(0)
-        bed_queue_1.append(first_elderly)
+    return total_waiting_time, len(info_handled_elderly_queue_1)
+
+
+def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting_queue):
+    total_expected_waiting_times = 0
+    total_elderly_handled = 0
+    
+    for i in info_handled_elderly_queue_1:
+        expected_waiting_times, elderly_handled = compute_expected_waiting_time(i, waiting_queue)
+        
+        total_expected_waiting_times +=expected_waiting_times
+        total_elderly_handled += elderly_handled
+        
+    
+    Excpected_waiting_times = total_expected_waiting_times / total_elderly_handled
+    return Excpected_waiting_times
+
+
+
+queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
+queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3")
 
     
- 
+
     
- 
-    
- 
+#TO DO 
+# - Percentage of how often are all the beds occupied?
+# - DONE - What is the percentage of people going from W2 to W3?  
+# - Check how much average servise time is and compare with waiting
+# - make parameter of percentage how many days should wait
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
