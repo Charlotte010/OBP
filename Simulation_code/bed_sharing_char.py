@@ -23,7 +23,7 @@ from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
 #parameters
-amount_beds_available_1 = 50
+amount_beds_available_1 = 30
 amount_beds_available_2 = 165
 bed_sharing_percentage = 10
 
@@ -40,6 +40,7 @@ def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
     amount_beds_available_1_new = round(percentage_1 * left_beds)
     amount_beds_available_2_new = round(percentage_2 * left_beds)
     bed_shared_total = round(bed_shared_total)
+    
     return bed_shared_total, amount_beds_available_1_new, amount_beds_available_2_new
 
 
@@ -107,7 +108,9 @@ for i in range(0,amount_of_runs):
             
         waiting_list_1[p].increment_waiting_time()
             
+    for p in range(0,len(bed_queue_share)):
             
+        bed_queue_share[p].increment_days_in_bed()            
 
     
     #check if someone can be discharged and go out the queueing system
@@ -194,6 +197,10 @@ for i in range(0,amount_of_runs):
     while len(bed_queue_1) < amount_beds_available_1 and len(waiting_list_1)> 0:
         first_elderly = waiting_list_1.pop(0)
         bed_queue_1.append(first_elderly)
+        
+    while len(bed_queue_share) < amount_of_beds_shared and len(waiting_list_1)> 0:
+        first_elderly = waiting_list_1.pop(0)
+        bed_queue_share.append(first_elderly)   
         
         
         

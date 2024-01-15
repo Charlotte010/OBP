@@ -16,14 +16,21 @@ table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0'
     
 
 # main.py
-from functions import *
+from functions_char import *
 import pandas as pd
 from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
-#parameters
+#parameters for queue 1
 amount_beds_available_1 = 50
 amount_beds_available_2 = 160
+percentage_1 = 25 #Parameters bedsharing
+
+
+#parameters for queue 2
+amount_beds_available_3 = 50
+amount_beds_available_4 = 160
+percentage_2 = 20
 
 #parameters for Constraint 1 (C1)
 max_expected_waiting_time_1 = 3
@@ -34,9 +41,8 @@ amount_of_runs = 1000
 amount_of_simulations = 2
 
 
-
-info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1, amount_of_simulations)
-info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_2, amount_of_simulations)
+info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations)
+#info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_3, amount_beds_available_4,  percentage_2, amount_of_simulations)
 
 
 #constraint 1 ----------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@ Created on Wed Jan 10 21:08:43 2024
 
 # arrival_functions.py
 import numpy as np
-from Class_Elderly import elderly
+from Class_Elderly_char import elderly
 
 
 def arrival_per_day(table, care_level, medical):
@@ -54,11 +54,11 @@ def make_elderly_class(table_probability, table_arrival_rates, table_E_service_r
 
 
 
-def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations):
+def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage, amount_of_simulations):
     info_handled_elderly =[]
     for i in range(0,amount_of_simulations):
         
-        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available))
+        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage))
 
 # Or using list comprehension
     return info_handled_elderly

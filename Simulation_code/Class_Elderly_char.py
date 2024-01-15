@@ -14,6 +14,7 @@ class elderly:
         self.service_time_elderly = service_time_elderly
         self.goes_where = goes_where
         self.through_waiting_2 = binary
+        self.shared_bed = 0
         self.days_in_bed = 0  
         self.waiting_time = 0  
         self.waiting_time_in_list_3 = 0
@@ -26,4 +27,6 @@ class elderly:
         
     def increment_waiting_time_in_list_3(self):
         self.waiting_time_in_list_3 += 1
-    
+
+    def set_shared_bed(self):
+        self.shared_bed += 1
