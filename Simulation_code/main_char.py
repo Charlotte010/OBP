@@ -7,7 +7,7 @@ Created on Thu Jan 11 17:13:06 2024
 import pandas as pd
 
 import os
-os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
+os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code\char')
 
     
 table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
