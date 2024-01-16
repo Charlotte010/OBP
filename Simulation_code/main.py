@@ -18,8 +18,8 @@ table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0'
 # main.py
 from functions import *
 import pandas as pd
-from main_char_queue_1 import simulation_qeueue_1
-from main_char_queue_2 import simulation_qeueue_2
+from main_queue_1 import simulation_qeueue_1
+from main_queue_2 import simulation_qeueue_2
 
 #parameters
 amount_beds_available_1 = 50
@@ -31,7 +31,7 @@ max_expected_waiting_time_2 = 5
 
 #up to us
 amount_of_runs = 1000
-amount_of_simulations = 2
+amount_of_simulations = 1
 
 
 

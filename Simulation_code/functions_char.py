@@ -5,7 +5,6 @@ Created on Wed Jan 10 21:08:43 2024
 @author: charl
 """
 
-# arrival_functions.py
 import numpy as np
 from Class_Elderly_char import elderly
 
@@ -20,15 +19,13 @@ def arrival_per_day(table, care_level, medical):
         
         return 0
 
-# probability_functions.py
-
+#---To make elderly
 def probability_goes_where(table, care_level, medical):
     probabilities = table[care_level]
     goes_where = np.random.choice(probabilities.index, p=probabilities)
     return goes_where
 
 
-# service_time_functions.py
 
 def service_time(table, care_level, goes_where):
     service_time = table.loc[goes_where, care_level]
@@ -52,7 +49,7 @@ def make_elderly_class(table_probability, table_arrival_rates, table_E_service_r
     
     return e1
 
-
+#-----------------
 
 def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage, amount_of_simulations):
     info_handled_elderly =[]
@@ -60,7 +57,6 @@ def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available
         
         info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage))
 
-# Or using list comprehension
     return info_handled_elderly
     
 
@@ -86,7 +82,7 @@ def percentage_through_2_3(info_handled_elderly_queue_2):
     
     return percentage_1, percentage_0
 
-def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue):
+def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue, care_level):
     
     if waiting_queue == 'waiting_time':
         total_waiting_time = sum(elderly.waiting_time for elderly in info_handled_elderly_queue_1) 
@@ -99,12 +95,16 @@ def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue):
     return total_waiting_time, len(info_handled_elderly_queue_1)
 
 
-def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting_queue):
+def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting_queue, care_level):
     total_expected_waiting_times = 0
     total_elderly_handled = 0
     
     for i in info_handled_elderly_queue_1:
-        expected_waiting_times, elderly_handled = compute_expected_waiting_time(i, waiting_queue)
+        
+        
+        instances = [elderly_instance for elderly_instance in i if elderly_instance.care_level == care_level]
+
+        expected_waiting_times, elderly_handled = compute_expected_waiting_time(instances, waiting_queue, care_level)
         
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
@@ -114,22 +114,51 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
     return Excpected_waiting_times
 
 
+def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
+    
+    total_beds = amount_beds_available_1 + amount_beds_available_2
+    bed_shared_total= (percentage/100) *  total_beds
+    #bed_shared_total = math.floor(bed_shared_total)
+    
+    percentage_1 = amount_beds_available_1/ total_beds
+    percentage_2 = amount_beds_available_2/ total_beds
+    
+    left_beds = total_beds - bed_shared_total
+    amount_beds_available_1_new = round(percentage_1 * left_beds)
+    amount_beds_available_2_new = round(percentage_2 * left_beds)
+    bed_shared_total = round(bed_shared_total)
+    
+    return bed_shared_total, amount_beds_available_1_new, amount_beds_available_2_new
+
+
 
 
 
  #-----------------------------------------------------------------------------------------------------------------------
  #Constraints
  
-def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available,info_handled_elderly_queue,waiting, max_expected_waiting_time,amount_of_runs, amount_of_simulations ):
+def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,amount_beds_available_2,info_handled_elderly_queue,waiting, 
+                                    max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage):
     
-    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting)
+    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
     
     while queue_1_waiting_time > max_expected_waiting_time:
-        amount_beds_available += 1
-        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available, amount_of_simulations)
-        queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting)
+        amount_beds_available_1 += 1
         
-    return queue_1_waiting_time, amount_beds_available
+        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations)
+        queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+        
+    return queue_1_waiting_time, amount_beds_available_1
+
+
+
+
+
+
+
+
+
+
 
 
 

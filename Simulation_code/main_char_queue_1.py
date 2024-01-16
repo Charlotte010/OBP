@@ -5,28 +5,12 @@ Created on Wed Jan 10 21:29:35 2024
 @author: charl
 """
 
-def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
-    
-    total_beds = amount_beds_available_1 + amount_beds_available_2
-    bed_shared_total= (percentage/100) *  total_beds
-    #bed_shared_total = math.floor(bed_shared_total)
-    
-    percentage_1 = amount_beds_available_1/ total_beds
-    percentage_2 = amount_beds_available_2/ total_beds
-    
-    left_beds = total_beds - bed_shared_total
-    amount_beds_available_1_new = round(percentage_1 * left_beds)
-    amount_beds_available_2_new = round(percentage_2 * left_beds)
-    bed_shared_total = round(bed_shared_total)
-    
-    return bed_shared_total, amount_beds_available_1_new, amount_beds_available_2_new
-
 
 
 def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_available_2,  percentage):
     #from functions import *
     import pandas as pd
-    from functions_char import arrival_per_day,make_elderly_class
+    from functions_char import arrival_per_day,make_elderly_class, bed_shared
 
     
     
