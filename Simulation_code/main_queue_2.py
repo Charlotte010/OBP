@@ -12,7 +12,7 @@ def simulation_qeueue_2(amount_of_runs, amount_beds_available_2):
     
     
     # main.py
-    from functions import arrival_per_day,make_elderly_class
+    from .functions import arrival_per_day,make_elderly_class
     import pandas as pd
         
      

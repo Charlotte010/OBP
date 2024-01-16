@@ -7,7 +7,14 @@ Created on Thu Jan 11 17:13:06 2024
 import pandas as pd
 
 import os
-os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
+os.chdir('C:\\Users\\zerin\\OneDrive\\Documenten\\Project OBP\\OBP\\Simulation_code')#'C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
+# file_path = 'C:\\Users\\zerin\\OneDrive\\Documenten\\Project OBP\\OBP\\Outflow_probabilities.xlsx'
+# print("Current Working Directory:", os.getcwd())
+# entries = os.listdir(os.getcwd())
+#
+# # Print each entry in the current directory
+# for entry in entries:
+#     print(entry)
 
     
 table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
@@ -16,10 +23,10 @@ table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0'
     
 
 # main.py
-from functions import *
+from .functions import *
 import pandas as pd
-from main_queue_1 import simulation_qeueue_1
-from main_queue_2 import simulation_qeueue_2
+from .main_queue_1 import simulation_qeueue_1
+from .main_queue_2 import simulation_qeueue_2
 
 #parameters
 amount_beds_available_1 = 50

@@ -10,7 +10,7 @@ Created on Wed Jan 10 21:29:35 2024
 def simulation_qeueue_1(amount_of_runs,amount_beds_available):
     #from functions import *
     import pandas as pd
-    from functions import arrival_per_day,make_elderly_class
+    from .functions import arrival_per_day,make_elderly_class
 
     
     
