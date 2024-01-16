@@ -6,13 +6,13 @@ Created on Thu Jan 11 13:43:49 2024
 """
 
 
-def simulation_qeueue_2(amount_of_runs, percentage, amount_beds_available_1, amount_beds_available_2):
+def simulation_qeueue_2(amount_of_runs, amount_beds_available_2):
 
       #list_elderly = [care_level, medical, service_time_elderly, goes_where]
     
     
     # main.py
-    from functions_char import arrival_per_day,make_elderly_class, bed_shared
+    from functions import arrival_per_day,make_elderly_class
     import pandas as pd
         
      
@@ -24,23 +24,19 @@ def simulation_qeueue_2(amount_of_runs, percentage, amount_beds_available_1, amo
     list_care_queue2 = ["High_Complex", "GRZ"]
     list_medical_queue2 = ['General_Practitioner', 'Hospital', 'Emergency_Department']
     
-    shared_beds, beds_available_1, beds_available_2 = bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  )
-
-    
-    waiting_list_2 = [] #High_Complex
-    waiting_list_3 = [] #High_Complex
-    waiting_list_4 = [] #GRZ
     
     
-    bed_queue_2 = [] #High_Complex
-    bed_queue_3 = [] #GRZ
-    bed_share = []
+    waiting_list_2 = []
+    waiting_list_3 = []
     
+    bed_queue_2 = []
     handled_cases_queue_2 = []
     
     
-
+    #Parameters 
+    #amount_beds_available_2 = 127
     
+    # SIMPLE QUEUE
     for i in range(0,amount_of_runs):  
         
          #Update the days in bed for all the elderly in the waiting list2
