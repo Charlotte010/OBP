@@ -7,7 +7,8 @@ Created on Wed Jan 10 21:29:35 2024
 
 
 
-def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_available_2,  percentage):
+def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_available_2,  percentage,
+                        table_probability, table_arrival_rates, table_E_service_rate):
     #from functions import *
     import pandas as pd
     from functions_char import arrival_per_day,make_elderly_class, bed_shared
@@ -19,9 +20,9 @@ def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_avail
     
 
     
-    table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
-    table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
-    table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0')
+    # table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
+    # table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
+    # table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0')
     
     
 
@@ -99,20 +100,22 @@ def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_avail
             for medical in list_medical_queue1:
                 
                 
-                amount_arrive = arrival_per_day(table_arrival_rates, care, medical) 
-                if care == 'Low_Complex':
-                
-                    for i in range(0,amount_arrive):
-                        e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical,0)
-                        waiting_list_1.append(e1)
-                
-                if care == "Respite_Care":
-                    for i in range(0,amount_arrive):
-                        e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical,0)
-                        waiting_list_2.append(e1)        
-        
-        
+                amount_arrive = arrival_per_day(table_arrival_rates, care, medical)
+                if amount_arrive>0: 
+                    if care == 'Low_Complex':
+                    
+                        for i in range(0,amount_arrive):
+                            e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical,0)
+                            waiting_list_1.append(e1)
+
+                            
+                    if care == "Respite_Care":
+                        for i in range(0,amount_arrive):
+                            e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical,0)
+                            waiting_list_2.append(e1)        
             
+            
+                
             
         #want to send a elderly from the waiting list to the bed if there is space
         while len(bed_queue_1) < beds_available_1 and len(waiting_list_1)> 0:

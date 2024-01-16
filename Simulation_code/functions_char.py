@@ -51,11 +51,13 @@ def make_elderly_class(table_probability, table_arrival_rates, table_E_service_r
 
 #-----------------
 
-def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage, amount_of_simulations):
+def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage, amount_of_simulations,
+                        table_probability, table_arrival_rates, table_E_service_rate):
     info_handled_elderly =[]
     for i in range(0,amount_of_simulations):
         
-        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage))
+        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage,
+                                table_probability, table_arrival_rates, table_E_service_rate))
 
     return info_handled_elderly
     
@@ -109,8 +111,10 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
         
-    
-    Excpected_waiting_times = total_expected_waiting_times / total_elderly_handled
+    if total_elderly_handled>0:
+        Excpected_waiting_times = total_expected_waiting_times / total_elderly_handled
+    else:
+        Excpected_waiting_times =0
     return Excpected_waiting_times
 
 
@@ -136,16 +140,20 @@ def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
 
  #-----------------------------------------------------------------------------------------------------------------------
  #Constraints
- 
+ #bed 1 is the beds where we do the constraint on
 def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,amount_beds_available_2,info_handled_elderly_queue,waiting, 
-                                    max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage):
+                                    max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage,
+                                                            table_probability, table_arrival_rates, table_E_service_rate):
     
     queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
     
     while queue_1_waiting_time > max_expected_waiting_time:
         amount_beds_available_1 += 1
         
-        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations)
+        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
+                                table_probability, table_arrival_rates, table_E_service_rate)
+        
+        
         queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
         
     return queue_1_waiting_time, amount_beds_available_1
