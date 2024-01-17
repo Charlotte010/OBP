@@ -7,8 +7,55 @@ Created on Wed Jan 10 21:08:43 2024
 
 # arrival_functions.py
 import numpy as np
+import pandas as pd
 from .Class_Elderly import elderly
 
+data = {
+    "High_Complex": [0.578, 0.107, 0.198, 0.034, 0.023, 0.06],
+    "GRZ": [0.6, 0.107, 0.21, 0.0, 0.023, 0.06],
+    "Low_Complex": [0.7, 0.14, 0.1, 0.02, 0.02, 0.02],
+    "Respite_Care": [0.9, 0.05, 0.03, 0.01, 0.005, 0.005]
+}
+
+# Index (row labels) for the table
+index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation", "Hospital_Care", "Death"]
+
+# Creating the DataFrame
+outflow_table = pd.DataFrame(data, index=index)
+
+
+# Data for the Arrival Rate table
+arrival_rate_data = {
+    "High_Complex": [1.34, 1.83, 0.94],
+    "GRZ": [0.0, 0.0, 0.54],
+    "Low_Complex": [1.34, 0.0, 0.0],
+    "Respite_Care": [0.57, 0.0, 0.0]
+}
+
+# Index (row labels) for the Arrival Rate table
+arrival_rate_index = ["General_Practitioner", "Emergency_Department", "Hospital"]
+
+# Creating the DataFrame for Arrival Rates
+arrival_rate_table = pd.DataFrame(arrival_rate_data, index=arrival_rate_index)
+
+# Data for the Service Rates table
+service_rate_data = {
+    "High_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
+    "GRZ": [31.1, 43.9, 47.8, 0.0, 22.9, 22.9],
+    "Low_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
+    "Respite_Care": [14.0, 43.9, 47.8, 29.8, 22.9, 22.9]
+}
+
+# Index (row labels) for the Service Rates table
+service_rate_index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation",
+                      "Hospital_Care", "Death"]
+
+# Creating the DataFrame for Service Rates
+service_rate_table = pd.DataFrame(service_rate_data, index=service_rate_index)
+
+print(outflow_table)
+print(arrival_rate_table)
+print(service_rate_table)
 
 def arrival_per_day(table, care_level, medical):
     arrival_rate = table.loc[medical, care_level]
@@ -37,18 +84,18 @@ def service_time(table, care_level, goes_where):
 
 
 
-def getting_info_elderly(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical):
+def getting_info_elderly(outflow_table, arrival_rate_table, service_rate_table, care_level, medical):
     
-    goes_where = probability_goes_where(table_probability, care_level, medical)
-    service_time_elderly = service_time(table_E_service_rate, care_level, goes_where)
+    goes_where = probability_goes_where(outflow_table, care_level, medical)
+    service_time_elderly = service_time(service_rate_table, care_level, goes_where)
     
     list_elderly = [care_level, medical, service_time_elderly, goes_where]
     return list_elderly
 
 
-def make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical, binary):
-    list_elderly_info = getting_info_elderly(table_probability, table_arrival_rates, table_E_service_rate, care_level, medical)
-    e1 = elderly(care_level, medical, list_elderly_info[2],list_elderly_info[3], binary )
+def make_elderly_class(outflow_table, arrival_rate_table, service_rate_table, care_level, medical, binary):
+    list_elderly_info = getting_info_elderly(outflow_table, arrival_rate_table, service_rate_table, care_level, medical)
+    e1 = elderly(care_level, medical, list_elderly_info[2],list_elderly_info[3], binary)
     
     return e1
 
@@ -141,7 +188,7 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available,i
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot_probabilities(care_level, info_handled_elderly_queue_1_list,table_probability):
+def plot_probabilities(care_level, info_handled_elderly_queue_1_list,outflow_table):
     # Filter instances with care_level 'Low_Complex'
     low_complex_instances = [elderly_instance for elderly_instance in info_handled_elderly_queue_1_list if elderly_instance.care_level == care_level]
     
@@ -157,7 +204,7 @@ def plot_probabilities(care_level, info_handled_elderly_queue_1_list,table_proba
     # Create a DataFrame from the dictionary
     df_sim = pd.DataFrame.from_dict(location_probabilities_sim, orient='index', columns=['Simulated Probabilities'])
     
-    low_complex_probabilities = table_probability[care_level]
+    low_complex_probabilities = outflow_table[care_level]
     
     merged_df = pd.merge(low_complex_probabilities, df_sim, left_index=True, right_index=True, how='left')
     

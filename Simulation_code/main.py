@@ -16,10 +16,10 @@ os.chdir('C:\\Users\\zerin\\OneDrive\\Documenten\\Project OBP\\OBP\\Simulation_c
 # for entry in entries:
 #     print(entry)
 
-    
-table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
-table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
-table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0')
+
+# table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
+# table_arrival_rates = pd.read_excel('Arrival_rates.xlsx', index_col='Unnamed: 0')
+# table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0')
     
 
 # main.py
