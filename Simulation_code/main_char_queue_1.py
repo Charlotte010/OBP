@@ -7,7 +7,7 @@ Created on Wed Jan 10 21:29:35 2024
 
 
 
-def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_available_2,  percentage,
+def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shared_beds,
                         table_probability, table_arrival_rates, table_E_service_rate):
     #from functions import *
     import pandas as pd
@@ -26,7 +26,6 @@ def simulation_qeueue_1(amount_of_runs,amount_beds_available_1,amount_beds_avail
     
     
 
-    shared_beds, beds_available_1, beds_available_2 = bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  )
 
     waiting_list_1 = [] #low complex
     waiting_list_2 = [] # Respite care

@@ -6,7 +6,7 @@ Created on Thu Jan 11 13:43:49 2024
 """
 
 
-def simulation_qeueue_2(amount_of_runs, percentage, amount_beds_available_1, amount_beds_available_2, 
+def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shared_beds, 
                         table_probability, table_arrival_rates, table_E_service_rate):
 
       #list_elderly = [care_level, medical, service_time_elderly, goes_where]
@@ -25,8 +25,6 @@ def simulation_qeueue_2(amount_of_runs, percentage, amount_beds_available_1, amo
     list_care_queue2 = ["High_Complex", "GRZ"]
     list_medical_queue2 = ['General_Practitioner', 'Hospital', 'Emergency_Department']
     
-    shared_beds, beds_available_2, beds_available_3 = bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  )
-
     
     waiting_list_2 = [] #High_Complex
     waiting_list_3 = [] #High_Complex
@@ -75,8 +73,8 @@ def simulation_qeueue_2(amount_of_runs, percentage, amount_beds_available_1, amo
         #check if someone can be discharged and go out the queueing system
         #we fo the for loop like this because then we start from the end go from right to left. 
         for p in range(len(bed_queue_2) - 1, -1, -1):
-    
             if bed_queue_2[p].days_in_bed >= bed_queue_2[p].service_time_elderly:
+                
                 # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
                 handled_cases_queue_2.append(bed_queue_2.pop(p))  
 
