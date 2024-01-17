@@ -118,21 +118,6 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
     return Excpected_waiting_times
 
 
-def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
-    
-    total_beds = amount_beds_available_1 + amount_beds_available_2
-    bed_shared_total= (percentage/100) *  total_beds
-    #bed_shared_total = math.floor(bed_shared_total)
-    
-    percentage_1 = amount_beds_available_1/ total_beds
-    percentage_2 = amount_beds_available_2/ total_beds
-    
-    left_beds = total_beds - bed_shared_total
-    amount_beds_available_1_new = round(percentage_1 * left_beds)
-    amount_beds_available_2_new = round(percentage_2 * left_beds)
-    bed_shared_total = round(bed_shared_total)
-    
-    return bed_shared_total, amount_beds_available_1_new, amount_beds_available_2_new
 
 
 
@@ -165,6 +150,21 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
 
 
 
+def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
+    
+    total_beds = amount_beds_available_1 + amount_beds_available_2
+    bed_shared_total= (percentage/100) *  total_beds
+    #bed_shared_total = math.floor(bed_shared_total)
+    
+    percentage_1 = amount_beds_available_1/ total_beds
+    percentage_2 = amount_beds_available_2/ total_beds
+    
+    left_beds = total_beds - bed_shared_total
+    amount_beds_available_1_new = round(percentage_1 * left_beds)
+    amount_beds_available_2_new = round(percentage_2 * left_beds)
+    bed_shared_total = round(bed_shared_total)
+    
+    return bed_shared_total, amount_beds_available_1_new, amount_beds_available_2_new
 
 
 

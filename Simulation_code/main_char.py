@@ -28,8 +28,8 @@ percentage_1 = 50 #Parameters bedsharing
 
 
 #parameters for queue 2
-amount_beds_available_3 = 300 #High_complex
-amount_beds_available_4 = 300 #GRZ
+amount_beds_available_3 = 325 #High_complex
+amount_beds_available_4 = 325 #GRZ
 percentage_2 = 0 #Parameters bedsharing
 
 #parameters for Constraint 1 (C1)
@@ -37,13 +37,13 @@ max_expected_waiting_time_1 = 5
 max_expected_waiting_time_2 = 20
 
 #up to us
-amount_of_runs = 100
+amount_of_runs = 1000
 amount_of_simulations = 2
 
 
     
-# info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
-#                         table_probability, table_arrival_rates, table_E_service_rate)
+info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
+                        table_probability, table_arrival_rates, table_E_service_rate)
 
 
 
@@ -62,7 +62,28 @@ queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_eld
 queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
 
     
+# Lists to store values for plotting
+i_values = []
+waiting_time_values = []
 
+# Loop through the range of i values
+for i in range(0, 200):
+    info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, i, i, 0, amount_of_simulations,
+                                                        table_probability, table_arrival_rates, table_E_service_rate)
+
+    queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
+
+    # Append values for plotting
+    i_values.append(i)
+    waiting_time_values.append(queue_2_waiting_time_3)
+
+# Plotting
+plt.plot(i_values, waiting_time_values, label='Waiting Time')
+plt.xlabel('Amount of beds')
+plt.ylabel('Expected Waiting Time')
+plt.title('Graph of Waiting Time vs. amount of beds')
+plt.legend()
+plt.show()
 
 #constraint 1 ----------------------------------------------------------------------------------------
 # amount beds 1 is for low complex, is in this code the target bed to check
