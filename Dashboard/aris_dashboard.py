@@ -3,8 +3,23 @@ import plotly.express as px
 import os
 
 import sys
+
+global arrival_high_gp
+global arrival_high_ed
+global arrival_high_hospital
+global arrival_low_gp
+global arrival_respite_gp
+global arrival_grz_hospital
+
+arrival_high_gp = 1.34
+arrival_high_ed = 0.83
+arrival_high_hospital = 0.94
+arrival_low_gp = 1.34
+arrival_respite_gp = 0.57
+arrival_grz_hospital = 0.54
 # Add project_root to the Python path if it's not already there
 from pathlib import Path
+
 
 os.chdir("C:\\Users\\zerin\\OneDrive\\Documenten\\Project OBP\\OBP")
 
@@ -32,10 +47,10 @@ outflow_table = pd.DataFrame(data, index=index)
 
 # Data for the Arrival Rate table
 arrival_rate_data = {
-    "High_Complex": [1.34, 1.83, 0.94],
-    "GRZ": [0.0, 0.0, 0.54],
-    "Low_Complex": [1.34, 0.0, 0.0],
-    "Respite_Care": [0.57, 0.0, 0.0]
+    "High_Complex": [arrival_high_gp, arrival_high_ed, arrival_high_hospital],
+    "GRZ": [0.0, 0.0, arrival_grz_hospital],
+    "Low_Complex": [arrival_low_gp, 0.0, 0.0],
+    "Respite_Care": [arrival_respite_gp, 0.0, 0.0]
 }
 
 # Index (row labels) for the Arrival Rate table
@@ -129,8 +144,118 @@ def main_test():
 
 
 def cs_sidebar():
+    global arrival_high_gp, arrival_high_ed, arrival_high_hospital, arrival_low_gp, arrival_respite_gp, arrival_grz_hospital
     # Add any sidebar components if needed
-    pass
+    with st.sidebar:
+        st.write('**Low complex**')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Arrival rate GP')
+            # st.write('Outflow home rate')
+            # st.write('outflow home with adjustments rate')
+            # st.write('Outflow long term care rate')
+            # st.write('outflow geriatric care rate')
+            # st.write('Outflow hospice rate')
+            # st.write('outflow death rate')
+        with col2:
+            arrival_low_gp = st.number_input('rate GP for low complex', min_value=0.0, max_value=None, value=1.34,
+                            label_visibility='collapsed')
+            # st.number_input("home rate for low complex", min_value=0.0, max_value=1.0,
+            #                 value=0.7, label_visibility='collapsed')
+            # st.number_input("home with adjustments rate for low complex", min_value=0.0, max_value=1.0,
+            #                 value=0.14, label_visibility='collapsed')
+            # st.number_input("Outflow long term care rate for low complex", min_value=0.0, max_value=1.0,
+            #                 value=0.1, label_visibility='collapsed')
+            # st.number_input("outflow geriatric care rate for low complex", min_value=0.0, max_value=1.0,
+            #                 value=0.02, label_visibility='collapsed')
+            # st.number_input("Outflow hospice rate for low complex", min_value=0.0, max_value=1.0,
+            #                 value=0.02, label_visibility='collapsed')
+            # st.number_input("Outflow death rate for low complex", min_value=0.0, max_value=1.0,
+            #                 value=0.02, label_visibility='collapsed')
+
+        st.write('**Respite care**')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Arrival rate')
+            # st.write('Outflow home rate')
+            # st.write('outflow home with adjustments rate')
+            # st.write('Outflow long term care rate')
+            # st.write('outflow geriatric care rate')
+            # st.write('Outflow hospice rate')
+            # st.write('outflow death rate')
+        with col2:
+            arrival_respite_gp = st.number_input("rate GP respite", min_value=0.0, max_value=1.0, value=0.57,
+                            label_visibility='collapsed')
+            # st.number_input("home rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.9, label_visibility='collapsed')
+            # st.number_input("home with adjustments rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.05, label_visibility='collapsed')
+            # st.number_input("Outflow long term care rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.03, label_visibility='collapsed')
+            # st.number_input("outflow geriatric care rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.01, label_visibility='collapsed')
+            # st.number_input("Outflow hospice rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.005, label_visibility='collapsed')
+            # st.number_input("Outflow death rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.005, label_visibility='collapsed')
+
+        st.write('**High complex**')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Arrival rate GP')
+            st.write('Arrival rate Emergency Department')
+            st.write('Arrival rate Hospital')
+            # st.write('Outflow home rate')
+            # st.write('outflow home with adjustments rate')
+            # st.write('Outflow long term care rate')
+            # st.write('outflow geriatric care rate')
+            # st.write('Outflow hospice rate')
+            # st.write('outflow death rate')
+        with col2:
+            arrival_high_gp = st.number_input("rate GP high", min_value=0.0, max_value=None, value=1.34,
+                            label_visibility='collapsed')
+            arrival_high_ed= st.number_input("rate ED high", min_value=0.0, max_value=None, value=0.83,
+                            label_visibility='collapsed')
+            arrival_high_hospital=st.number_input("rate hospital high", min_value=0.0, max_value=None, value=0.94,
+                            label_visibility='collapsed')
+            # st.number_input("home rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.578, label_visibility='collapsed')
+            # st.number_input("home with adjustments rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.107, label_visibility='collapsed')
+            # st.number_input("Outflow long term care rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.198, label_visibility='collapsed')
+            # st.number_input("outflow geriatric care rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.034, label_visibility='collapsed')
+            # st.number_input("Outflow hospice rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.023, label_visibility='collapsed')
+            # st.number_input("Outflow death rate respite", min_value=0.0, max_value=1.0,
+            #                 value=0.06, label_visibility='collapsed')
+
+        st.write('**Geriatric rehabilitation**')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Arrival rate hospital')
+            # st.write('Outflow home rate')
+            # st.write('outflow home with adjustments rate')
+            # st.write('Outflow long term care rate')
+            # st.write('outflow geriatric care rate')
+            # st.write('Outflow hospice rate')
+            # st.write('outflow death rate')
+        with col2:
+            arrival_grz_hospital = st.number_input("rate hospital Geriatric", min_value=0.0, max_value=None, value=0.54,
+                            label_visibility='collapsed')
+            # st.number_input("home rate Geriatric", min_value=0.0, max_value=1.0,
+            #                 value=0.6, label_visibility='collapsed')
+            # st.number_input("home with adjustments rate Geriatric", min_value=0.0, max_value=1.0,
+            #                 value=0.107, label_visibility='collapsed')
+            # st.number_input("Outflow long term care rate Geriatric", min_value=0.0, max_value=1.0,
+            #                 value=0.21, label_visibility='collapsed')
+            # st.number_input("outflow geriatric care rate Geriatric", min_value=0.0, max_value=0.0,
+            #                 value=0.0, label_visibility='collapsed')  # not possible
+            # st.number_input("Outflow hospice rate Geriatric", min_value=0.0, max_value=1.0,
+            #                 value=0.023, label_visibility='collapsed')
+            # st.number_input("Outflow death rate Geriatric", min_value=0.0, max_value=1.0,
+            #                 value=0.06, label_visibility='collapsed')
 
 
 def cs_scenario_selection():
