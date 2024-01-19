@@ -16,24 +16,74 @@ from Simulation_code.main_queue_1 import simulation_qeueue_1
 from Simulation_code.main_queue_2 import simulation_qeueue_2
 from Simulation_code import *
 
+data = {
+    "High_Complex": [0.578, 0.107, 0.198, 0.034, 0.023, 0.06],
+    "GRZ": [0.6, 0.107, 0.21, 0.0, 0.023, 0.06],
+    "Low_Complex": [0.7, 0.14, 0.1, 0.02, 0.02, 0.02],
+    "Respite_Care": [0.9, 0.05, 0.03, 0.01, 0.005, 0.005]
+}
+
+# Index (row labels) for the table
+index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation", "Hospital_Care", "Death"]
+
+# Creating the DataFrame
+outflow_table = pd.DataFrame(data, index=index)
+
+
+# Data for the Arrival Rate table
+arrival_rate_data = {
+    "High_Complex": [1.34, 1.83, 0.94],
+    "GRZ": [0.0, 0.0, 0.54],
+    "Low_Complex": [1.34, 0.0, 0.0],
+    "Respite_Care": [0.57, 0.0, 0.0]
+}
+
+# Index (row labels) for the Arrival Rate table
+arrival_rate_index = ["General_Practitioner", "Emergency_Department", "Hospital"]
+
+# Creating the DataFrame for Arrival Rates
+arrival_rate_table = pd.DataFrame(arrival_rate_data, index=arrival_rate_index)
+
+# Data for the Service Rates table
+service_rate_data = {
+    "High_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
+    "GRZ": [31.1, 43.9, 47.8, 0.0, 22.9, 22.9],
+    "Low_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
+    "Respite_Care": [14.0, 43.9, 47.8, 29.8, 22.9, 22.9]
+}
+
+# Index (row labels) for the Service Rates table
+service_rate_index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation",
+                      "Hospital_Care", "Death"]
+
+# Creating the DataFrame for Service Rates
+service_rate_table = pd.DataFrame(service_rate_data, index=service_rate_index)
+
+print(outflow_table)
+print(arrival_rate_table)
+print(service_rate_table)
+
+amount_of_runs = 10
+amount_of_simulations = 1
+
 
 def compute_waiting(amount_beds_available_1, amount_beds_available_2, max_expected_waiting_time_1,
                     max_expected_waiting_time_2, amount_of_runs=1000, amount_of_simulations=1):
     info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
-                                                        amount_of_simulations)
+                                                        amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_2,
-                                                        amount_of_simulations)
+                                                        amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
 
-    c1_queue1_wait, c1_queue1_beds = c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,
-                                                                     info_handled_elderly_queue_1, 'waiting_time',
-                                                                     max_expected_waiting_time_1, amount_of_runs,
-                                                                     amount_of_simulations)
-
-    c1_queue2_wait, c1_queue2_beds = c1_on_max_expected_waiting_time(simulation_qeueue_2, amount_beds_available_2,
-                                                                     info_handled_elderly_queue_2,
-                                                                     'waiting_time_in_list_3',
-                                                                     max_expected_waiting_time_2, amount_of_runs,
-                                                                     amount_of_simulations)
+    # c1_queue1_wait, c1_queue1_beds = c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,
+    #                                                                  info_handled_elderly_queue_1, 'waiting_time',
+    #                                                                  max_expected_waiting_time_1, amount_of_runs,
+    #                                                                  amount_of_simulations)
+    #
+    # c1_queue2_wait, c1_queue2_beds = c1_on_max_expected_waiting_time(simulation_qeueue_2, amount_beds_available_2,
+    #                                                                  info_handled_elderly_queue_2,
+    #                                                                  'waiting_time_in_list_3',
+    #                                                                  max_expected_waiting_time_2, amount_of_runs,
+    #                                                                  amount_of_simulations)
 
     queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
     queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
