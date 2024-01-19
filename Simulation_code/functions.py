@@ -10,52 +10,52 @@ import numpy as np
 import pandas as pd
 from .Class_Elderly import elderly
 
-data = {
-    "High_Complex": [0.578, 0.107, 0.198, 0.034, 0.023, 0.06],
-    "GRZ": [0.6, 0.107, 0.21, 0.0, 0.023, 0.06],
-    "Low_Complex": [0.7, 0.14, 0.1, 0.02, 0.02, 0.02],
-    "Respite_Care": [0.9, 0.05, 0.03, 0.01, 0.005, 0.005]
-}
-
-# Index (row labels) for the table
-index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation", "Hospital_Care", "Death"]
-
-# Creating the DataFrame
-outflow_table = pd.DataFrame(data, index=index)
-
-
-# Data for the Arrival Rate table
-arrival_rate_data = {
-    "High_Complex": [1.34, 1.83, 0.94],
-    "GRZ": [0.0, 0.0, 0.54],
-    "Low_Complex": [1.34, 0.0, 0.0],
-    "Respite_Care": [0.57, 0.0, 0.0]
-}
-
-# Index (row labels) for the Arrival Rate table
-arrival_rate_index = ["General_Practitioner", "Emergency_Department", "Hospital"]
-
-# Creating the DataFrame for Arrival Rates
-arrival_rate_table = pd.DataFrame(arrival_rate_data, index=arrival_rate_index)
-
-# Data for the Service Rates table
-service_rate_data = {
-    "High_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
-    "GRZ": [31.1, 43.9, 47.8, 0.0, 22.9, 22.9],
-    "Low_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
-    "Respite_Care": [14.0, 43.9, 47.8, 29.8, 22.9, 22.9]
-}
-
-# Index (row labels) for the Service Rates table
-service_rate_index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation",
-                      "Hospital_Care", "Death"]
-
-# Creating the DataFrame for Service Rates
-service_rate_table = pd.DataFrame(service_rate_data, index=service_rate_index)
-
-print(outflow_table)
-print(arrival_rate_table)
-print(service_rate_table)
+# data = {
+#     "High_Complex": [0.578, 0.107, 0.198, 0.034, 0.023, 0.06],
+#     "GRZ": [0.6, 0.107, 0.21, 0.0, 0.023, 0.06],
+#     "Low_Complex": [0.7, 0.14, 0.1, 0.02, 0.02, 0.02],
+#     "Respite_Care": [0.9, 0.05, 0.03, 0.01, 0.005, 0.005]
+# }
+#
+# # Index (row labels) for the table
+# index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation", "Hospital_Care", "Death"]
+#
+# # Creating the DataFrame
+# outflow_table = pd.DataFrame(data, index=index)
+#
+#
+# # Data for the Arrival Rate table
+# arrival_rate_data = {
+#     "High_Complex": [1.34, 1.83, 0.94],
+#     "GRZ": [0.0, 0.0, 0.54],
+#     "Low_Complex": [1.34, 0.0, 0.0],
+#     "Respite_Care": [0.57, 0.0, 0.0]
+# }
+#
+# # Index (row labels) for the Arrival Rate table
+# arrival_rate_index = ["General_Practitioner", "Emergency_Department", "Hospital"]
+#
+# # Creating the DataFrame for Arrival Rates
+# arrival_rate_table = pd.DataFrame(arrival_rate_data, index=arrival_rate_index)
+#
+# # Data for the Service Rates table
+# service_rate_data = {
+#     "High_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
+#     "GRZ": [31.1, 43.9, 47.8, 0.0, 22.9, 22.9],
+#     "Low_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
+#     "Respite_Care": [14.0, 43.9, 47.8, 29.8, 22.9, 22.9]
+# }
+#
+# # Index (row labels) for the Service Rates table
+# service_rate_index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriatric_Rehabilitation",
+#                       "Hospital_Care", "Death"]
+#
+# # Creating the DataFrame for Service Rates
+# service_rate_table = pd.DataFrame(service_rate_data, index=service_rate_index)
+#
+# print(outflow_table)
+# print(arrival_rate_table)
+# print(service_rate_table)
 
 def arrival_per_day(table, care_level, medical):
     arrival_rate = table.loc[medical, care_level]
@@ -101,11 +101,13 @@ def make_elderly_class(outflow_table, arrival_rate_table, service_rate_table, ca
 
 
 
-def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations):
+def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available, amount_of_simulations,
+                         arrival_rate_table, outflow_table, service_rate_table):
     info_handled_elderly =[]
     for i in range(0,amount_of_simulations):
         
-        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available))
+        info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available,
+                                                     arrival_rate_table, outflow_table, service_rate_table))
 
 # Or using list comprehension
     return info_handled_elderly
@@ -167,7 +169,8 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
  #-----------------------------------------------------------------------------------------------------------------------
  #Constraints
  
-def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available,info_handled_elderly_queue,waiting, max_expected_waiting_time,amount_of_runs, amount_of_simulations ):
+def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available,info_handled_elderly_queue,waiting, max_expected_waiting_time,amount_of_runs, amount_of_simulations,
+                                    arrival_rate_table, outflow_table, service_rate_table):
     
     queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting)
     
