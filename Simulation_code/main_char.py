@@ -28,20 +28,45 @@ percentage_1 = 50 #Parameters bedsharing
 
 
 #parameters for queue 2
-amount_beds_available_3 = 200 #High_complex
-amount_beds_available_4 = 200 #GRZ
-percentage_2 = 50 #Parameters bedsharing
-
-#parameters for Constraint 1 (C1)
-max_expected_waiting_time_1 = 5
-max_expected_waiting_time_2 = 20
+amount_beds_available_3 = 325 #High_complex
+amount_beds_available_4 = 325 #GRZ
+percentage_2 = 0 #Parameters bedsharing
 
 #up to us
 amount_of_runs = 1000
 amount_of_simulations = 2
 
 
+#parameters for Constraint 1 (C1)
+max_expected_waiting_time_1 = 5
+max_expected_waiting_time_2 = 20
+
+
+#Decentralisation (C2)
+list_amount_nurses = [40,10,4]
+list_amount_beds = [45,20,35]
+amount_beds_nurse_can_handle = 5
+
+
+
+def compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle):
+    amount_handled_beds = [x * amount_beds_nurse_can_handle for x in list_amount_nurses]
+
+    efficient_beds = [min(x, y) for x, y in zip(amount_handled_beds, list_amount_beds)]
+    efficient_beds = sum(efficient_beds)
+    return efficient_beds
+
+def distribution_beds (efficient_beds):
     
+    
+    
+    return amount_beds_available_1, amount_beds_available_2, percentage_1
+
+
+efficient_beds = compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle)    
+    
+    
+
 info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
                         table_probability, table_arrival_rates, table_E_service_rate)
 
@@ -50,9 +75,7 @@ info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_o
 info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_3, amount_beds_available_4,  percentage_2, amount_of_simulations,
                         table_probability, table_arrival_rates, table_E_service_rate)
 
-for i in info_handled_elderly_queue_2:
-    for p in i:
-        print(p.service_time_elderly)
+
 
 #getting information ------------------------------------------------------------------------------------
 
@@ -62,8 +85,6 @@ queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_eld
 
 queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
 queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
-
-    
 
 
 #constraint 1 ----------------------------------------------------------------------------------------
@@ -99,6 +120,7 @@ c1_queue2_wait_4, c1_queue2_beds_4  = c1_on_max_expected_waiting_time(simulation
 
 #TO DO 
 # - Percentage of how often are all the beds occupied?
+# - CHANGE percentage shared beds just to a number of beds
 # - DONE - What is the percentage of people going from W2 to W3?  
 # - Check how much average servise time is and compare with waiting for queue2
 # - DONE (C1) - make parameter of percentage how many days should wait
