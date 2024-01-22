@@ -445,6 +445,11 @@ def sensitivity_analysis():
     with col2:
         analysis_nurses()
 
+    st.write('test test')
+
+    with col2:
+        st.write('test2')
+
 
 def analysis_beds():
 
