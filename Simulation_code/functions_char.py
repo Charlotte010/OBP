@@ -71,9 +71,10 @@ def percentage_through_2_3(info_handled_elderly_queue_2):
     percentage_1 = 0
     percentage_0 = 0
     for i in info_handled_elderly_queue_2:
-        
-        count_through_0 = sum(1 for elderly in i if elderly.through_waiting_2 == 0)
-        count_through_1 = sum(1 for elderly in i if elderly.through_waiting_2 == 1)
+        high_complex_instances = [elderly_instance for elderly_instance in i if elderly_instance.care_level == "High_Complex"]
+
+        count_through_0 = sum(1 for elderly in high_complex_instances if elderly.through_waiting_2 == 0)
+        count_through_1 = sum(1 for elderly in high_complex_instances if elderly.through_waiting_2 == 1)
         total = count_through_0 + count_through_1
         
         percentage_1 += count_through_1 /total
