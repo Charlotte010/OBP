@@ -63,7 +63,7 @@ def distribution_beds (efficient_beds):
     return amount_beds_available_1, amount_beds_available_2, percentage_1
 
 
-efficient_beds = compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle)    
+# efficient_beds = compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle)    
     
     
 
