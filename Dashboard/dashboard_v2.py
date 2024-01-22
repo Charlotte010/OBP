@@ -149,7 +149,9 @@ def main():
             st.write('queue 2 waiting time: ', queue_2_waiting_time)
             # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
 
+        #Sensitivity analysis part
         st.header('Sensitivity Analysis')
+        sensitivity_analysis()
 
 
 def cs_sidebar():
@@ -434,8 +436,33 @@ def input_low_respite(bed_sharing_option):#num_locations):
     #     beds_per_hospital = [st.number_input(f"Number of Beds for Centralized Hospital {i}", 0, 100, 50,
     #                                          key='beds_per_hospital') for i in range(centralizing_numbers)]
 
+def sensitivity_analysis():
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        analysis_beds()
+    with col2:
+        analysis_nurses()
 
 
+def analysis_beds():
+
+    with st.container(border=True):
+        st.subheader('Analysis beds')
+
+        values = st.slider(
+        'Select a range of values for number of beds',
+        0.0, 100.0, (10.0, 25.0))
+        st.write('Values:', values)
+
+def analysis_nurses():
+
+    with st.container(border=True):
+        st.subheader('Analysis nurses')
+
+        st.slider('Select a range of values for number of nurses',
+        0.0, 100.0, (10.0, 25.0))
 
 # def plot_low_complex_chart():
 #     # This function creates an interactive sunburst chart using Plotly
