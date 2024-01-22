@@ -157,17 +157,41 @@ def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shar
             
         #now we need to look into if some can go to bed sharing
         
+        # if shared_beds >0:
+        #     while len(bed_queue_shared) < shared_beds and len(waiting_list_3)> 0:
+        #         first_elderly = waiting_list_3.pop(0)
+        #         first_elderly.set_shared_bed()
+        #         bed_queue_shared.append(first_elderly) 
+            
+        #     while len(bed_queue_shared) < shared_beds and len(waiting_list_4)> 0:
+        #         first_elderly = waiting_list_4.pop(0)
+        #         first_elderly.set_shared_bed()
+        #         bed_queue_shared.append(first_elderly) 
+            
         if shared_beds >0:
-            while len(bed_queue_shared) < shared_beds and len(waiting_list_3)> 0:
-                first_elderly = waiting_list_3.pop(0)
-                first_elderly.set_shared_bed()
-                bed_queue_shared.append(first_elderly) 
-            
-            while len(bed_queue_shared) < shared_beds and len(waiting_list_4)> 0:
-                first_elderly = waiting_list_4.pop(0)
-                first_elderly.set_shared_bed()
-                bed_queue_shared.append(first_elderly) 
-            
+           while len(bed_queue_shared) < shared_beds and (len(waiting_list_3)> 0 or  len(waiting_list_4)> 0) :
+               print(bool((len(waiting_list_3)> 0 or  len(waiting_list_4)> 0)))
+               
+               if len(waiting_list_3)== 0 and len(waiting_list_4)> 0:
+                   first_elderly = waiting_list_4.pop(0)
+                   first_elderly.set_shared_bed()
+                   bed_queue_shared.append(first_elderly) 
+                   
+               elif len(waiting_list_4)== 0 and len(waiting_list_3)> 0:
+                   first_elderly = waiting_list_3.pop(0)
+                   first_elderly.set_shared_bed()
+                   bed_queue_shared.append(first_elderly) 
+                   
+               elif len(waiting_list_4) >0 and len(waiting_list_3)> 0:
+                   if waiting_list_3[0].waiting_time_in_list_3 >= waiting_list_4[0].waiting_time_in_list_3:
+                       first_elderly = waiting_list_3.pop(0)
+                       first_elderly.set_shared_bed()
+                       bed_queue_shared.append(first_elderly) 
+                       
+                   elif waiting_list_4[0].waiting_time_in_list_3 > waiting_list_3[0].waiting_time_in_list_3:
+                       first_elderly = waiting_list_4.pop(0)
+                       first_elderly.set_shared_bed()
+                       bed_queue_shared.append(first_elderly) 
         
     return handled_cases_queue_2
     
