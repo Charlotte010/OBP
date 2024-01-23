@@ -170,7 +170,6 @@ def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shar
             
         if shared_beds >0:
            while len(bed_queue_shared) < shared_beds and (len(waiting_list_3)> 0 or  len(waiting_list_4)> 0) :
-               print(bool((len(waiting_list_3)> 0 or  len(waiting_list_4)> 0)))
                
                if len(waiting_list_3)== 0 and len(waiting_list_4)> 0:
                    first_elderly = waiting_list_4.pop(0)
