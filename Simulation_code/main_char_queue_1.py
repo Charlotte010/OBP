@@ -13,7 +13,6 @@ def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shar
     import pandas as pd
     from functions_char import arrival_per_day,make_elderly_class, bed_shared
 
-    print(shared_beds)
     
     list_care_queue1 = ["Low_Complex", "Respite_Care"]
     list_medical_queue1 = ['General_Practitioner']

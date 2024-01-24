@@ -113,7 +113,7 @@ c1_queue2_wait_4, c1_queue2_beds_4  = c1_on_max_expected_waiting_time(simulation
                                                                                           table_probability, table_arrival_rates, table_E_service_rate ) 
 
 
-    
+#Constraint 2 centrali decentrali---
 
 
 
