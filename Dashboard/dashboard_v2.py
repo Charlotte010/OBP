@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import os
-import time
+import plotly.graph_objects as go
 
 import sys
 
@@ -454,10 +454,6 @@ def analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amoun
 
             # Plotting the sensitivity analysis results
             plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_waiting_times)
-
-
-import plotly.graph_objects as go
-
 
 def plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_waiting_times):
     fig = go.Figure()
