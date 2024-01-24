@@ -98,6 +98,7 @@ def compute_waiting(amount_beds_available_1, amount_beds_available_2, max_expect
     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_2,
                                                         amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
 
+    # per care level expected waiting time (op aantal bedden bepaalt)
     queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
     queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
                                                                   "waiting_time_in_list_3")
@@ -344,6 +345,9 @@ def body_input_low_respite(bed_sharing_option, index):
         num_grz_beds = st.number_input('Number of GRZ beds', min_value=0, max_value=None, value=8, key=f'grz_beds_{index}',
                                    label_visibility='collapsed')
 
+    with col1, col2:
+        st.write('Number of beds one nurse can handle')
+
     with col3:
         st.write('Shared beds')
         disabled = bed_sharing_option == 'No bed sharing'
@@ -355,11 +359,14 @@ def body_input_low_respite(bed_sharing_option, index):
         num_nurses = st.number_input('Number of nurses', min_value=0, max_value=None, value=2, key=f'nurses_{index}',
                         label_visibility='collapsed')
 
+        st.number_input('Number of beds one nurse can handle', min_value=0, max_value=None, value=5,
+                        key=f'nurses_load_{index}', label_visibility='collapsed')
+
     with col5:
         st.write('Total beds')
 
         # Calculate the sum
-        total_beds = num_low_complex_beds + num_grz_beds
+        total_beds = num_low_complex_beds + num_grz_beds + num_shared_beds
 
         # Display the sum in a read-only style
         st.markdown(f'<input type="text" value="{total_beds}" class="readonly-input" readonly>',
@@ -369,7 +376,7 @@ def body_input_low_respite(bed_sharing_option, index):
         st.write('Total eff beds')
 
         # Calculate the sum
-        eff_beds = (num_low_complex_beds + num_grz_beds ) * num_nurses
+        eff_beds = (num_low_complex_beds + num_grz_beds + num_shared_beds) * num_nurses
 
         # Display the sum in a read-only style
         st.markdown(f'<input type="text" value="{eff_beds}" class="readonly-input" readonly>',
