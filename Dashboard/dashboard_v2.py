@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import os
+import time
 
 import sys
 
@@ -88,10 +89,10 @@ table_probability = outflow_table
 table_arrival_rates = arrival_rate_table
 table_E_service_rate = service_rate_table
 
-amount_of_runs = 10
-amount_of_simulations = 1
+amount_of_runs = 100
+amount_of_simulations = 2
 
-def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, percentage_1, amount_of_runs=1000, amount_of_simulations=1):
+def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, percentage_1, amount_of_runs, amount_of_simulations):
     #percentage_1 = shared beds lc rc
     info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
                                                         amount_beds_available_2, percentage_1, amount_of_simulations,
@@ -104,7 +105,7 @@ def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, perc
 
     return queue_1_waiting_time_1, queue_1_waiting_time_2
 
-def compute_waiting_HC_GRZ(amount_beds_available_3, amount_beds_available_4, percentage_2, amount_of_runs=1000, amount_of_simulations=1):
+def compute_waiting_HC_GRZ(amount_beds_available_3, amount_beds_available_4, percentage_2, amount_of_runs, amount_of_simulations):
     #percentage_2 = shared beds hc grz
     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_3,
                                                         amount_beds_available_4, percentage_2, amount_of_simulations,
@@ -140,10 +141,12 @@ def main():
 
         # Add a button to run the simulation
         if st.button("Run Simulation"):
-            with st.status("In progress...") as status:
+
+            with st.spinner("In progress..."):# as status:
             # Compute waiting times based on user inputs
-                queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds, num_respite_beds, percentage_1 = num_shared_beds, amount_of_runs=1000,
-                                                                             amount_of_simulations=1)
+                time.sleep(5)
+                queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds, num_respite_beds, percentage_1 = num_shared_beds, amount_of_runs = amount_of_runs,
+                                                                             amount_of_simulations = amount_of_simulations)
 
             st.write('queue 1 waiting time: ', round(queue_1_waiting_time_1, 2), 'days')
             st.write('queue 2 waiting time: ', round(queue_1_waiting_time_2, 2), 'days')
@@ -181,8 +184,8 @@ def main():
         if st.button("Run Simulation"):
             with st.status("In progress...") as status:
             # Compute waiting times based on user inputs
-                queue_2_waiting_time_3, queue_2_waiting_time_4 = compute_waiting_HC_GRZ(num_high_complex_beds, num_grz_beds, percentage_1 = num_shared_beds, amount_of_runs=1000,
-                                                                             amount_of_simulations=1)
+                queue_2_waiting_time_3, queue_2_waiting_time_4 = compute_waiting_HC_GRZ(num_high_complex_beds, num_grz_beds, percentage_1 = num_shared_beds, amount_of_runs = amount_of_runs,
+                                                                             amount_of_simulations = amount_of_simulations)
 
             st.write('queue 1 waiting time: ', queue_2_waiting_time_3)
             st.write('queue 2 waiting time: ', queue_2_waiting_time_4)
@@ -191,6 +194,16 @@ def main():
         #Sensitivity analysis part
         st.header('Sensitivity Analysis')
         sensitivity_analysis()
+
+# def run_simulation(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs=1000, amount_of_simulations=1):
+#     with st.spinner("In progress..."):  # as status:
+#         # Compute waiting times based on user inputs
+#         queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds, num_respite_beds,
+#                                                                                percentage_1=num_shared_beds,
+#                                                                                amount_of_runs,
+#                                                                                amount_of_simulations)
+#     return queue_1_waiting_time_2, queue_1_waiting_time_2
+
 
 def cs_sidebar():
     global arrival_high_gp, arrival_high_ed, arrival_high_hospital, arrival_low_gp, arrival_respite_gp, arrival_grz_hospital
