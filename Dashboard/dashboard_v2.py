@@ -31,8 +31,14 @@ sys.path.append("C:\\Users\\zerin\\OneDrive\\Documenten\\Project OBP\\OBP")
 
 from Simulation_code.functions import *
 import pandas as pd
-from Simulation_code.main_queue_1 import simulation_qeueue_1
-from Simulation_code.main_queue_2 import simulation_qeueue_2
+# from Simulation_code.main_char_queue_1 import simulation_qeueue_1
+# from Simulation_code.main_queue_2 import simulation_qeueue_2
+
+##added
+from Simulation_code.functions_char import compute_expected_waiting_time_all_runs
+from Simulation_code.functions_char import multiple_simulations
+from Simulation_code.main_char_queue_1 import simulation_qeueue_1
+from Simulation_code.main_char_queue_2 import simulation_qeueue_2
 
 st.set_page_config(
     # page_title='page1',
@@ -88,22 +94,67 @@ service_rate_index = ["Home", "Home_with_adjustments", "Long-term_care", "Geriat
 service_rate_table = pd.DataFrame(service_rate_data, index=service_rate_index)
 ###################
 
+table_probability = outflow_table
+table_arrival_rates = arrival_rate_table
+table_E_service_rate = service_rate_table
+
 amount_of_runs = 10
 amount_of_simulations = 1
 
-def compute_waiting(amount_beds_available_1, amount_beds_available_2, max_expected_waiting_time_1,
-                    max_expected_waiting_time_2, amount_of_runs=1000, amount_of_simulations=1):
+def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, percentage_1, amount_of_runs=1000, amount_of_simulations=1):
+    #percentage_1 = shared beds lc rc
+    #percentage_2 = shared beds hc grz
     info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
-                                                        amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
-    info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_2,
-                                                        amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
+                                                        amount_beds_available_2, percentage_1, amount_of_simulations,
+                                                        table_probability, table_arrival_rates, table_E_service_rate)
 
-    # per care level expected waiting time (op aantal bedden bepaalt)
-    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
-    queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
-                                                                  "waiting_time_in_list_3")
+    # info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_3,
+    #                                                     amount_beds_available_4, percentage_2, amount_of_simulations,
+    #                                                     table_probability, table_arrival_rates, table_E_service_rate)
 
-    return queue_1_waiting_time, queue_2_waiting_time
+    queue_1_waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time",
+                                                                    "Low_Complex")
+    queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time",
+                                                                    "Respite_Care")
+
+    # queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
+    #                                                                 "waiting_time_in_list_3", "High_Complex")
+    # queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
+    #                                                                 "waiting_time_in_list_3", "GRZ")
+
+    # info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
+    #                                                     amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
+    # info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_2,
+    #                                                     amount_of_simulations, arrival_rate_table, outflow_table, service_rate_table)
+    #
+    # # per care level expected waiting time (op aantal bedden bepaalt)
+    # queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time")
+    # queue_2_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
+    #                                                               "waiting_time_in_list_3")
+
+    return queue_1_waiting_time_1, queue_1_waiting_time_2
+
+def compute_waiting_HC_GRZ(amount_beds_available_3, amount_beds_available_4, percentage_2, amount_of_runs=1000, amount_of_simulations=1):
+    #percentage_1 = shared beds lc rc
+    #percentage_2 = shared beds hc grz
+    # info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
+    #                                                     amount_beds_available_2, percentage_1, amount_of_simulations,
+    #                                                     table_probability, table_arrival_rates, table_E_service_rate)
+
+    info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_3,
+                                                        amount_beds_available_4, percentage_2, amount_of_simulations,
+                                                        table_probability, table_arrival_rates, table_E_service_rate)
+
+    # queue_1_waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time",
+    #                                                                 "Low_Complex")
+    # queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time",
+    #                                                                 "Respite_Care")
+
+    queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
+                                                                    "waiting_time_in_list_3", "High_Complex")
+    queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
+                                                                    "waiting_time_in_list_3", "GRZ")
+    return queue_2_waiting_time_3, queue_2_waiting_time_4
 
 
 def main():
@@ -121,7 +172,7 @@ def main():
 
         if centralizing_option == 'Centralized':
             st.session_state.num_locations = 1
-            num_low_complex_beds, num_grz_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
+            num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
             # input_low_respite(bed_sharing_option)
 
         if centralizing_option == 'Decentralized':
@@ -141,9 +192,12 @@ def main():
         if st.button("Run Simulation"):
             with st.status("In progress...") as status:
             # Compute waiting times based on user inputs
-                queue_1_waiting_time, queue_2_waiting_time = compute_waiting(num_low_complex_beds, num_grz_beds,
-                                                                         1000,
-                                                                         1000)
+                queue_1_waiting_time, queue_2_waiting_time = compute_waiting_LC_RC(num_low_complex_beds, num_respite_beds, percentage_1 = num_shared_beds, amount_of_runs=1000,
+                                                                             amount_of_simulations=1)
+
+                # queue_1_waiting_time, queue_2_waiting_time = compute_waiting(num_low_complex_beds, num_grz_beds,
+                #                                                          1000,
+                #                                                          1000)
             # status.update(label="Simulation complete!", state="complete")
 
             st.write('queue 1 waiting time: ', queue_1_waiting_time)
@@ -341,8 +395,8 @@ def body_input_low_respite(bed_sharing_option, index):
                                            key=f'low_complex_beds_{index}', label_visibility='collapsed')
 
     with col2:
-        st.write('GRZ complex beds')
-        num_grz_beds = st.number_input('Number of GRZ beds', min_value=0, max_value=None, value=8, key=f'grz_beds_{index}',
+        st.write('Respite care beds')
+        num_respite_beds = st.number_input('Number of respite care beds', min_value=0, max_value=None, value=8, key=f'respite_beds_{index}',
                                    label_visibility='collapsed')
 
     with col1, col2:
@@ -366,7 +420,7 @@ def body_input_low_respite(bed_sharing_option, index):
         st.write('Total beds')
 
         # Calculate the sum
-        total_beds = num_low_complex_beds + num_grz_beds + num_shared_beds
+        total_beds = num_low_complex_beds + num_respite_beds + num_shared_beds
 
         # Display the sum in a read-only style
         st.markdown(f'<input type="text" value="{total_beds}" class="readonly-input" readonly>',
@@ -376,13 +430,13 @@ def body_input_low_respite(bed_sharing_option, index):
         st.write('Total eff beds')
 
         # Calculate the sum
-        eff_beds = (num_low_complex_beds + num_grz_beds + num_shared_beds) * num_nurses
+        eff_beds = (num_low_complex_beds + num_respite_beds + num_shared_beds) * num_nurses
 
         # Display the sum in a read-only style
         st.markdown(f'<input type="text" value="{eff_beds}" class="readonly-input" readonly>',
                     unsafe_allow_html=True)
 
-    return num_low_complex_beds, num_grz_beds, num_shared_beds, num_nurses
+    return num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses
 
 def input_low_respite(bed_sharing_option):#num_locations):
     # global centralizing_option
