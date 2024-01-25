@@ -155,6 +155,8 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
     for i in info_handled_elderly_queue_1:
         expected_waiting_times, elderly_handled = compute_expected_waiting_time(i, waiting_queue)
         
+        
+        
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
         

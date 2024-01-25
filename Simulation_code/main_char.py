@@ -22,19 +22,19 @@ from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
-amount_beds_available_1 = 20 #low complex 
-amount_beds_available_2 = 20 #Respite care 
-percentage_1 = 50 #Parameters bedsharing
+amount_beds_available_1 = 50 #low complex 
+amount_beds_available_2 = 5 #Respite care 
+percentage_1 = 3 #Parameters bedsharing
 
 
 #parameters for queue 2
-amount_beds_available_3 = 325 #High_complex
-amount_beds_available_4 = 325 #GRZ
+amount_beds_available_3 = 100 #High_complex
+amount_beds_available_4 = 50 #GRZ
 percentage_2 = 0 #Parameters bedsharing
 
 #up to us
 amount_of_runs = 1000
-amount_of_simulations = 2
+amount_of_simulations = 50
 
 
 #parameters for Constraint 1 (C1)
@@ -43,9 +43,11 @@ max_expected_waiting_time_2 = 20
 
 
 #Decentralisation (C2)
-list_amount_nurses = [40,10,4]
-list_amount_beds = [45,20,35]
+
 amount_beds_nurse_can_handle = 5
+
+list_locations_beds = [[10,5,2], [14,4,4]]  # first LC, RC, Shared
+list_locations_nurses = [[2,3,0], [2,2,2]] # first LC, RC, Shared
 
 
 
@@ -53,17 +55,20 @@ def compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurs
     amount_handled_beds = [x * amount_beds_nurse_can_handle for x in list_amount_nurses]
 
     efficient_beds = [min(x, y) for x, y in zip(amount_handled_beds, list_amount_beds)]
-    efficient_beds = sum(efficient_beds)
     return efficient_beds
 
-def distribution_beds (efficient_beds):
+def efficient_beds_per_care_level (list_locations_beds,list_locations_nurses, amount_beds_nurse_can_handle ):
+    efficient_beds_list = []
+    for i in range(0, len(list_locations_beds)):
+        
+        efficient_beds = compute_efficient_beds (list_locations_nurses[i], list_locations_beds[i], amount_beds_nurse_can_handle)
+        efficient_beds_list.append(efficient_beds)
     
-    
-    
-    return amount_beds_available_1, amount_beds_available_2, percentage_1
+    return efficient_beds_list
 
-
-# efficient_beds = compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle)    
+#so efficient_beds is a list with the beds, so contains 3 integers all representing the new available beds
+# in the order of LC, RC, shared beds These can you use for futher code by calling efficient_beds[0], efficient_beds[1], efficient_beds[2]
+efficient_beds = efficient_beds_per_care_level(list_locations_beds, list_locations_nurses , amount_beds_nurse_can_handle)    
     
     
 
@@ -79,12 +84,15 @@ info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_o
 
 #getting information ------------------------------------------------------------------------------------
 
-queue_1_waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Low_Complex")
-queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
+queue_1_waiting_time_1, all_waiting_times_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Low_Complex")
+queue_1_waiting_time_2, all_waiting_times_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
 
 
-queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
-queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
+queue_2_waiting_time_3, all_waiting_times_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
+queue_2_waiting_time_4, all_waiting_times_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
+
+
+
 
 
 #constraint 1 ----------------------------------------------------------------------------------------
@@ -129,8 +137,7 @@ c1_queue2_wait_4, c1_queue2_beds_4  = c1_on_max_expected_waiting_time(simulation
 
 
 
-
-
+c
 
 
 

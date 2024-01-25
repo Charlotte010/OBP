@@ -101,6 +101,7 @@ def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue, c
 def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting_queue, care_level):
     total_expected_waiting_times = 0
     total_elderly_handled = 0
+    all_waiting_times = []
     
     for i in info_handled_elderly_queue_1:
         
@@ -112,11 +113,16 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
         
+        all_waiting_times.append(expected_waiting_times/ elderly_handled)
+
+        
+        
     if total_elderly_handled>0:
         Excpected_waiting_times = total_expected_waiting_times / total_elderly_handled
     else:
         Excpected_waiting_times =0
-    return Excpected_waiting_times
+        
+    return Excpected_waiting_times, all_waiting_times
 
 
 
