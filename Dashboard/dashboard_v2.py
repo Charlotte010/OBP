@@ -1,7 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import os
-import time
+import plotly.graph_objects as go
 
 import sys
 
@@ -141,20 +141,25 @@ def main():
 
         # Add a button to run the simulation
         if st.button("Run Simulation"):
+            with st.container(border=True):
+                st.subheader("Output")
+                with st.status("In progress...") as status:
+                    #Compute waiting times based on user inputs
+                    queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds,
+                                                                                       num_respite_beds,
+                                                                                       percentage_1=num_shared_beds,
+                                                                                       amount_of_runs=amount_of_runs,
+                                                                                       amount_of_simulations=amount_of_simulations)
 
-            with st.spinner("In progress..."):# as status:
-            # Compute waiting times based on user inputs
-                time.sleep(5)
-                queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds, num_respite_beds, percentage_1 = num_shared_beds, amount_of_runs = amount_of_runs,
-                                                                             amount_of_simulations = amount_of_simulations)
+                st.write('queue 1 waiting time: ', round(queue_1_waiting_time_1, 2), 'days')
+                st.write('queue 2 waiting time: ', round(queue_1_waiting_time_2, 2), 'days')
 
-            st.write('queue 1 waiting time: ', round(queue_1_waiting_time_1, 2), 'days')
-            st.write('queue 2 waiting time: ', round(queue_1_waiting_time_2, 2), 'days')
             # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
 
         #Sensitivity analysis part
         st.header('Sensitivity Analysis')
-        sensitivity_analysis()
+        sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
+                             amount_of_simulations)
 
     with tab2:
         st.header('High Complex & GRZ Care')
@@ -193,7 +198,8 @@ def main():
 
         #Sensitivity analysis part
         st.header('Sensitivity Analysis')
-        sensitivity_analysis()
+        sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
+                             amount_of_simulations)
 
 # def run_simulation(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs=1000, amount_of_simulations=1):
 #     with st.spinner("In progress..."):  # as status:
@@ -350,7 +356,7 @@ def add_location(bed_sharing_option):
 def body_input_low_respite(bed_sharing_option, index):
 
     # for i in range(num_locations):
-    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
 
     # with col1:
         # st.write('Location name')
@@ -383,34 +389,36 @@ def body_input_low_respite(bed_sharing_option, index):
                         key=f'nurses_load_{index}', label_visibility='collapsed')
 
     with col5:
-        st.write('Total beds')
+        # st.write('Total beds')
 
         # Calculate the sum
         total_beds = num_low_complex_beds + num_respite_beds + num_shared_beds
 
         # Display the sum in a read-only style
-        st.markdown(f'<input type="text" value="{total_beds}" class="readonly-input" readonly>',
-                    unsafe_allow_html=True)
+        # st.markdown(f'<input type="text" value="{total_beds}" class="readonly-input" readonly>',
+        #             unsafe_allow_html=True)
 
     with col6:
-        st.write('Total eff beds')
+        # st.write('Total eff beds')
 
         # Calculate the sum
         eff_beds = (num_low_complex_beds + num_respite_beds + num_shared_beds) * num_nurses
 
         # Display the sum in a read-only style
-        st.markdown(f'<input type="text" value="{eff_beds}" class="readonly-input" readonly>',
-                    unsafe_allow_html=True)
+        st.write('Total number of beds: ', total_beds)
+        st.write('Total number of effective beds: ', eff_beds)
+        # st.markdown(f'<input type="text" value="{eff_beds}" class="readonly-input" readonly>',
+        #             unsafe_allow_html=True)
 
     return num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses
 
 
-def sensitivity_analysis():
+def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
 
     col1, col2 = st.columns(2)
 
     with col1:
-        analysis_beds()
+        analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
     with col2:
         analysis_nurses()
 
@@ -420,15 +428,68 @@ def sensitivity_analysis():
         st.write('test2')
 
 
-def analysis_beds():
-
+def analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
     with st.container(border=True):
         st.subheader('Analysis beds')
 
-        values = st.slider(
-        'Select a range of values for number of beds',
-        0.0, 100.0, (10.0, 25.0))
-        st.write('Values:', values)
+        # Values slider for the number of beds
+        bed_range = st.slider(
+            'Select a range of values for the number of beds',
+            1, 20, (5, 10))  # Adjust the range as needed
+
+        # Button to trigger sensitivity analysis
+        if st.button('Run Sensitivity Analysis for Beds'):
+            # Lists to store data for plotting
+            low_complex_waiting_times = []
+            respite_waiting_times = []
+
+            # Loop through different values of available beds
+            for beds in range(bed_range[0], bed_range[1] + 1):
+                # Compute waiting times based on user inputs
+                queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
+
+                # Append data to lists for plotting
+                low_complex_waiting_times.append(queue_1_waiting_time_1)
+                respite_waiting_times.append(queue_1_waiting_time_2)
+
+            # Plotting the sensitivity analysis results
+            plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_waiting_times)
+
+def plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_waiting_times):
+    fig = go.Figure()
+
+    # Generate x values for the plot
+    x_values = list(range(bed_range[0], bed_range[1] + 1))
+
+    # Add traces for low complex and respite waiting times
+    fig.add_trace(go.Scatter(x=x_values, y=low_complex_waiting_times, mode='lines', name='Low Complex'))
+    fig.add_trace(go.Scatter(x=x_values, y=respite_waiting_times, mode='lines', name='Respite Care'))
+
+    # Customize layout as needed
+    fig.update_layout(title='Sensitivity Analysis',
+                      xaxis_title='Number of Available Beds',
+                      yaxis_title='Waiting Time',
+                      legend_title='Scenarios')
+
+    # Show the plot
+    st.plotly_chart(fig)
+
+
+# def plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_waiting_times):
+#     fig = px.line()
+#
+#     # Add traces for high complex and grz waiting times
+#     fig.add_trace(px.line(x=bed_range, y=low_complex_waiting_times, name='Low Complex').data[0])
+#     fig.add_trace(px.line(x=bed_range, y=respite_waiting_times, name='Respite care').data[0])
+#
+#     # Customize layout as needed
+#     fig.update_layout(title='Sensitivity Analysis',
+#                       xaxis_title='Number of Available Beds',
+#                       yaxis_title='Waiting Time',
+#                       legend_title='Scenarios')
+#
+#     # Show the plot
+#     st.plotly_chart(fig)
 
 def analysis_nurses():
 
