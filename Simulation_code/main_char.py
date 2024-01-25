@@ -137,7 +137,7 @@ c1_queue2_wait_4, c1_queue2_beds_4  = c1_on_max_expected_waiting_time(simulation
 
 
 
-
+c
 
 
 
