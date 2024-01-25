@@ -412,12 +412,74 @@ def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds
     with col1:
         analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
     with col2:
-        analysis_nurses()
+        max_expected_waiting_time_1 = st.number_input('Please input a maximum amount of waiting days for a patient: ', min_value=0.0, value=10.0)
+        if st.button('Find minimum number of beds'):
+            optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = optimize_bed_counts(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, max_expected_waiting_time_1, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates,
+                              table_E_service_rate)
+
+            st.write('waiting time low complex care: ', waiting_time_lc)
+            st.write('Beds low complex care: ', optimal_beds_lc)
+            st.write('waiting time respite care: ', waiting_time_rc)
+            st.write('Beds respite care: ', optimal_beds_rc)
+        # analysis_nurses()
 
     # st.write('test test')
 
     # with col2:
         # st.write('test2')
+
+# def find_optimal_beds(simulation_queue_1, simulation_queue_2, initial_beds_low_complex, initial_beds_respite, max_beds_limit, max_waiting_time, amount_of_runs, amount_of_simulations, care_level, percentage, table_probability, table_arrival_rates, table_E_service_rate):
+#     # find_optimal_beds(simulation_queue_1, simulation_queue_2, initial_beds_1, initial_beds_2, max_waiting_time, ...):
+#     optimal_beds_1 = initial_beds_low_complex
+#     optimal_beds_2 = initial_beds_respite
+#     optimal_waiting_time = float('inf')  # Initialize with a very high number
+#
+#     for beds_1 in range(initial_beds_low_complex, max_beds_limit):
+#         for beds_2 in range(initial_beds_respite, max_beds_limit):
+#             # Run simulation with current bed numbers
+#             info_queue_1 = multiple_simulations(simulation_queue_1, ..., beds_1, beds_2, ...)
+#             info_queue_2 = multiple_simulations(simulation_queue_2, ..., beds_1, beds_2, ...)
+#
+#             # Compute waiting times for both queues
+#             waiting_time_1 = compute_expected_waiting_time_all_runs(info_queue_1, ...)
+#             waiting_time_2 = compute_expected_waiting_time_all_runs(info_queue_2, ...)
+#
+#             # Check if this combination is better than the current best
+#             if waiting_time_1 <= max_waiting_time and waiting_time_2 <= max_waiting_time:
+#                 combined_waiting_time = waiting_time_1 + waiting_time_2  # Example of a combined metric
+#                 if combined_waiting_time < optimal_waiting_time:
+#                     optimal_waiting_time = combined_waiting_time
+#                     optimal_beds_1 = beds_1
+#                     optimal_beds_2 = beds_2
+#
+#     return optimal_beds_1, optimal_beds_2
+
+def optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
+    optimal_beds_lc = initial_beds_lc
+    optimal_beds_rc = initial_beds_rc
+
+    # Initial simulation
+    info_queue = multiple_simulations(simulation_queue, amount_of_runs, optimal_beds_lc, optimal_beds_rc, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+
+    # Calculate initial waiting times
+    waiting_time_lc = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Low_Complex")
+    waiting_time_rc = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Respite_Care")
+
+    # Loop until both waiting times are below the maximum
+    while waiting_time_lc > max_waiting_time or waiting_time_rc > max_waiting_time:
+        if waiting_time_lc > max_waiting_time:
+            optimal_beds_lc += 1
+        if waiting_time_rc > max_waiting_time:
+            optimal_beds_rc += 1
+
+        # Re-run simulation with updated bed counts
+        info_queue = multiple_simulations(simulation_queue, amount_of_runs, optimal_beds_lc, optimal_beds_rc, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+
+        # Recalculate waiting times
+        waiting_time_lc = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Low_Complex")
+        waiting_time_rc = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Respite_Care")
+
+    return optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc
 
 
 def analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
@@ -466,8 +528,79 @@ def plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_wait
     # Show the plot
     st.plotly_chart(fig)
 
-def analysis_optimal_num_beds():
-    st.number_input('Please input a maximum amount of waiting days for a patient: ', min_value=0.0, value=10.0)
+
+def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1, amount_beds_available_2,
+                                    info_handled_elderly_queue, waiting,
+                                    max_waiting_time, amount_of_runs, amount_of_simulations, care_level,
+                                    percentage,
+                                    table_probability, table_arrival_rates, table_E_service_rate):
+
+    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+
+    while queue_1_waiting_time > max_waiting_time or queue_1_waiting_time > max_waiting_time:
+        amount_beds_available_1 += 1
+        amount_beds_available_2 += 1
+
+        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
+                                                          amount_beds_available_2, percentage, amount_of_simulations,
+                                                          table_probability, table_arrival_rates, table_E_service_rate)
+
+        queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+
+    return queue_1_waiting_time, amount_beds_available_1
+
+def analysis_optimal_num_beds(start_num_beds_low, start_num_beds_respite, percentage_1, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates,
+                              table_E_service_rate, max_expected_waiting_time_1):
+
+    info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, start_num_beds_low,
+                                                        start_num_beds_respite, percentage_1, amount_of_simulations,
+                                                        table_probability, table_arrival_rates, table_E_service_rate)
+
+    c1_queue1_wait_1, c1_queue1_beds_1 = c1_on_max_expected_waiting_time(simulation_qeueue_1, start_num_beds_low,
+                                                                         start_num_beds_respite,
+                                                                         info_handled_elderly_queue_1, 'waiting_time',
+                                                                         max_expected_waiting_time_1,
+                                                                         amount_of_runs, amount_of_simulations,
+                                                                         'Low_Complex', percentage_1,
+                                                                         table_probability, table_arrival_rates,
+                                                                         table_E_service_rate)
+
+    # #amount fo Respite_Care
+    c1_queue1_wait_2, c1_queue1_beds_2 = c1_on_max_expected_waiting_time(simulation_qeueue_1, start_num_beds_respite,
+                                                                         start_num_beds_low,
+                                                                         info_handled_elderly_queue_1, 'waiting_time',
+                                                                         max_expected_waiting_time_1,
+                                                                         amount_of_runs, amount_of_simulations,
+                                                                         'Respite_Care', percentage_1,
+                                                                         table_probability, table_arrival_rates,
+                                                                         table_E_service_rate)
+
+    return c1_queue1_wait_1, c1_queue1_beds_1, c1_queue1_wait_2, c1_queue1_beds_2
+
+def find_optimal_beds(simulation_queue_1, simulation_queue_2, initial_beds_1, initial_beds_2, max_waiting_time, amount_of_runs, amount_of_simulations, care_level, percentage, table_probability, table_arrival_rates, table_E_service_rate):
+    amount_beds_available_1 = initial_beds_1
+    amount_beds_available_2 = initial_beds_2
+
+    # Initialize variables to store the waiting times for both queues
+    waiting_time_1 = float('inf')
+    waiting_time_2 = float('inf')
+
+    # Keep increasing the beds for queue 1 and queue 2 until the waiting times are below the max_waiting_time
+    while waiting_time_1 > max_waiting_time or waiting_time_2 > max_waiting_time:
+        # Increase the bed count for queue 1 and queue 2
+        amount_beds_available_1 += 1
+        amount_beds_available_2 += 1
+
+        # Run the simulation for the new bed counts
+        info_handled_elderly_queue_1 = multiple_simulations(simulation_queue_1, amount_of_runs, amount_beds_available_1, amount_beds_available_2, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+        info_handled_elderly_queue_2 = multiple_simulations(simulation_queue_2, amount_of_runs, amount_beds_available_1, amount_beds_available_2, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+
+        # Compute the waiting times for both queues
+        waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting, care_level)
+        waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, waiting, care_level)
+
+    return amount_beds_available_1, amount_beds_available_2, waiting_time_1, waiting_time_2
+
 
 def analysis_nurses():
 
@@ -476,12 +609,6 @@ def analysis_nurses():
 
         st.slider('Select a range of values for number of nurses',
         0.0, 100.0, (10.0, 25.0))
-
-# def run_simulation(selected_scenario, bed_sharing_option):
-#     # Perform simulation based on selected_scenario and bed_sharing_option
-#     st.write('Simulation is running for:', selected_scenario)
-#     st.write('Bed Sharing Option:', bed_sharing_option)
-#     # Add simulation logic here
 
 
 if __name__ == '__main__':
