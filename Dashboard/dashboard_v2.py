@@ -90,7 +90,7 @@ table_arrival_rates = arrival_rate_table
 table_E_service_rate = service_rate_table
 
 amount_of_runs = 100
-amount_of_simulations = 2
+amount_of_simulations = 5
 
 def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, percentage_1, amount_of_runs, amount_of_simulations):
     #percentage_1 = shared beds lc rc
@@ -157,6 +157,7 @@ def main():
             # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
 
         #Sensitivity analysis part
+        st.divider()
         st.header('Sensitivity Analysis')
         sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
                              amount_of_simulations)
@@ -164,42 +165,33 @@ def main():
     with tab2:
         st.header('High Complex & GRZ Care')
 
-        # Get the selected bed sharing option
-        centralizing_option, bed_sharing_option = cs_scenario_selection()
-
-        st.subheader('Input')
-        if centralizing_option == 'Centralized':
-            st.session_state.num_locations = 1
-            num_high_complex_beds, num_grz_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
-
-        if centralizing_option == 'Decentralized':
-            add_location(bed_sharing_option)
-
-            # if bed_sharing_option == 'No bed sharing':
-            #     input_low_respite(bed_sharing_option)
-
-        # if selected_scenario == 'Low Complex & Respite Care':
-        #     cs_body_low_respite(bed_sharing_option, centralizing_option)
-        #     # plot_low_complex_chart()
-        # elif selected_scenario == 'High Complex & Geriatric Rehabilitation':
-        #     cs_body_high_complex(bed_sharing_option, centralizing_option)
-        #     # plot_high_complex_chart()
-
-        # Add a button to run the simulation
-        if st.button("Run Simulation"):
-            with st.status("In progress...") as status:
-            # Compute waiting times based on user inputs
-                queue_2_waiting_time_3, queue_2_waiting_time_4 = compute_waiting_HC_GRZ(num_high_complex_beds, num_grz_beds, percentage_1 = num_shared_beds, amount_of_runs = amount_of_runs,
-                                                                             amount_of_simulations = amount_of_simulations)
-
-            st.write('queue 1 waiting time: ', queue_2_waiting_time_3)
-            st.write('queue 2 waiting time: ', queue_2_waiting_time_4)
-            # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
-
-        #Sensitivity analysis part
-        st.header('Sensitivity Analysis')
-        sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
-                             amount_of_simulations)
+        # # Get the selected bed sharing option
+        # centralizing_option, bed_sharing_option = cs_scenario_selection()
+        #
+        # st.subheader('Input')
+        # if centralizing_option == 'Centralized':
+        #     st.session_state.num_locations = 1
+        #     num_high_complex_beds, num_grz_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
+        #
+        # if centralizing_option == 'Decentralized':
+        #     add_location(bed_sharing_option)
+        #
+        # # Add a button to run the simulation
+        # if st.button("Run Simulation"):
+        #     with st.status("In progress...") as status:
+        #     # Compute waiting times based on user inputs
+        #         queue_2_waiting_time_3, queue_2_waiting_time_4 = compute_waiting_HC_GRZ(num_high_complex_beds, num_grz_beds, percentage_1 = num_shared_beds, amount_of_runs = amount_of_runs,
+        #                                                                      amount_of_simulations = amount_of_simulations)
+        #
+        #     st.write('queue 1 waiting time: ', queue_2_waiting_time_3)
+        #     st.write('queue 2 waiting time: ', queue_2_waiting_time_4)
+        #     # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
+        #
+        # #Sensitivity analysis part
+        # st.divider()
+        # st.header('Sensitivity Analysis')
+        # sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
+        #                      amount_of_simulations)
 
 # def run_simulation(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs=1000, amount_of_simulations=1):
 #     with st.spinner("In progress..."):  # as status:
@@ -332,7 +324,7 @@ def cs_bed_sharing_selection():
 
 def cs_centralize_selection():
     # Display a radio button for centralize selection
-    centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'])
+    centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'], key='central_radio')
     return centralizing_option
 
 def cs_scenario_selection():
@@ -415,17 +407,17 @@ def body_input_low_respite(bed_sharing_option, index):
 
 def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([0.7, 0.3])
 
     with col1:
         analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
     with col2:
         analysis_nurses()
 
-    st.write('test test')
+    # st.write('test test')
 
-    with col2:
-        st.write('test2')
+    # with col2:
+        # st.write('test2')
 
 
 def analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
@@ -474,22 +466,8 @@ def plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_wait
     # Show the plot
     st.plotly_chart(fig)
 
-
-# def plot_sensitivity_analysis(bed_range, low_complex_waiting_times, respite_waiting_times):
-#     fig = px.line()
-#
-#     # Add traces for high complex and grz waiting times
-#     fig.add_trace(px.line(x=bed_range, y=low_complex_waiting_times, name='Low Complex').data[0])
-#     fig.add_trace(px.line(x=bed_range, y=respite_waiting_times, name='Respite care').data[0])
-#
-#     # Customize layout as needed
-#     fig.update_layout(title='Sensitivity Analysis',
-#                       xaxis_title='Number of Available Beds',
-#                       yaxis_title='Waiting Time',
-#                       legend_title='Scenarios')
-#
-#     # Show the plot
-#     st.plotly_chart(fig)
+def analysis_optimal_num_beds():
+    st.number_input('Please input a maximum amount of waiting days for a patient: ', min_value=0.0, value=10.0)
 
 def analysis_nurses():
 
@@ -499,11 +477,11 @@ def analysis_nurses():
         st.slider('Select a range of values for number of nurses',
         0.0, 100.0, (10.0, 25.0))
 
-def run_simulation(selected_scenario, bed_sharing_option):
-    # Perform simulation based on selected_scenario and bed_sharing_option
-    st.write('Simulation is running for:', selected_scenario)
-    st.write('Bed Sharing Option:', bed_sharing_option)
-    # Add simulation logic here
+# def run_simulation(selected_scenario, bed_sharing_option):
+#     # Perform simulation based on selected_scenario and bed_sharing_option
+#     st.write('Simulation is running for:', selected_scenario)
+#     st.write('Bed Sharing Option:', bed_sharing_option)
+#     # Add simulation logic here
 
 
 if __name__ == '__main__':
