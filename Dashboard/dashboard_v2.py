@@ -26,8 +26,6 @@ from Simulation_code.functions_char import *
 import pandas as pd
 
 ##added
-# from Simulation_code.functions_char import compute_expected_waiting_time_all_runs
-# from Simulation_code.functions_char import multiple_simulations
 from Simulation_code.main_char_queue_1 import simulation_qeueue_1
 from Simulation_code.main_char_queue_2 import simulation_qeueue_2
 
@@ -89,7 +87,7 @@ table_probability = outflow_table
 table_arrival_rates = arrival_rate_table
 table_E_service_rate = service_rate_table
 
-amount_of_runs = 100
+amount_of_runs = 1000
 amount_of_simulations = 5
 
 def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, percentage_1, amount_of_runs, amount_of_simulations):
@@ -129,21 +127,23 @@ def main():
         # Get the selected bed sharing option
         centralizing_option, bed_sharing_option = cs_scenario_selection()
 
-        st.subheader('Input')
+        with st.container(border = True):
+            st.subheader('Input')
 
-        if centralizing_option == 'Centralized':
-            st.session_state.num_locations = 1
-            num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
-            # input_low_respite(bed_sharing_option)
+            if centralizing_option == 'Centralized':
+                st.session_state.num_locations = 1
+                num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
+                # input_low_respite(bed_sharing_option)
 
-        if centralizing_option == 'Decentralized':
-            add_location(bed_sharing_option)
+            if centralizing_option == 'Decentralized':
+                add_location(bed_sharing_option)
 
         # Add a button to run the simulation
         if st.button("Run Simulation"):
             with st.container(border=True):
                 st.subheader("Output")
                 with st.status("In progress...") as status:
+                    st.write(f'Running for {amount_of_runs} runs and {amount_of_simulations} simulations')
                     #Compute waiting times based on user inputs
                     queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(num_low_complex_beds,
                                                                                        num_respite_beds,
@@ -151,8 +151,9 @@ def main():
                                                                                        amount_of_runs=amount_of_runs,
                                                                                        amount_of_simulations=amount_of_simulations)
 
-                st.write('queue 1 waiting time: ', round(queue_1_waiting_time_1, 2), 'days')
-                st.write('queue 2 waiting time: ', round(queue_1_waiting_time_2, 2), 'days')
+                st.write('Expected waiting time for low complex patients: ', round(queue_1_waiting_time_1, 2), 'days')
+                st.write('Expected waiting time for respite care patients: ', round(queue_1_waiting_time_2, 2), 'days')
+
 
             # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
 
@@ -347,8 +348,7 @@ def add_location(bed_sharing_option):
 
 def body_input_low_respite(bed_sharing_option, index):
 
-    # for i in range(num_locations):
-    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    col1, col2, col3, col4, col5, col6 = st.columns([0.15,0.15,0.15,0.15,0.05, 0.3])
 
     # with col1:
         # st.write('Location name')
@@ -381,24 +381,22 @@ def body_input_low_respite(bed_sharing_option, index):
                         key=f'nurses_load_{index}', label_visibility='collapsed')
 
     with col5:
-        # st.write('Total beds')
-
-        # Calculate the sum
-        total_beds = num_low_complex_beds + num_respite_beds + num_shared_beds
-
-        # Display the sum in a read-only style
-        # st.markdown(f'<input type="text" value="{total_beds}" class="readonly-input" readonly>',
-        #             unsafe_allow_html=True)
+        pass
 
     with col6:
-        # st.write('Total eff beds')
-
+        st.write('')
         # Calculate the sum
+        total_beds = num_low_complex_beds + num_respite_beds + num_shared_beds
         eff_beds = (num_low_complex_beds + num_respite_beds + num_shared_beds) * num_nurses
 
-        # Display the sum in a read-only style
-        st.write('Total number of beds: ', total_beds)
-        st.write('Total number of effective beds: ', eff_beds)
+        st.info(f"Total number of beds: {total_beds}\n \nTotal number of effective beds: {eff_beds}",
+                icon="ℹ️")
+
+        # with st.container(border = True):
+            # Display the sum in a read-only style
+            # st.write(' ', total_beds)
+            # st.write('Total number of effective beds: ', eff_beds)
+
         # st.markdown(f'<input type="text" value="{eff_beds}" class="readonly-input" readonly>',
         #             unsafe_allow_html=True)
 
@@ -414,7 +412,7 @@ def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds
     with col2:
         max_expected_waiting_time_1 = st.number_input('Please input a maximum amount of waiting days for a patient: ', min_value=0.0, value=10.0)
         if st.button('Find minimum number of beds'):
-            optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = optimize_bed_counts(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, max_expected_waiting_time_1, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates,
+            optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = analysis_optimize_bed_counts(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, max_expected_waiting_time_1, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates,
                               table_E_service_rate)
 
             st.write('waiting time low complex care: ', waiting_time_lc)
@@ -454,7 +452,7 @@ def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds
 #
 #     return optimal_beds_1, optimal_beds_2
 
-def optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
+def analysis_optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
     optimal_beds_lc = initial_beds_lc
     optimal_beds_rc = initial_beds_rc
 
