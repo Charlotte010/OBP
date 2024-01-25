@@ -191,7 +191,9 @@ def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shar
                        first_elderly = waiting_list_4.pop(0)
                        first_elderly.set_shared_bed()
                        bed_queue_shared.append(first_elderly) 
-        
+    
+    handled_cases_queue_2 = handled_cases_queue_2[1000:]
+
     return handled_cases_queue_2
     
      

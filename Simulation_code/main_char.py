@@ -22,18 +22,18 @@ from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
-amount_beds_available_1 = 50 #low complex 
-amount_beds_available_2 = 5 #Respite care 
-percentage_1 = 3 #Parameters bedsharing
+amount_beds_available_1 = 51 #low complex 
+amount_beds_available_2 = 11 #Respite care 
+percentage_1 = 0 #Parameters bedsharing
 
 
 #parameters for queue 2
-amount_beds_available_3 = 100 #High_complex
-amount_beds_available_4 = 50 #GRZ
+amount_beds_available_3 = 160 #High_complex
+amount_beds_available_4 = 21 #GRZ
 percentage_2 = 0 #Parameters bedsharing
 
 #up to us
-amount_of_runs = 1000
+amount_of_runs = 20000
 amount_of_simulations = 50
 
 
@@ -50,6 +50,32 @@ list_locations_beds = [[10,5,2], [14,4,4]]  # first LC, RC, Shared
 list_locations_nurses = [[2,3,0], [2,2,2]] # first LC, RC, Shared
 
 
+#-------------------------------------------------------------------------------------------------------------------
+#minimum amount of beds needed
+
+# max_arrival_rates = []
+# for column_name in table_arrival_rates.columns:
+#     max_arrival_rates.append(table_arrival_rates[column_name].max())
+
+
+
+service_times = table_probability * table_E_service_rate
+column_sums = service_times.sum(axis=0).tolist()
+service_rate = [1 / x for x in column_sums]
+
+
+arrival_rates = table_arrival_rates.sum(axis=0).tolist()
+
+rho = [lamb / u for u,lamb  in zip (service_rate, arrival_rates) ]
+
+#high complex, GRZ, LC, RC
+rho_we_want = 0.9
+beds =    [rho / rho_we_want for rho  in rho ]
+
+
+#--------------------------------------------------------------------------------------------------------------------
+
+
 
 def compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle):
     amount_handled_beds = [x * amount_beds_nurse_can_handle for x in list_amount_nurses]
@@ -64,7 +90,10 @@ def efficient_beds_per_care_level (list_locations_beds,list_locations_nurses, am
         efficient_beds = compute_efficient_beds (list_locations_nurses[i], list_locations_beds[i], amount_beds_nurse_can_handle)
         efficient_beds_list.append(efficient_beds)
     
-    return efficient_beds_list
+    result = [sum(pair) for pair in zip(*efficient_beds_list)]
+ 
+    
+    return result
 
 #so efficient_beds is a list with the beds, so contains 3 integers all representing the new available beds
 # in the order of LC, RC, shared beds These can you use for futher code by calling efficient_beds[0], efficient_beds[1], efficient_beds[2]
@@ -74,6 +103,7 @@ efficient_beds = efficient_beds_per_care_level(list_locations_beds, list_locatio
 
 info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
                         table_probability, table_arrival_rates, table_E_service_rate)
+
 
 
 
