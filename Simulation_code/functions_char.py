@@ -58,7 +58,7 @@ def multiple_simulations(queue_simulation, amount_of_runs, amount_beds_available
         
         info_handled_elderly.append(queue_simulation(amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage,
                                 table_probability, table_arrival_rates, table_E_service_rate))
-
+        
     return info_handled_elderly
     
 
