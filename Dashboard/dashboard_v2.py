@@ -133,10 +133,12 @@ def main():
             if centralizing_option == 'Centralized':
                 st.session_state.num_locations = 1
                 num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
-                # input_low_respite(bed_sharing_option)
 
             if centralizing_option == 'Decentralized':
                 add_location(bed_sharing_option)
+
+            if bed_sharing_option == 'No bed sharing':
+                num_shared_beds = 0
 
         # Add a button to run the simulation
         if st.button("Run Simulation"):
