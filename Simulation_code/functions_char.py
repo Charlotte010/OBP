@@ -137,7 +137,7 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
                                     max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage,
                                                             table_probability, table_arrival_rates, table_E_service_rate):
     
-    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+    queue_1_waiting_time , w = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
     
     while queue_1_waiting_time > max_expected_waiting_time:
         amount_beds_available_1 += 1
@@ -175,6 +175,23 @@ def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
 
 
 
+def compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle):
+    amount_handled_beds = [x * amount_beds_nurse_can_handle for x in list_amount_nurses]
+
+    efficient_beds = [min(x, y) for x, y in zip(amount_handled_beds, list_amount_beds)]
+    return efficient_beds
+
+def efficient_beds_per_care_level (list_locations_beds,list_locations_nurses, amount_beds_nurse_can_handle ):
+    efficient_beds_list = []
+    for i in range(0, len(list_locations_beds)):
+        
+        efficient_beds = compute_efficient_beds (list_locations_nurses[i], list_locations_beds[i], amount_beds_nurse_can_handle)
+        efficient_beds_list.append(efficient_beds)
+    
+    result = [sum(pair) for pair in zip(*efficient_beds_list)]
+ 
+    
+    return result
 
 
 
