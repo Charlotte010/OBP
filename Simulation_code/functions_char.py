@@ -137,7 +137,7 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
                                     max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage,
                                                             table_probability, table_arrival_rates, table_E_service_rate):
     
-    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+    queue_1_waiting_time , w = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
     
     while queue_1_waiting_time > max_expected_waiting_time:
         amount_beds_available_1 += 1

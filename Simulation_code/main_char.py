@@ -69,7 +69,7 @@ arrival_rates = table_arrival_rates.sum(axis=0).tolist()
 rho = [lamb / u for u,lamb  in zip (service_rate, arrival_rates) ]
 
 #high complex, GRZ, LC, RC
-rho_we_want = 0.9
+rho_we_want = 0.7
 beds =    [rho / rho_we_want for rho  in rho ]
 
 
@@ -127,6 +127,34 @@ queue_2_waiting_time_4, all_waiting_times_4 = compute_expected_waiting_time_all_
 
 #constraint 1 ----------------------------------------------------------------------------------------
 # amount beds 1 is for low complex, is in this code the target bed to check
+
+def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,amount_beds_available_2,info_handled_elderly_queue,waiting, 
+                                    max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage,
+                                                            table_probability, table_arrival_rates, table_E_service_rate):
+    
+    queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+    
+    
+    if queue_1_waiting_time> max_expected_waiting_time:
+        while queue_1_waiting_time > max_expected_waiting_time:
+            amount_beds_available_1 += 1
+            
+            info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
+                                    table_probability, table_arrival_rates, table_E_service_rate)
+            
+            
+            queue_1_waiting_time = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
+    
+    if queue_1_waiting_time < max_expected_waiting_time:
+        while queue_1_waiting_time < max_expected_waiting_time:
+            amount_beds_available_1 -= 1
+        
+    return queue_1_waiting_time, amount_beds_available_1
+
+
+
+
+
 c1_queue1_wait_1, c1_queue1_beds_1  = c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,amount_beds_available_2,
                                                                   info_handled_elderly_queue_1, 'waiting_time', max_expected_waiting_time_1,
                                                                   amount_of_runs, amount_of_simulations, 'Low_Complex', percentage_1 ,
