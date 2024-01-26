@@ -71,7 +71,7 @@ def percentage_through_2_3(info_handled_elderly_queue_2):
     percentage_1 = 0
     percentage_0 = 0
     for i in info_handled_elderly_queue_2:
-        high_complex_instances = [elderly_instance for elderly_instance in i if elderly_instance.care_level == "High_Complex"]
+        high_complex_instances = [elderly_instance for elderly_instance in i if elderly_instance.care_level == "High_Complex" ]
 
         count_through_0 = sum(1 for elderly in high_complex_instances if elderly.through_waiting_2 == 0)
         count_through_1 = sum(1 for elderly in high_complex_instances if elderly.through_waiting_2 == 1)
@@ -112,8 +112,8 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
         
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
-        
-        all_waiting_times.append(expected_waiting_times/ elderly_handled)
+        if elderly_handled>0:
+            all_waiting_times.append(expected_waiting_times/ elderly_handled)
 
         
         
@@ -175,6 +175,7 @@ def bed_shared(percentage, amount_beds_available_1, amount_beds_available_2  ):
 
 
 
+
 def compute_efficient_beds(list_amount_nurses,list_amount_beds, amount_beds_nurse_can_handle):
     amount_handled_beds = [x * amount_beds_nurse_can_handle for x in list_amount_nurses]
 
@@ -192,7 +193,6 @@ def efficient_beds_per_care_level (list_locations_beds,list_locations_nurses, am
  
     
     return result
-
 
 
 
