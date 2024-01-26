@@ -163,7 +163,7 @@ def main():
         st.divider()
         st.header('Sensitivity Analysis')
         sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
-                             amount_of_simulations)
+                             amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
 
     with tab2:
         st.header('High Complex & GRZ Care')
@@ -405,22 +405,24 @@ def body_input_low_respite(bed_sharing_option, index):
     return num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses
 
 
-def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
+def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
 
     col1, col2 = st.columns([0.7, 0.3])
 
     with col1:
         analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
     with col2:
-        max_expected_waiting_time_1 = st.number_input('Please input a maximum amount of waiting days for a patient: ', min_value=0.0, value=10.0)
-        if st.button('Find minimum number of beds'):
-            optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = analysis_optimize_bed_counts(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, max_expected_waiting_time_1, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates,
-                              table_E_service_rate)
+        analysis_optimal_beds(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
 
-            st.write('waiting time low complex care: ', waiting_time_lc)
-            st.write('Beds low complex care: ', optimal_beds_lc)
-            st.write('waiting time respite care: ', waiting_time_rc)
-            st.write('Beds respite care: ', optimal_beds_rc)
+        # max_expected_waiting_time_1 = st.number_input('Please input a maximum amount of waiting days for a patient: ', min_value=0.0, value=10.0)
+        # if st.button('Find minimum number of beds'):
+        #     optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = optimize_bed_counts(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, max_expected_waiting_time_1, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates,
+        #                       table_E_service_rate)
+        #
+        #     st.write('waiting time low complex care: ', waiting_time_lc)
+        #     st.write('Beds low complex care: ', optimal_beds_lc)
+        #     st.write('waiting time respite care: ', waiting_time_rc)
+        #     st.write('Beds respite care: ', optimal_beds_rc)
         # analysis_nurses()
 
     # st.write('test test')
@@ -454,7 +456,7 @@ def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds
 #
 #     return optimal_beds_1, optimal_beds_2
 
-def analysis_optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
+def optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
     optimal_beds_lc = initial_beds_lc
     optimal_beds_rc = initial_beds_rc
 
@@ -480,6 +482,29 @@ def analysis_optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds
         waiting_time_rc = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Respite_Care")
 
     return optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc
+
+def analysis_optimal_beds(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
+
+    with st.container(border=True):
+        st.subheader('Optimal beds')
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('Input a maximum amount of waiting days for a patient: ')
+
+        with col2:
+            max_waiting_time = st.number_input('Please input a maximum amount of waiting days for a patient: ',
+                                                min_value=0.0, value=10.0, step = 0.5, label_visibility='collapsed')
+
+        if st.button('Find minimum number of beds'):
+            optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+
+            st.write('waiting time low complex care: ', round(waiting_time_lc,2), 'days')
+            st.write('Beds low complex care: ', round(optimal_beds_lc,2), 'days')
+            st.write('waiting time respite care: ', round(waiting_time_rc,2), 'days')
+            st.write('Beds respite care: ', round(optimal_beds_rc,2), 'days')
+
+    # return optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc
 
 
 def analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations):
