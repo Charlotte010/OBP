@@ -28,13 +28,13 @@ percentage_1 = 0 #Parameters bedsharing
 
 
 #parameters for queue 2
-amount_beds_available_3 = 160 #High_complex
+amount_beds_available_3 = 100 #High_complex
 amount_beds_available_4 = 21 #GRZ
-percentage_2 = 0 #Parameters bedsharing
+percentage_2 = 100 #Parameters bedsharing
 
 #up to us
 amount_of_runs = 1000
-amount_of_simulations = 2
+amount_of_simulations =50
 
 
 #parameters for Constraint 1 (C1)
@@ -143,7 +143,6 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
     if care_level == "Low_Complex" or care_level == "High_Complex":
         queue_1_waiting_time , j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
         if queue_1_waiting_time > max_expected_waiting_time:
-            print("derp")
             while queue_1_waiting_time > max_expected_waiting_time:
                 amount_beds_available_1 += 1
                 
@@ -154,9 +153,7 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
                 queue_1_waiting_time, j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
         
         elif queue_1_waiting_time < max_expected_waiting_time:
-            print("hallo")
             while queue_1_waiting_time < max_expected_waiting_time:
-                print(queue_1_waiting_time)
                 amount_beds_available_1 -= 1
             
                 info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
@@ -173,7 +170,6 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
     if care_level == "Respite_Care" or care_level == "GRZ":
         queue_1_waiting_time , j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
         if queue_1_waiting_time > max_expected_waiting_time:
-            print("derp_2")
             while queue_1_waiting_time > max_expected_waiting_time:
                 amount_beds_available_2 += 1
                 
@@ -184,10 +180,8 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
                 queue_1_waiting_time, j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
         
         elif queue_1_waiting_time < max_expected_waiting_time:
-            print("hallo_2")
             while queue_1_waiting_time < max_expected_waiting_time:
-                print(queue_1_waiting_time)
-                print(amount_beds_available_2)
+
                 amount_beds_available_2 -= 1
             
                 info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
@@ -247,10 +241,6 @@ c1_queue2_wait_4, c1_queue2_beds_4  = c1_on_max_expected_waiting_time(simulation
 # - DONE (C1) - make parameter of percentage how many days should wait
 
 
-
-
-
-c
 
 
 

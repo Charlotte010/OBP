@@ -38,8 +38,8 @@ max_expected_waiting_time_1 = 50
 max_expected_waiting_time_2 = 50
 
 #up to us
-amount_of_runs = 1000
-amount_of_simulations = 1
+amount_of_runs = 500
+amount_of_simulations = 2
 
     
 info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
@@ -61,11 +61,11 @@ queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_eld
 queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
 queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
 
-'''
+
 #Sensitivity analysis withoyt Bed-sharing
 #First queue
-L=list(range(10,51,4))
-M=list(range(10,31,2))
+L=list(range(45,55,1))
+M=list(range(12,22,1))
 waiting_times_low_complex=[]
 waiting_times_respite_care=[]
 for i in range(len(L)):
@@ -74,15 +74,24 @@ for i in range(len(L)):
     amount_beds_available_1= L[i]
     info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
                             table_probability, table_arrival_rates, table_E_service_rate)
-    queue_1_waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Low_Complex")
-    queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
+    queue_1_waiting_time_1,h = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Low_Complex")
+    queue_1_waiting_time_2,g = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
     #print(round(queue_1_waiting_time_1,2),'is the expected waiting time for Low complex cases with',L[i],'available beds')
     #print(round(queue_1_waiting_time_2,2),'is the expected waiting time for Respite care cases with',M[i],'available beds') 
-    waiting_times_low_complex.append(round(queue_1_waiting_time_1, 2))
-    waiting_times_respite_care.append(round(queue_1_waiting_time_2, 2))
+    waiting_times_low_complex.append(queue_1_waiting_time_1)
+    waiting_times_respite_care.append(queue_1_waiting_time_2)
+    
+    # Perform statistical calculations to obtain confidence interval
+    confidence_interval = 1.96  # Z-score for a 95% confidence interval
+    standard_deviation = np.std(h )
+    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(h )))
+    confidence_interval = 1.96  # Z-score for a 95% confidence interval
+    standard_deviation = np.std(g )
+    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(g )))
     # Plotting
+    
 plt.plot(L, waiting_times_low_complex, label='Low Complex Cases')
-plt.plot(M, waiting_times_respite_care, label='Respite Care Cases')
+plt.fill_between(L, waiting_times_low_complex - margin_of_error,  waiting_times_low_complex + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
 plt.xlabel('Number of Available Beds')
 plt.ylabel('Expected Waiting Time (In Days)')
 plt.title('Expected Waiting Times for Different Numbers of Available Beds')
@@ -90,26 +99,42 @@ plt.legend()
 plt.show()
 
 
+plt.plot(M, waiting_times_respite_care, label='Respite Care Cases')
+plt.fill_between(M, waiting_times_respite_care - margin_of_error,  waiting_times_respite_care + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
+plt.xlabel('Number of Available Beds')
+plt.ylabel('Expected Waiting Time (In Days)')
+plt.title('Expected Waiting Times for Different Numbers of Available Beds')
+plt.legend()
+plt.show()
+
 #Second queue
-L=list(range(10,151,10))
-M=list(range(5,20,1))
+L=list(range(140,152))
+M=list(range(9,21))
 waiting_times_high_complex=[]
 waiting_times_G_R=[]
 for i in range(len(L)) :
     amount_beds_available_3= L[i]
-    percentage_2 = 0 #Parameters bedsharing
+    percentage_2 = 25 #Parameters bedsharing
     amount_beds_available_4= M[i]
     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_3, amount_beds_available_4,  percentage_2, amount_of_simulations,
                         table_probability, table_arrival_rates, table_E_service_rate)
-    queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
-    queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
-    waiting_times_high_complex.append(round(queue_2_waiting_time_3, 2))
-    waiting_times_G_R.append(round(queue_2_waiting_time_4, 2))
+    queue_2_waiting_time_3,h = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
+    queue_2_waiting_time_4,g = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
+    waiting_times_high_complex.append(queue_2_waiting_time_3)
+    waiting_times_G_R.append(queue_2_waiting_time_4)
+    
+    # Perform statistical calculations to obtain confidence interval
+    confidence_interval = 1.96  # Z-score for a 95% confidence interval
+    standard_deviation = np.std(h )
+    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(h )))
+    confidence_interval = 1.96  # Z-score for a 95% confidence interval
+    standard_deviation = np.std(g )
+    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(g )))
     #print(round(queue_2_waiting_time_3,2),'is the waiting time for High complex cases with',L[i],'available beds')
     #print(round(queue_2_waiting_time_4,2),'is the waiting time for Geriatric Rehabilitation cases with',M[i],'available beds') 
 
 plt.plot(L, waiting_times_high_complex, label='High Complex Cases')
-plt.plot(M, waiting_times_G_R, label='Geriatric Rehabilitation')
+plt.fill_between(L, waiting_times_high_complex - margin_of_error,  waiting_times_high_complex + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
 plt.xlabel('Number of Available Beds')
 plt.ylabel('Expected Waiting Time')
 plt.title('Expected Waiting Times for Different Numbers of Available Beds')
@@ -117,73 +142,140 @@ plt.legend()
 plt.show()
 
 
+plt.plot(M, waiting_times_G_R, label='Geriatric Rehabilitation')
+plt.fill_between(M, waiting_times_G_R - margin_of_error,  waiting_times_G_R + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
+plt.xlabel('Number of Available Beds')
+plt.ylabel('Expected Waiting Time')
+plt.title('Expected Waiting Times for Different Numbers of Available Beds')
+plt.legend()
+plt.show()
+
+
+
+
 #Sensitivity analysis with Bed-sharing
 
-x_values = []
-y_values_low_complex = []
-y_values_respite_care = []
+final_y1 =[]
+final_x1 = []
+final_y2 =[]
+final_x2 = []
 
-
-colors = ['r', 'g', 'b', 'c']  # Choose colors for different j values
-
-for j in list(range(1,5)):
-    L=list(range(10,51,4))
-    M=list(range(10,31,2))
+for j in list(range(2,8,2)):
+    y_values_low_complex = []
+    y_values_respite_care = []
+    x1 = []
+    x2 = []
+    L=list(range(43,52,1))
+    M=list(range(13,22,1))
+    percentage_1 = j #Parameters bedsharing
     for i in range(len(L)) :
         amount_beds_available_2 = M[i]
-        percentage_1 = j*25 #Parameters bedsharing
         amount_beds_available_1= L[i]
+        
         info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
                                 table_probability, table_arrival_rates, table_E_service_rate)
-        queue_1_waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Low_Complex")
-        queue_1_waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
+        queue_1_waiting_time_1 ,h = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Low_Complex")
+        queue_1_waiting_time_2 , g= compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
         #print(queue_1_waiting_time_1,'is the waiting time for Low complex cases with',L[i],'available beds and',j*25,'% shared beds')
         #print(queue_1_waiting_time_2,'is the waiting time for Respite care cases with',M[i],'available beds and',j*25,'% shared beds')    
-        x_values.append(L[i])
         y_values_low_complex.append(queue_1_waiting_time_1)
         y_values_respite_care.append(queue_1_waiting_time_2)
-    plt.figure(figsize=(10, 6))
-    
-    plt.title('Queue 1 Waiting Times')
-    plt.xlabel('Available Beds')
-    plt.ylabel('Waiting Time')
-    plt.plot(x_values, y_values_low_complex, label=f'Low Complex (j={25*j}%)')
-    plt.plot(x_values, y_values_respite_care, label=f'Respite Care (j={25*j}%)')
-    plt.legend()
+        x1.append(L[i])
+        x2.append(M[i])
         
-    plt.tight_layout()
-    plt.show()
-'''
-y_values_high_complex = []
-y_values_grz = []
+    final_y1.append(y_values_low_complex)
+    final_x1.append(x1)
+    final_y2.append(y_values_respite_care)
+    final_x2.append(x2)
+    
+     
+plt.figure(figsize=(10, 6))   
+for i in range(len(final_x1)):
+    plt.plot(final_x1[i], final_y1[i],  label=f'Low Complex for {(1+i)*2} shared beds' )    
 
-for j in list(range(1,5)):        
-    L=list(range(1,151,10))
-    M=list(range(1,31,2))
+
+plt.title('Queue 1 Waiting Times')
+plt.xlabel('Available Beds')
+plt.ylabel('Waiting Time')
+plt.legend()
+plt.show()
+
+
+plt.figure(figsize=(10, 6))   
+for i in range(len(final_x2)):
+    plt.plot(final_x2[i], final_y2[i],  label=f'Respite Care for {(1+i)*2} shared beds' )
+    
+
+plt.title('Queue 1 Waiting Times')
+plt.xlabel('Available Beds')
+plt.ylabel('Waiting Time')
+plt.legend()
+plt.show()
+    
+    
+
+final_y1 =[]
+final_x1 = []
+final_y2 =[]
+final_x2 = []
+
+for j in list(range(5,20,5)): 
+    print(j)
+    percentage_2 = j #Parameters bedsharing
+    L=list(range(142,151,1))
+    M=list(range(6,15,1))
+    
+    y_values_high_complex = []
+    y_values_grz = []
+    x1 = []
+    x2 = []
     for i in range(len(L)) :
         amount_beds_available_3= L[i]
-        percentage_2 = j*25 #Parameters bedsharing
+
         amount_beds_available_4= M[i]
         info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_3, amount_beds_available_4,  percentage_2, amount_of_simulations,
                             table_probability, table_arrival_rates, table_E_service_rate)
-        queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
-        queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
+        queue_2_waiting_time_3, h = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
+        queue_2_waiting_time_4, g = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
         #print(queue_2_waiting_time_3,'is the waiting time for High complex cases with',L[i],'available beds and',j,'% shared beds')
-        print(queue_2_waiting_time_4,'is the waiting time for Geriatric Rehabilitation cases with',M[i],'available beds and',j,'% shared beds')
+        #print(queue_2_waiting_time_4,'is the waiting time for Geriatric Rehabilitation cases with',M[i],'available beds and',j,'% shared beds')
         y_values_high_complex.append(queue_2_waiting_time_3)
         y_values_grz.append(queue_2_waiting_time_4)
-    plt.figure(figsize=(10, 6))
-    
-    plt.title('Queue 2 Waiting Times')
-    plt.xlabel('Available Beds')
-    plt.ylabel('Waiting Time')
-    plt.plot(L, y_values_grz, label=f'GER_REH (j={25*j}%)')
-    plt.plot(M, y_values_high_complex, label=f'High Complex (j={25*j}%)')
-   
-    plt.legend()
         
-    plt.tight_layout()
-    plt.show()
+        x1.append(L[i])
+        x2.append(M[i])
+        
+    final_y1.append(y_values_high_complex)
+    final_x1.append(x1)
+    final_y2.append(y_values_grz)
+    final_x2.append(x2)
+    
+    
+plt.figure(figsize=(10, 6))   
+for i in range(len(final_x1)):
+    plt.plot(final_x1[i], final_y1[i],  label=f'High Complex for {(1+i)*5} shared beds' )    
+
+
+plt.title('Queue 1 Waiting Times')
+plt.xlabel('Available Beds')
+plt.ylabel('Waiting Time')
+plt.legend()
+plt.show()
+
+
+
+
+
+plt.figure(figsize=(10, 6))   
+for i in range(len(final_x2)):
+    plt.plot(final_x2[i], final_y2[i],  label=f'Geriatric Rehabilitation {(1+i)*5} shared beds' )
+    
+
+plt.title('Queue 1 Waiting Times')
+plt.xlabel('Available Beds')
+plt.ylabel('Waiting Time')
+plt.legend()
+plt.show()
 
 
 
