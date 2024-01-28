@@ -278,26 +278,26 @@ def cs_sidebar():
             # st.number_input("Outflow death rate Geriatric", min_value=0.0, max_value=1.0,
             #                 value=0.06, label_visibility='collapsed')
 
-def cs_bed_sharing_selection(key):
+def cs_bed_sharing_selection(care_type):
     # Display a radio button for bed sharing selection
-    bed_sharing_option = st.radio("Select a scenario", ['Bed sharing', 'No bed sharing'], key=f'low_respite_bed_radio_{key}')
+    bed_sharing_option = st.radio("Select a scenario", ['Bed sharing', 'No bed sharing'], key=f'low_respite_bed_radio_{care_type}')
     return bed_sharing_option
 
-def cs_centralize_selection(key):
+def cs_centralize_selection(care_type):
     # Display a radio button for centralize selection
-    centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'], key=f'central_radio_{key}')
+    centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'], key=f'central_radio_{care_type}')
     return centralizing_option
 
-def cs_scenario_selection(key):
+def cs_scenario_selection(care_type):
     col1, col2 = st.columns(2)
     with col1:
-        centralizing_option = cs_centralize_selection(key)
+        centralizing_option = cs_centralize_selection(care_type)
     with col2:
-        bed_sharing_option = cs_bed_sharing_selection(key)
+        bed_sharing_option = cs_bed_sharing_selection(care_type)
 
     return centralizing_option, bed_sharing_option
 
-def add_location(care_type, bed_sharing_option, key):
+def add_location(care_type, bed_sharing_option):#, key):
     for i in range(st.session_state.num_locations):
         if care_type == 'low_respite':
             body_input(care_type, bed_sharing_option, i)
@@ -305,7 +305,7 @@ def add_location(care_type, bed_sharing_option, key):
             body_input(care_type, bed_sharing_option, i)
 
     # Button to add a new location
-    if st.button('Add Location', key=f'location_adding_button_{key}'):
+    if st.button('Add Location', key=f'location_adding_button_{care_type}'):
         st.session_state.num_locations += 1
 
 # def add_location(bed_sharing_option, key):
@@ -362,7 +362,7 @@ def body_input(care_type, bed_sharing_option, index):
     with col3:
         st.write('Shared beds')
         disabled = bed_sharing_option == 'No bed sharing'
-        print("Widget key:", shared_bed_key + str(index))  # Debugging line
+        # print("Widget key:", shared_bed_key + str(index))  # Debugging line
 
         num_shared_beds = st.number_input('Number of shared beds', min_value=0, max_value=None, value=0, key=shared_bed_key + str(index), disabled=disabled, label_visibility='collapsed')
         # num_shared_beds = st.number_input('Number of shared beds', min_value=0, max_value=None, value=0,
@@ -568,8 +568,8 @@ def main():
     cs_sidebar()
 
     with tab1:
-
-        key = 'LCRC'
+        care_type = 'low_respite'
+        # key = 'LCRC'
         st.header('Low Complex & Respite Care')
 
         # Initialize variables with default values
@@ -579,7 +579,7 @@ def main():
         num_nurses = 0
 
         # Get the selected bed sharing option
-        centralizing_option, bed_sharing_option = cs_scenario_selection(key)
+        centralizing_option, bed_sharing_option = cs_scenario_selection(care_type)
 
         with st.container(border = True):
             st.subheader('Input')
@@ -592,7 +592,7 @@ def main():
                 # num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
 
             if centralizing_option == 'Decentralized':
-                add_location('low_respite', bed_sharing_option, key)
+                add_location('low_respite', bed_sharing_option)#, key)
 
                 # add_location(bed_sharing_option, key)
 
@@ -600,7 +600,7 @@ def main():
                 num_shared_lcrc_beds = 0
 
         # Add a button to run the simulation
-        if st.button("Run Simulation", key = f'simulation_button_{key}'):
+        if st.button("Run Simulation", key = f'simulation_button_{care_type}'):
             with st.container(border=True):
                 st.subheader("Output")
                 with st.status("In progress...") as status:
@@ -628,7 +628,8 @@ def main():
 
     with tab2:
 
-        key = 'HCGRZ'
+        care_type = 'high_grz'
+        # key = 'HCGRZ'
 
         st.header('High Complex & GRZ Care')
 
@@ -639,7 +640,7 @@ def main():
         num_nurses_hc = 0
 
         # Get the selected bed sharing option
-        centralizing_option, bed_sharing_option = cs_scenario_selection(key)
+        centralizing_option, bed_sharing_option = cs_scenario_selection(care_type)
 
         with st.container(border = True):
             st.subheader('Input')
@@ -653,13 +654,13 @@ def main():
 
             if centralizing_option == 'Decentralized':
                 # add_location_hc_grz(bed_sharing_option,key)
-                add_location('high_grz', bed_sharing_option, key)
+                add_location('high_grz', bed_sharing_option)#, key)
 
             if bed_sharing_option == 'No bed sharing':
                 num_shared_hcgrz_beds = 0
 
         # Add a button to run the simulation
-        if st.button("Run Simulation", key = f'simulation_button_{key}'):
+        if st.button("Run Simulation", key = f'simulation_button_{care_type}'):
             with st.container(border=True):
                 st.subheader("Output")
                 with st.status("In progress...") as status:
