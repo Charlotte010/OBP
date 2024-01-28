@@ -91,19 +91,38 @@ amount_of_runs = 1000
 amount_of_simulations = 5
 
 def compute_waiting_times(care_type, amount_beds_available_1, amount_beds_available_2, shared_beds_percentage, amount_of_runs, amount_of_simulations):
-    if care_type == 'LC_RC':
+    if care_type == 'low_respite':
         simulation_queue = simulation_qeueue_1
         waiting_time_key_1, waiting_time_key_2 = "Low_Complex", "Respite_Care"
-    elif care_type == 'HC_GRZ':
+        info_handled_elderly_queue = multiple_simulations(simulation_queue, amount_of_runs, amount_beds_available_1,
+                                                          amount_beds_available_2, shared_beds_percentage,
+                                                          amount_of_simulations,
+                                                          table_probability, table_arrival_rates, table_E_service_rate)
+
+        waiting_time_1, _ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time",
+                                                                   waiting_time_key_1)
+        waiting_time_2, _ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time",
+                                                                   waiting_time_key_2)
+
+    elif care_type == 'high_grz':          #'HC_GRZ':
         simulation_queue = simulation_qeueue_2
         waiting_time_key_1, waiting_time_key_2 = "High_Complex", "GRZ"
+        info_handled_elderly_queue = multiple_simulations(simulation_queue, amount_of_runs, amount_beds_available_1,
+                                                          amount_beds_available_2, shared_beds_percentage,
+                                                          amount_of_simulations,
+                                                          table_probability, table_arrival_rates, table_E_service_rate)
 
-    info_handled_elderly_queue = multiple_simulations(simulation_queue, amount_of_runs, amount_beds_available_1,
-                                                      amount_beds_available_2, shared_beds_percentage, amount_of_simulations,
-                                                      table_probability, table_arrival_rates, table_E_service_rate)
+        waiting_time_1, _ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3",
+                                                                   waiting_time_key_1)
+        waiting_time_2, _ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3",
+                                                                   waiting_time_key_2)
 
-    waiting_time_1,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time", waiting_time_key_1)
-    waiting_time_2,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time", waiting_time_key_2)
+    # info_handled_elderly_queue = multiple_simulations(simulation_queue, amount_of_runs, amount_beds_available_1,
+    #                                                   amount_beds_available_2, shared_beds_percentage, amount_of_simulations,
+    #                                                   table_probability, table_arrival_rates, table_E_service_rate)
+    #
+    # waiting_time_1,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3", waiting_time_key_1)
+    # waiting_time_2,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3", waiting_time_key_2)
 
     return waiting_time_1, waiting_time_2
 
@@ -133,15 +152,6 @@ def compute_waiting_times(care_type, amount_beds_available_1, amount_beds_availa
 #     return queue_1_waiting_time_1, queue_1_waiting_time_2
 #
 # def compute_waiting_HC_GRZ(amount_beds_available_3, amount_beds_available_4, percentage_2, amount_of_runs, amount_of_simulations):
-#     """
-#     Compute the waiting time for high complex and GRZ
-#     :param amount_beds_available_3: high complex beds
-#     :param amount_beds_available_4: grz beds
-#     :param percentage_2:  shared beds
-#     :param amount_of_runs:
-#     :param amount_of_simulations:
-#     :return:
-#     """
 #     #percentage_2 = shared beds hc grz
 #     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_3,
 #                                                         amount_beds_available_4, percentage_2, amount_of_simulations,
@@ -289,10 +299,10 @@ def cs_scenario_selection(key):
 
 def add_location(care_type, bed_sharing_option, key):
     for i in range(st.session_state.num_locations):
-        if care_type == 'LC_RC':
-            body_input(bed_sharing_option, i)
-        elif care_type == 'HC_GRZ':
-            body_input(bed_sharing_option, i)
+        if care_type == 'low_respite':
+            body_input(care_type, bed_sharing_option, i)
+        elif care_type == 'high_grz': #'HC_GRZ':
+            body_input(care_type, bed_sharing_option, i)
 
     # Button to add a new location
     if st.button('Add Location', key=f'location_adding_button_{key}'):
@@ -321,7 +331,7 @@ def add_location(care_type, bed_sharing_option, key):
 #     if st.button('Add Location', key = f'location_adding_button_{key}'):
 #         st.session_state.num_locations += 1
 
-def body_input(care_type, index):
+def body_input(care_type, bed_sharing_option, index):
     # Initialize variables to ensure they are always set
     bed_type_1_label, bed_type_2_label, shared_bed_key = '', '', ''
 
@@ -351,7 +361,13 @@ def body_input(care_type, index):
 
     with col3:
         st.write('Shared beds')
-        num_shared_beds = st.number_input('Number of shared beds', min_value=0, max_value=None, value=0, key=shared_bed_key + str(index), label_visibility='collapsed')
+        disabled = bed_sharing_option == 'No bed sharing'
+        print("Widget key:", shared_bed_key + str(index))  # Debugging line
+
+        num_shared_beds = st.number_input('Number of shared beds', min_value=0, max_value=None, value=0, key=shared_bed_key + str(index), disabled=disabled, label_visibility='collapsed')
+        # num_shared_beds = st.number_input('Number of shared beds', min_value=0, max_value=None, value=0,
+        #                                   key=shared_bed_key + str(index),
+        #                                   label_visibility='collapsed')
 
     with col4:
         st.write('Nurses')
@@ -571,17 +587,17 @@ def main():
             if centralizing_option == 'Centralized':
                 st.session_state.num_locations = 1
                 num_low_complex_beds, num_respite_beds, num_shared_lcrc_beds, num_nurses_lcrc = body_input(
-                    'low_respite', index)
+                    'low_respite', bed_sharing_option, index)
 
                 # num_low_complex_beds, num_respite_beds, num_shared_beds, num_nurses = body_input_low_respite(bed_sharing_option, st.session_state.num_locations)
 
             if centralizing_option == 'Decentralized':
-                add_location('LC_RC', bed_sharing_option, key)
+                add_location('low_respite', bed_sharing_option, key)
 
                 # add_location(bed_sharing_option, key)
 
             if bed_sharing_option == 'No bed sharing':
-                num_shared_beds = 0
+                num_shared_lcrc_beds = 0
 
         # Add a button to run the simulation
         if st.button("Run Simulation", key = f'simulation_button_{key}'):
@@ -591,7 +607,7 @@ def main():
                     st.write(f'Running for {amount_of_runs} runs and {amount_of_simulations} simulations')
                     #Compute waiting times based on user inputs
                     # For Low Complex & Respite Care
-                    queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_times('LC_RC',
+                    queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_times('low_respite',
                                                                                            num_low_complex_beds,
                                                                                            num_respite_beds,
                                                                                            num_shared_lcrc_beds,
@@ -632,14 +648,15 @@ def main():
                 st.session_state.num_locations = 1
                 # num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, num_nurses_hc = body_input_high_grz(bed_sharing_option, st.session_state.num_locations)
                 num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, num_nurses_hcgrz = body_input('high_grz',
+                                                                                                          bed_sharing_option,
                                                                                                           index)
 
             if centralizing_option == 'Decentralized':
                 # add_location_hc_grz(bed_sharing_option,key)
-                add_location('HC_GRZ', bed_sharing_option, key)
+                add_location('high_grz', bed_sharing_option, key)
 
             if bed_sharing_option == 'No bed sharing':
-                num_shared_beds = 0
+                num_shared_hcgrz_beds = 0
 
         # Add a button to run the simulation
         if st.button("Run Simulation", key = f'simulation_button_{key}'):
@@ -648,7 +665,7 @@ def main():
                 with st.status("In progress...") as status:
                     st.write(f'Running for {amount_of_runs} runs and {amount_of_simulations} simulations')
                     #Compute waiting times based on user inputs
-                    queue_2_waiting_time_3, queue_2_waiting_time_4 = compute_waiting_times('HC_GRZ',
+                    queue_2_waiting_time_3, queue_2_waiting_time_4 = compute_waiting_times('high_grz',
                                                                                            num_high_complex_beds,
                                                                                            num_grz_beds,
                                                                                            num_shared_hcgrz_beds,
