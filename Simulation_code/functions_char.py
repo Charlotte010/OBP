@@ -28,6 +28,7 @@ def probability_goes_where(table, care_level, medical):
 
 
 def service_time(table, care_level, goes_where):
+    
     service_time = table.loc[goes_where, care_level]
     service_time = np.random.exponential(scale=service_time)
     return service_time
@@ -125,7 +126,6 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
         Excpected_waiting_times =0
         
     return Excpected_waiting_times, all_waiting_times
-
 
 
 
