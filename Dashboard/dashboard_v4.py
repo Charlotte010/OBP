@@ -403,7 +403,6 @@ def body_input(care_type, bed_sharing_option, index):
 #                                                                                  amount_of_simulations)
 #                 plot_sensitivity_analysis(bed_range, respite_bed_range, low_complex_waiting_times,
 #                                           respite_waiting_times)
-#         # analysis_beds(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
 #     with col2:
 #         analysis_optimal_beds(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
 
@@ -554,9 +553,14 @@ def analysis_beds(care_type, bed_range_1, bed_range_2, num_shared_beds, amount_o
     waiting_times_2 = []
 
     for num_beds_1 in range(bed_range_1[0], bed_range_1[1] + 1):
-        for num_beds_2 in range(bed_range_2[0], bed_range_2[1] + 1):
-            waiting_time_1, waiting_time_2 = compute_waiting_times(care_type, num_beds_1, num_beds_2, num_shared_beds,
-                                                                   amount_of_runs, amount_of_simulations)
+        queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_times(care_type, num_beds_1, 0, num_shared_beds,
+                                                                               amount_of_runs, amount_of_simulations)
+
+        waiting_times_1.append(queue_1_waiting_time_1)
+
+    for num_beds_2 in range(bed_range_2[0], bed_range_2[1] + 1):
+        queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_times(care_type, 0, num_beds_2, num_shared_beds,
+                                                               amount_of_runs, amount_of_simulations)
             # if care_type == 'low_respite':
             #     # Assuming compute_waiting_LC_RC is already adapted for care_type
             #     waiting_time_1, waiting_time_2 = compute_waiting_times(care_type, num_beds_1, num_beds_2, num_shared_beds, amount_of_runs, amount_of_simulations)
@@ -564,8 +568,7 @@ def analysis_beds(care_type, bed_range_1, bed_range_2, num_shared_beds, amount_o
             #     # Assuming compute_waiting_HC_GRZ is already adapted for care_type
             #     waiting_time_1, waiting_time_2 = compute_waiting_times(care_type, num_beds_1, num_beds_2, num_shared_beds, amount_of_runs, amount_of_simulations)
 
-            waiting_times_1.append(waiting_time_1)
-            waiting_times_2.append(waiting_time_2)
+        waiting_times_2.append(queue_1_waiting_time_2)
 
     return waiting_times_1, waiting_times_2
 
@@ -575,6 +578,9 @@ def plot_sensitivity_analysis(care_type, bed_range_1, bed_range_2, waiting_times
 
     beds_values_1 = np.arange(bed_range_1[0], bed_range_1[1] + 1)
     beds_values_2 = np.arange(bed_range_2[0], bed_range_2[1] + 1)
+
+    st.write(len(beds_values_1), len(waiting_times_1))
+    st.write(len(beds_values_2), len(waiting_times_2))
 
     plt.plot(beds_values_1, waiting_times_1, label=f'{care_type} Type 1 Waiting Time')
     plt.plot(beds_values_2, waiting_times_2, label=f'{care_type} Type 2 Waiting Time')
