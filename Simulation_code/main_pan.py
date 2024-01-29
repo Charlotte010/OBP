@@ -38,8 +38,8 @@ max_expected_waiting_time_1 = 50
 max_expected_waiting_time_2 = 50
 
 #up to us
-amount_of_runs = 500
-amount_of_simulations = 2
+amount_of_runs = 750
+amount_of_simulations = 5
 
     
 info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
@@ -62,7 +62,7 @@ queue_2_waiting_time_3 = compute_expected_waiting_time_all_runs(info_handled_eld
 queue_2_waiting_time_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
 
 
-#Sensitivity analysis withoyt Bed-sharing
+#Sensitivity analysis without Bed-sharing
 #First queue
 L=list(range(45,55,1))
 M=list(range(12,22,1))
@@ -83,15 +83,14 @@ for i in range(len(L)):
     
     # Perform statistical calculations to obtain confidence interval
     confidence_interval = 1.96  # Z-score for a 95% confidence interval
-    standard_deviation = np.std(h )
-    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(h )))
-    confidence_interval = 1.96  # Z-score for a 95% confidence interval
-    standard_deviation = np.std(g )
-    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(g )))
+    standard_deviation1 = np.std(h )
+    margin_of_error1 = confidence_interval * (standard_deviation1 / np.sqrt(len(h )))
+    standard_deviation2 = np.std(g )
+    margin_of_error2 = confidence_interval * (standard_deviation2 / np.sqrt(len(g )))
     # Plotting
     
 plt.plot(L, waiting_times_low_complex, label='Low Complex Cases')
-plt.fill_between(L, waiting_times_low_complex - margin_of_error,  waiting_times_low_complex + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
+plt.fill_between(L, waiting_times_low_complex - margin_of_error1,  waiting_times_low_complex + margin_of_error1, color='green', alpha=0.1, label='95% Confidence Interval')
 plt.xlabel('Number of Available Beds')
 plt.ylabel('Expected Waiting Time (In Days)')
 plt.title('Expected Waiting Times for Different Numbers of Available Beds')
@@ -100,11 +99,12 @@ plt.show()
 
 
 plt.plot(M, waiting_times_respite_care, label='Respite Care Cases')
-plt.fill_between(M, waiting_times_respite_care - margin_of_error,  waiting_times_respite_care + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
+plt.fill_between(M, waiting_times_respite_care - margin_of_error2,  waiting_times_respite_care + margin_of_error2, color='green', alpha=0.1, label='95% Confidence Interval')
 plt.xlabel('Number of Available Beds')
 plt.ylabel('Expected Waiting Time (In Days)')
 plt.title('Expected Waiting Times for Different Numbers of Available Beds')
 plt.legend()
+plt.xlim(14, 14.1)
 plt.show()
 
 #Second queue
@@ -114,7 +114,7 @@ waiting_times_high_complex=[]
 waiting_times_G_R=[]
 for i in range(len(L)) :
     amount_beds_available_3= L[i]
-    percentage_2 = 25 #Parameters bedsharing
+    percentage_2 = 0 #Parameters bedsharing
     amount_beds_available_4= M[i]
     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_of_runs, amount_beds_available_3, amount_beds_available_4,  percentage_2, amount_of_simulations,
                         table_probability, table_arrival_rates, table_E_service_rate)
@@ -125,16 +125,16 @@ for i in range(len(L)) :
     
     # Perform statistical calculations to obtain confidence interval
     confidence_interval = 1.96  # Z-score for a 95% confidence interval
-    standard_deviation = np.std(h )
-    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(h )))
+    standard_deviation1 = np.std(h )
+    margin_of_error1 = confidence_interval * (standard_deviation1 / np.sqrt(len(h )))
     confidence_interval = 1.96  # Z-score for a 95% confidence interval
-    standard_deviation = np.std(g )
-    margin_of_error = confidence_interval * (standard_deviation / np.sqrt(len(g )))
+    standard_deviation2 = np.std(g )
+    margin_of_error2 = confidence_interval * (standard_deviation2 / np.sqrt(len(g )))
     #print(round(queue_2_waiting_time_3,2),'is the waiting time for High complex cases with',L[i],'available beds')
     #print(round(queue_2_waiting_time_4,2),'is the waiting time for Geriatric Rehabilitation cases with',M[i],'available beds') 
 
 plt.plot(L, waiting_times_high_complex, label='High Complex Cases')
-plt.fill_between(L, waiting_times_high_complex - margin_of_error,  waiting_times_high_complex + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
+plt.fill_between(L, waiting_times_high_complex - margin_of_error1,  waiting_times_high_complex + margin_of_error1, color='green', alpha=0.1, label='95% Confidence Interval')
 plt.xlabel('Number of Available Beds')
 plt.ylabel('Expected Waiting Time')
 plt.title('Expected Waiting Times for Different Numbers of Available Beds')
@@ -143,7 +143,7 @@ plt.show()
 
 
 plt.plot(M, waiting_times_G_R, label='Geriatric Rehabilitation')
-plt.fill_between(M, waiting_times_G_R - margin_of_error,  waiting_times_G_R + margin_of_error, color='green', alpha=0.1, label='95% Confidence Interval')
+plt.fill_between(M, waiting_times_G_R - margin_of_error2,  waiting_times_G_R + margin_of_error2, color='green', alpha=0.1, label='95% Confidence Interval')
 plt.xlabel('Number of Available Beds')
 plt.ylabel('Expected Waiting Time')
 plt.title('Expected Waiting Times for Different Numbers of Available Beds')
