@@ -148,18 +148,7 @@ def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shar
             first_elderly = waiting_list_4.pop(0)
             bed_queue_3.append(first_elderly)
             
-        #now we need to look into if some can go to bed sharing
-        
-        # if shared_beds >0:
-        #     while len(bed_queue_shared) < shared_beds and len(waiting_list_3)> 0:
-        #         first_elderly = waiting_list_3.pop(0)
-        #         first_elderly.set_shared_bed()
-        #         bed_queue_shared.append(first_elderly) 
-            
-        #     while len(bed_queue_shared) < shared_beds and len(waiting_list_4)> 0:
-        #         first_elderly = waiting_list_4.pop(0)
-        #         first_elderly.set_shared_bed()
-        #         bed_queue_shared.append(first_elderly) 
+
             
         if shared_beds >0:
 

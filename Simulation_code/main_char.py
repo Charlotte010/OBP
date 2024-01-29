@@ -43,7 +43,6 @@ max_expected_waiting_time_2 = 5
 
 
 #Decentralisation (C2)
-
 amount_beds_nurse_can_handle = 5
 
 list_locations_beds = [[10,5,2], [14,4,4]]  # first LC, RC, Shared
@@ -78,12 +77,6 @@ beds =    [rho / rho_we_want for rho  in rho ]
 
 
 
-#so efficient_beds is a list with the beds, so contains 3 integers all representing the new available beds
-# in the order of LC, RC, shared beds These can you use for futher code by calling efficient_beds[0], efficient_beds[1], efficient_beds[2]
-efficient_beds = efficient_beds_per_care_level(list_locations_beds, list_locations_nurses , amount_beds_nurse_can_handle)    
-    
-    
-
 
 info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2,  percentage_1, amount_of_simulations,
                         table_probability, table_arrival_rates, table_E_service_rate)
@@ -109,25 +102,6 @@ queue_2_waiting_time_4, all_waiting_times_4 = compute_expected_waiting_time_all_
 
 
 # Count how many have through_waiting_2 equal to 0 and 1----------------------------------------------------
-def percentage_through_2_3(info_handled_elderly_queue_2):
-    percentage_1 = 0
-    percentage_0 = 0
-    for i in info_handled_elderly_queue_2:
-        high_complex_instances = [elderly_instance for elderly_instance in i if (elderly_instance.medical == "General_Practitioner" or "Emergency_Department")]
-
-        count_through_0 = sum(1 for elderly in high_complex_instances if elderly.through_waiting_2 == 0)
-        count_through_1 = sum(1 for elderly in high_complex_instances if elderly.through_waiting_2 == 1)
-        total = count_through_0 + count_through_1
-        if total >0: 
-            percentage_1 += count_through_1 /total
-            percentage_0 += count_through_0/ total
-            
-    
-    
-    percentage_1 = percentage_1 / len(info_handled_elderly_queue_2)   
-    percentage_0 = percentage_0 / len(info_handled_elderly_queue_2) 
-    
-    return percentage_1, percentage_0
 
 
 percentage_through_3, percentage_not_through = percentage_through_2_3(info_handled_elderly_queue_2)
@@ -135,69 +109,6 @@ percentage_through_3, percentage_not_through = percentage_through_2_3(info_handl
 
 #constraint 1 ----------------------------------------------------------------------------------------
 # amount beds 1 is for low complex, is in this code the target bed to check
-
-def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,amount_beds_available_2,info_handled_elderly_queue,waiting, 
-                                    max_expected_waiting_time,amount_of_runs, amount_of_simulations, care_level ,percentage,
-                                                            table_probability, table_arrival_rates, table_E_service_rate):
-    
-    if care_level == "Low_Complex" or care_level == "High_Complex":
-        queue_1_waiting_time , j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-        if queue_1_waiting_time > max_expected_waiting_time:
-            while queue_1_waiting_time > max_expected_waiting_time:
-                amount_beds_available_1 += 1
-                
-                info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
-                                        table_probability, table_arrival_rates, table_E_service_rate)
-                
-                
-                queue_1_waiting_time, j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-        
-        elif queue_1_waiting_time < max_expected_waiting_time:
-            while queue_1_waiting_time < max_expected_waiting_time:
-                amount_beds_available_1 -= 1
-            
-                info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
-                                        table_probability, table_arrival_rates, table_E_service_rate)
-                
-                
-                queue_1_waiting_time, j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-            
-            
-            amount_beds_available_1 += 1
-            return queue_1_waiting_time, amount_beds_available_1
-        
-        
-    if care_level == "Respite_Care" or care_level == "GRZ":
-        queue_1_waiting_time , j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-        if queue_1_waiting_time > max_expected_waiting_time:
-            while queue_1_waiting_time > max_expected_waiting_time:
-                amount_beds_available_2 += 1
-                
-                info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
-                                        table_probability, table_arrival_rates, table_E_service_rate)
-                
-                
-                queue_1_waiting_time, j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-        
-        elif queue_1_waiting_time < max_expected_waiting_time:
-            while queue_1_waiting_time < max_expected_waiting_time:
-
-                amount_beds_available_2 -= 1
-            
-                info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1,amount_of_runs, amount_beds_available_1,amount_beds_available_2, percentage, amount_of_simulations,
-                                        table_probability, table_arrival_rates, table_E_service_rate)
-                
-                
-                queue_1_waiting_time, j = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-            
-            
-            amount_beds_available_2 += 1        
-        
-    
-            return queue_1_waiting_time, amount_beds_available_2
-
-
-
 
 
 c1_queue1_wait_1, c1_queue1_beds_1  = c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1,amount_beds_available_2,
@@ -228,9 +139,15 @@ c1_queue2_wait_4, c1_queue2_beds_4  = c1_on_max_expected_waiting_time(simulation
 
 
 
-#Constraint 2 centrali decentrali---
+#Constraint 2 centrali decentrali----------------------------------------------------------------------
 
 
+
+#so efficient_beds is a list with the beds, so contains 3 integers all representing the new available beds
+# in the order of LC, RC, shared beds These can you use for futher code by calling efficient_beds[0], efficient_beds[1], efficient_beds[2]
+efficient_beds = efficient_beds_per_care_level(list_locations_beds, list_locations_nurses , amount_beds_nurse_can_handle)    
+    
+    
 
 
 #TO DO 
