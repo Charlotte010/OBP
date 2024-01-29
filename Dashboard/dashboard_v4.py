@@ -29,11 +29,8 @@ from Simulation_code.main_char_queue_1 import simulation_qeueue_1
 from Simulation_code.main_char_queue_2 import simulation_qeueue_2
 
 st.set_page_config(
-    # page_title='page1',
-    # page_icon='📋',
     layout='wide',
-    # current_tab = None,
-    initial_sidebar_state='collapsed' #st.session_state.sidebar_state #'collapsed'
+    initial_sidebar_state='collapsed'
 )
 
 # Initialize the session state for the number of locations
@@ -126,44 +123,6 @@ def compute_waiting_times(care_type, amount_beds_available_1, amount_beds_availa
     # waiting_time_2,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3", waiting_time_key_2)
 
     return waiting_time_1, waiting_time_2
-
-# def compute_waiting_LC_RC(amount_beds_available_1, amount_beds_available_2, percentage_1, amount_of_runs, amount_of_simulations):
-#     """
-#     Compute the waiting time for low complex and respite care
-#     :param amount_beds_available_1: beds low complex
-#     :param amount_beds_available_2: beds respite care
-#     :param percentage_1: shared beds
-#     :param amount_of_runs:
-#     :param amount_of_simulations:
-#     :return:
-#     """
-#     #percentage_1 = shared beds lc rc
-#     info_handled_elderly_queue_1 = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
-#                                                         amount_beds_available_2, percentage_1, amount_of_simulations,
-#                                                         table_probability, table_arrival_rates, table_E_service_rate)
-#
-#     queue_1_waiting_time_1,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time",
-#                                                                     "Low_Complex")
-#     queue_1_waiting_time_2,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time",
-#                                                                     "Respite_Care")
-#     # print('Test')
-#     # print(queue_1_waiting_time_1, queue_1_waiting_time_2)
-#     # print('end test')
-#
-#     return queue_1_waiting_time_1, queue_1_waiting_time_2
-#
-# def compute_waiting_HC_GRZ(amount_beds_available_3, amount_beds_available_4, percentage_2, amount_of_runs, amount_of_simulations):
-#     #percentage_2 = shared beds hc grz
-#     info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2, amount_of_runs, amount_beds_available_3,
-#                                                         amount_beds_available_4, percentage_2, amount_of_simulations,
-#                                                         table_probability, table_arrival_rates, table_E_service_rate)
-#
-#     queue_2_waiting_time_3,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
-#                                                                     "waiting_time_in_list_3", "High_Complex")
-#     queue_2_waiting_time_4,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2,
-#                                                                     "waiting_time_in_list_3", "GRZ")
-#
-#     return queue_2_waiting_time_3, queue_2_waiting_time_4
 
 def cs_sidebar():
     global arrival_high_gp, arrival_high_ed, arrival_high_hospital, arrival_low_gp, arrival_respite_gp, arrival_grz_hospital
@@ -309,29 +268,6 @@ def add_location(care_type, bed_sharing_option):#, key):
     if st.button('Add Location', key=f'location_adding_button_{care_type}'):
         st.session_state.num_locations += 1
 
-# def add_location(bed_sharing_option, key):
-#     # for centeralized
-#     for i in range(st.session_state.num_locations):
-#         body_input(care_type, i)
-#         # body_input_low_respite(bed_sharing_option, i)
-#
-#     # Button to add a new location
-#     if st.button('Add Location', key = f'location_adding_button_{key}'):
-#         st.session_state.num_locations += 1
-#
-# def add_location_hc_grz(bed_sharing_option,key):
-#     """
-#     decenteralization option
-#     :param bed_sharing_option:
-#     :return: None
-#     """
-#     for i in range(st.session_state.num_locations):
-#         body_input_high_grz(bed_sharing_option, i)
-#
-#     # Button to add a new location
-#     if st.button('Add Location', key = f'location_adding_button_{key}'):
-#         st.session_state.num_locations += 1
-
 def body_input(care_type, bed_sharing_option, index):
     # Initialize variables to ensure they are always set
     bed_type_1_label, bed_type_2_label, shared_bed_key = '', '', ''
@@ -386,27 +322,6 @@ def body_input(care_type, bed_sharing_option, index):
     return num_beds_1, num_beds_2, num_shared_beds, num_nurses
 
 
-# def sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
-#
-#     col1, col2 = st.columns([0.7, 0.3])
-#
-#     with col1:
-#         with st.container(border=True):
-#             st.subheader('Analysis Beds')
-#             bed_range = st.slider('Select a range of values for number of beds',
-#                                   min_value=10, max_value=100, value=(num_low_complex_beds, 1))
-#             respite_bed_range = st.slider('Select a range of values for number of respite care beds',
-#                                           min_value=10, max_value=100, value=(1, num_respite_beds))
-#
-#             if st.button("Run Sensitivity Analysis"):
-#                 low_complex_waiting_times, respite_waiting_times = analysis_beds(bed_range, respite_bed_range,
-#                                                                                  num_shared_beds, amount_of_runs,
-#                                                                                  amount_of_simulations)
-#                 plot_sensitivity_analysis(bed_range, respite_bed_range, low_complex_waiting_times,
-#                                           respite_waiting_times)
-#     with col2:
-#         analysis_optimal_beds(simulation_qeueue_1, num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-
 def sensitivity_analysis(care_type, num_beds_1, num_beds_2, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
     col1, col2 = st.columns([0.7, 0.3])
 
@@ -430,7 +345,7 @@ def sensitivity_analysis(care_type, num_beds_1, num_beds_2, num_shared_beds, amo
         ####optimizing beds
         analysis_optimal_beds(care_type, num_beds_1, num_beds_2, num_shared_beds, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
 
-    decentralization_analysis(care_type)
+    decentralization_analysis_calculation(care_type)
 def optimize_bed_counts(care_type, initial_beds_1, initial_beds_2, shared_beds_percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
     optimal_beds_1 = initial_beds_1
     optimal_beds_2 = initial_beds_2
@@ -452,35 +367,6 @@ def optimize_bed_counts(care_type, initial_beds_1, initial_beds_2, shared_beds_p
 
     return optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2
 
-
-# def optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
-#     optimal_beds_lc = initial_beds_lc
-#     optimal_beds_rc = initial_beds_rc
-#
-#     # Initial simulation
-#     info_queue = multiple_simulations(simulation_queue, amount_of_runs, optimal_beds_lc, optimal_beds_rc, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-#
-#     # Calculate initial waiting times
-#     waiting_time_lc,_ = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Low_Complex")
-#     waiting_time_rc,_ = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Respite_Care")
-#
-#     # Loop until both waiting times are below the maximum
-#     while waiting_time_lc > max_waiting_time or waiting_time_rc > max_waiting_time:
-#         if waiting_time_lc > max_waiting_time:
-#             optimal_beds_lc += 1
-#         if waiting_time_rc > max_waiting_time:
-#             optimal_beds_rc += 1
-#
-#         # Re-run simulation with updated bed counts
-#         info_queue = multiple_simulations(simulation_queue, amount_of_runs, optimal_beds_lc, optimal_beds_rc, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-#
-#         # Recalculate waiting times
-#         waiting_time_lc,_ = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Low_Complex")
-#         waiting_time_rc,_ = compute_expected_waiting_time_all_runs(info_queue, "waiting_time", "Respite_Care")
-#         print(waiting_time_rc, waiting_time_lc, max_waiting_time)
-#
-#     return optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc
-
 def analysis_optimal_beds(care_type, initial_beds_1, initial_beds_2, percentage, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
     with st.container(border=True):
         st.subheader('Optimal beds')
@@ -501,54 +387,6 @@ def analysis_optimal_beds(care_type, initial_beds_1, initial_beds_2, percentage,
             st.write(f'Beds for {care_type} type 1: ', round(optimal_beds_1, 2), 'beds')
             st.write(f'Waiting time for {care_type} type 2: ', round(waiting_time_2, 2), 'days')
             st.write(f'Beds for {care_type} type 2: ', round(optimal_beds_2, 2), 'beds')
-
-
-# def analysis_optimal_beds(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
-#
-#     with st.container(border=True):
-#         st.subheader('Optimal beds')
-#
-#         col1, col2 = st.columns(2)
-#         with col1:
-#             st.write('Input a maximum amount of waiting days for a patient: ')
-#
-#         with col2:
-#             max_waiting_time = st.number_input('Please input a maximum amount of waiting days for a patient: ',
-#                                                 min_value=0.0, value=10.0, step = 0.5, label_visibility='collapsed')
-#
-#         if st.button('Find minimum number of beds'):
-#             optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc = optimize_bed_counts(simulation_queue, initial_beds_lc, initial_beds_rc, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-#
-#             st.write('waiting time low complex care: ', round(waiting_time_lc,2), 'days')
-#             st.write('Beds low complex care: ', round(optimal_beds_lc,2), 'days')
-#             st.write('waiting time respite care: ', round(waiting_time_rc,2), 'days')
-#             st.write('Beds respite care: ', round(optimal_beds_rc,2), 'days')
-
-    # return optimal_beds_lc, optimal_beds_rc, waiting_time_lc, waiting_time_rc
-
-# def analysis_beds(bed_range, respite_bed_range, num_shared_beds, amount_of_runs, amount_of_simulations):
-#     low_complex_waiting_times = []
-#     respite_waiting_times = []
-#
-#     for num_low_complex_beds in range(bed_range[0], bed_range[1] + 1):
-#         # Perform simulation for each low-complexity bed configuration
-#         queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(
-#             num_low_complex_beds, 0, num_shared_beds, amount_of_runs, amount_of_simulations)
-#
-#         low_complex_waiting_times.append(queue_1_waiting_time_1)
-#         # Append the waiting time directly, not as a list
-#         # low_complex_waiting_times.append(queue_1_waiting_time_1)
-#
-#     for num_respite_care_beds in range(respite_bed_range[0], respite_bed_range[1] + 1):
-#         # Perform simulation for each respite care bed configuration
-#         queue_1_waiting_time_1, queue_1_waiting_time_2 = compute_waiting_LC_RC(
-#             0, num_respite_care_beds, num_shared_beds, amount_of_runs, amount_of_simulations)
-#
-#         respite_waiting_times.append(queue_1_waiting_time_2)
-#         # Append the waiting time directly, not as a list
-#         # respite_waiting_times.append(queue_1_waiting_time_2)
-#
-#     return low_complex_waiting_times, respite_waiting_times
 
 def analysis_beds(care_type, bed_range_1, bed_range_2, num_shared_beds, amount_of_runs, amount_of_simulations):
     waiting_times_1 = []
@@ -594,24 +432,6 @@ def plot_sensitivity_analysis(care_type, bed_range_1, bed_range_2, waiting_times
 
     st.pyplot(plt)
 
-
-# def plot_sensitivity_analysis(bed_range, respite_bed_range, low_complex_waiting_times, respite_waiting_times):
-#     plt.figure(figsize=(10, 6))
-#
-#     beds_values = np.arange(bed_range[0], bed_range[1] + 1)
-#     respite_beds_values = np.arange(respite_bed_range[0], respite_bed_range[1] + 1)
-#
-#     plt.plot(beds_values, low_complex_waiting_times, label='Low Complex Waiting Time')
-#     plt.plot(respite_beds_values, respite_waiting_times, label='Respite Waiting Time')
-#
-#     plt.title('Sensitivity Analysis - Number of Beds')
-#     plt.xlabel('Number of Beds')
-#     plt.ylabel('Waiting Time (days)')
-#     plt.legend()
-#
-#     st.pyplot(plt)
-
-
 def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1, amount_beds_available_2,
                                     info_handled_elderly_queue, waiting,
                                     max_waiting_time, amount_of_runs, amount_of_simulations, care_level,
@@ -632,108 +452,7 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
 
     return queue_1_waiting_time, amount_beds_available_1
 
-# def find_optimal_beds(simulation_queue_1, simulation_queue_2, initial_beds_1, initial_beds_2, max_waiting_time, amount_of_runs, amount_of_simulations, care_level, percentage, table_probability, table_arrival_rates, table_E_service_rate):
-#     amount_beds_available_1 = initial_beds_1
-#     amount_beds_available_2 = initial_beds_2
-#
-#     # Initialize variables to store the waiting times for both queues
-#     waiting_time_1 = float('inf')
-#     waiting_time_2 = float('inf')
-#
-#     # Keep increasing the beds for queue 1 and queue 2 until the waiting times are below the max_waiting_time
-#     while waiting_time_1 > max_waiting_time or waiting_time_2 > max_waiting_time:
-#         # Increase the bed count for queue 1 and queue 2
-#         amount_beds_available_1 += 1
-#         amount_beds_available_2 += 1
-#
-#         # Run the simulation for the new bed counts
-#         info_handled_elderly_queue_1 = multiple_simulations(simulation_queue_1, amount_of_runs, amount_beds_available_1, amount_beds_available_2, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-#         info_handled_elderly_queue_2 = multiple_simulations(simulation_queue_2, amount_of_runs, amount_beds_available_1, amount_beds_available_2, percentage, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-#
-#         # Compute the waiting times for both queues
-#         waiting_time_1 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting", care_level)
-#         waiting_time_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting", care_level)
-#
-#     return amount_beds_available_1, amount_beds_available_2, waiting_time_1, waiting_time_2
-
-# def decentralization_analysis(care_type):
-#     # Define a template for a new analysis
-#     new_analysis_template = {
-#         'low': {'num_beds': 8, 'num_nurses': 5},
-#         'res': {'num_beds': 8, 'num_nurses': 5},
-#         'shared': {'num_beds': 8, 'num_nurses': 5}
-#     }
-#     # Initialize the session_state
-#     if 'analyses' not in st.session_state:
-#         st.session_state.analyses = [new_analysis_template.copy(), new_analysis_template.copy()]
-#
-#         # st.session_state.analyses = [{'low': {'num_beds': 8, 'num_nurses': 5},
-#         #                                'res': {'num_beds': 8, 'num_nurses': 5},
-#         #                                'shared': {'num_beds': 8, 'num_nurses': 5}}]
-#
-#     # Initialize lists to store the results
-#     list_locations_beds = []
-#     list_locations_nurses = []
-#
-#     with st.container(border=True):
-#         st.subheader('Decenteralization analysis')
-#         # Add a button to trigger the display of additional analyses
-#         if st.button("Add location"):
-#             st.session_state.analyses.append(new_analysis_template.copy())
-#             # Append a new analysis to the list
-#             # new_analysis = {'low': {'num_beds': 8, 'num_nurses': 5},
-#             #                 'res': {'num_beds': 8, 'num_nurses': 5},
-#             #                 'shared': {'num_beds': 8, 'num_nurses': 5}}
-#             # st.session_state.analyses.append(new_analysis)
-#
-#         # Add a button to remove the latest analysis (only if there are additional analyses)
-#         if st.button("Remove location") and len(st.session_state.analyses) > 1:
-#             st.session_state.analyses.pop()
-#
-#         # Display the analyses in separate tabs
-#         for i, analysis in enumerate(st.session_state.analyses, start=1):
-#             col1, col2, col3 = st.columns(3)
-#             with col1:
-#                 st.write('Number of Low Complex beds')
-#                 analysis['low']['num_beds'] = st.number_input(f'Number of beds (Analysis {i})', min_value=0, max_value=None,
-#                                                                value=analysis['low']['num_beds'], key=f'decentralization low {i}',
-#                                                                label_visibility='collapsed')
-#                 'Number of Nurses'
-#                 analysis['low']['num_nurses'] = st.number_input('Number of beds one nurse can handle', min_value=0, max_value=None,
-#                                                                 value=analysis['low']['num_nurses'], key=f'nurses low {i}',
-#                                                                 label_visibility='collapsed')
-#
-#             with col2:
-#                 'Number of Respite beds'
-#                 analysis['res']['num_beds'] = st.number_input(f'Number of beds (Analysis {i})', min_value=0, max_value=None,
-#                                                                value=analysis['res']['num_beds'], key=f'decentralization res {i}',
-#                                                                label_visibility='collapsed')
-#                 'Number of Nurses'
-#                 analysis['res']['num_nurses'] = st.number_input('Number of beds one nurse can handle', min_value=0, max_value=None,
-#                                                                 value=analysis['res']['num_nurses'], key=f'nurses res {i}',
-#                                                                 label_visibility='collapsed')
-#             with col3:
-#                 'Number of Shared beds'
-#                 analysis['shared']['num_beds'] = st.number_input(f'Number of beds (Analysis {i})', min_value=0, max_value=None,
-#                                                                   value=analysis['shared']['num_beds'], key=f'decentralization shared {i}',
-#                                                                   label_visibility='collapsed')
-#                 'Number of Nurses'
-#                 analysis['shared']['num_nurses'] = st.number_input('Number of beds one nurse can handle', min_value=0, max_value=None,
-#                                                                    value=analysis['shared']['num_nurses'], key=f'nurses share {i}',
-#                                                                    label_visibility='collapsed')
-#
-#             # Append data to lists
-#             beds_data = [analysis['low']['num_beds'], analysis['res']['num_beds'], analysis['shared']['num_beds']]
-#             nurses_data = [analysis['low']['num_nurses'], analysis['res']['num_nurses'], analysis['shared']['num_nurses']]
-#
-#             list_locations_beds.append(beds_data)
-#             list_locations_nurses.append(nurses_data)
-#
-#         # Output the lists
-#         print("List of Beds Data:", list_locations_beds)
-#         print("List of Nurses Data:", list_locations_nurses)
-
-def decentralization_analysis(care_type):
+def decentralization_analysis_layout(care_type):
     # Define a template for a new analysis
     new_analysis_template = {
         'type1': {'num_beds': 8, 'num_nurses': 5},
@@ -758,6 +477,7 @@ def decentralization_analysis(care_type):
     # Initialize lists to store the results
     list_locations_beds = []
     list_locations_nurses = []
+    list_amount_beds_nurse_can_handle = []
 
     with st.container(border=True):
         st.subheader('Decenteralization analysis')
@@ -831,13 +551,24 @@ def decentralization_analysis(care_type):
             # Append data to lists
             beds_data = [analysis['type1']['num_beds'], analysis['type2']['num_beds'], analysis['shared']['num_beds']]
             nurses_data = [analysis['type1']['num_nurses'], analysis['type2']['num_nurses'], analysis['shared']['num_nurses']]
+            load_data = [analysis['type1']['num_nurses'], analysis['type2']['num_nurses'],
+                           analysis['shared']['num_nurses']]
 
             list_locations_beds.append(beds_data)
             list_locations_nurses.append(nurses_data)
+            list_amount_beds_nurse_can_handle.append(load_data)
 
         # Output the lists
         print("List of Beds Data:", list_locations_beds)
         print("List of Nurses Data:", list_locations_nurses)
+
+        return list_locations_beds, list_locations_nurses, list_amount_beds_nurse_can_handle
+
+def decentralization_analysis_calculation(care_type):
+    list_locations_beds, list_locations_nurses, list_amount_beds_nurse_can_handle = decentralization_analysis_layout(care_type)
+
+    efficient_beds_per_care_level(list_locations_beds, list_locations_nurses, list_amount_beds_nurse_can_handle)
+
 
 
 def main():
@@ -896,9 +627,6 @@ def main():
 
                 st.write('Expected waiting time for low complex patients: ', round(queue_1_waiting_time_1, 2), 'days')
                 st.write('Expected waiting time for respite care patients: ', round(queue_1_waiting_time_2, 2), 'days')
-
-
-
 
             # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
 
