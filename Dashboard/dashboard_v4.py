@@ -654,6 +654,9 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
 #
 #     return amount_beds_available_1, amount_beds_available_2, waiting_time_1, waiting_time_2
 
+def decenteralization_analysis():
+    return None
+
 def main():
 
     # Define the tabs
@@ -780,9 +783,6 @@ def main():
         st.header('Sensitivity Analysis')
         sensitivity_analysis(care_type, num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, amount_of_runs,
                              amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-
-        # sensitivity_analysis(num_low_complex_beds, num_respite_beds, num_shared_beds, amount_of_runs,
-        #                      amount_of_simulations)
 
 
 if __name__ == '__main__':
