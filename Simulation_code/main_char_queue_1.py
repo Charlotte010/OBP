@@ -142,7 +142,7 @@ def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shar
                        bed_queue_shared.append(first_elderly) 
 
         
-    handled_cases_queue_1 = handled_cases_queue_1[100:]
+   # handled_cases_queue_1 = handled_cases_queue_1[50:]
 
     return handled_cases_queue_1
 

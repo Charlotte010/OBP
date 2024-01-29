@@ -23,7 +23,7 @@ from main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
 amount_beds_available_1 = 55 #low complex 
-amount_beds_available_2 = 12 #Respite care 
+amount_beds_available_2 = 15 #Respite care 
 percentage_1 = 0 #Parameters bedsharing
 
 

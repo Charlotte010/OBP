@@ -193,7 +193,7 @@ def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shar
             first_elderly = waiting_list_3.pop(0)
             bed_queue_2.append(first_elderly)
             
-    handled_cases_queue_2 = handled_cases_queue_2[100:]
+   # handled_cases_queue_2 = handled_cases_queue_2[100:]
 
     return handled_cases_queue_2
     
