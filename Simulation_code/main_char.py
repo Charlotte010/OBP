@@ -22,8 +22,8 @@ from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
-amount_beds_available_1 = 55 #low complex 
-amount_beds_available_2 = 15 #Respite care 
+amount_beds_available_1 = 66 #low complex 
+amount_beds_available_2 = 12 #Respite care 
 percentage_1 = 0 #Parameters bedsharing
 
 
@@ -33,8 +33,8 @@ amount_beds_available_4 = 23 #GRZ
 percentage_2 = 0 #Parameters bedsharing
 
 #up to us
-amount_of_runs = 1500
-amount_of_simulations =15
+amount_of_runs = 15000
+amount_of_simulations =50
 
 
 # #parameters for Constraint 1 (C1)
@@ -57,24 +57,35 @@ amount_of_simulations =15
 #     max_arrival_rates.append(table_arrival_rates[column_name].max())
 
 
-mu_table= table_E_service_rate.copy()
 
-for column in table_E_service_rate.columns:
-    mu_table[column] = 1 / table_E_service_rate[column]
-    
-service_times = table_probability * mu_table
+
+
+total_expected_service_times = (table_probability *(table_E_service_rate)).sum(axis=0)
+E_S = total_expected_service_times.tolist()
+
+arrival_rates = table_arrival_rates.sum(axis=0).tolist()
+
+rho = [lamb * i for i,lamb  in zip (E_S, arrival_rates) ]
+
+#high complex, GRZ, LC, RC
+rho_we_want = 0.70
+beds1 =    [rho / rho_we_want for rho  in rho ]
+
+
+
+
+service_times = table_probability * table_E_service_rate
 column_sums = service_times.sum(axis=0).tolist()
+service_rate = [1 / x for x in column_sums]
 
 
 arrival_rates = table_arrival_rates.sum(axis=0).tolist()
 
-rho = [lamb / u for u,lamb  in zip (column_sums, arrival_rates) ]
+rho = [lamb / u for u,lamb  in zip (service_rate, arrival_rates) ]
 
 #high complex, GRZ, LC, RC
-rho_we_want = 0.80
+rho_we_want = 0.70
 beds =    [rho / rho_we_want for rho  in rho ]
-
-
 #-------------------------------------------------------------------------------------------------------------
 #Expected waiting time calculating
 
@@ -112,7 +123,7 @@ def compute_expected_waiting_time(lambda_arrival, mu_service, num_servers):
     
     return expected_waiting_time
 
-E_W = compute_expected_waiting_time(arrival_rates[3], column_sums[3], 12)
+E_W = compute_expected_waiting_time(arrival_rates[3], service_rate[3], 12)
 
 #--------------------------------------------------------------------------------------------------------------------
 
@@ -129,27 +140,38 @@ queue_1_waiting_time_1, all_waiting_times_1 = compute_expected_waiting_time_all_
 
 
 
-queue_1_waiting_time_2, all_waiting_times_2 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
+queue_1_waiting_time_2, all_waiting_times_2  = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
 
 
-import numpy as np
-from scipy import stats
-alpha = 0.05
-z_critical = stats.norm.ppf(1 - alpha/2)
+def CI (all_waiting_times_1,E_W ):
+    import numpy as np
+    from scipy import stats
+    alpha = 0.05
+    z_critical = stats.norm.ppf(1 - alpha/2)
+    
+    # Calculate mean and standard deviation from simulation
+    mean_simulated = np.mean(all_waiting_times_1)
+    std_dev_simulated = np.std(all_waiting_times_1)
+    margin_of_error2 = z_critical * (std_dev_simulated / np.sqrt(len(all_waiting_times_1 )))
+    
+    
+    
+    CI = [mean_simulated - margin_of_error2, mean_simulated +margin_of_error2 ]
+    # Check if the expected waiting time from the function falls within the confidence interval
+    if CI[0] <= E_W <=  CI[1] :
+        print("The simulation results are consistent with the expected waiting time from the function.")
+    else:
+        print("The simulation results are not consistent with the expected waiting time from the function.")
+    
+    return CI
+    
+    
+    
+CI(all_waiting_times_2,E_W )
 
-# Calculate mean and standard deviation from simulation
-mean_simulated = np.mean(all_waiting_times_2)
-std_dev_simulated = np.std(all_waiting_times_2)
-margin_of_error2 = 1.96 * (std_dev_simulated / np.sqrt(len(all_waiting_times_2 )))
 
 
 
-
-# Check if the expected waiting time from the function falls within the confidence interval
-if confidence_interval[0] <= E_W <= confidence_interval[1]:
-    print("The simulation results are consistent with the expected waiting time from the function.")
-else:
-    print("The simulation results are not consistent with the expected waiting time from the function.")
 
 
 

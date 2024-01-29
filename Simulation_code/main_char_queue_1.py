@@ -19,41 +19,14 @@ def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shar
     
     waiting_list_1 = [] #low complex
     waiting_list_2 = [] # Respite care
-    bed_queue_1 = [] 
-    bed_queue_2 = []
+    bed_queue_1 = []  #low complex
+    bed_queue_2 = []  #Respite Care
     bed_queue_shared = []
 
     
     handled_cases_queue_1 = []
     for i in range(0,amount_of_runs): 
-        
-
-        #we fo the for loop like this because then we start from the end go from right to left. 
-
-        for p in range(len(bed_queue_1) - 1, -1, -1):
-    
-            if bed_queue_1[p].days_in_bed >= bed_queue_1[p].service_time_elderly:
-
-                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
-                handled_cases_queue_1.append(bed_queue_1.pop(p)) 
-
-        
-        #we fo the for loop like this because then we start from the end go from right to left. 
-        for p in range(len(bed_queue_2) - 1, -1, -1):
-    
-            if bed_queue_2[p].days_in_bed >= bed_queue_2[p].service_time_elderly:
-                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
-                handled_cases_queue_1.append(bed_queue_2.pop(p))  
-                
-        #we fo the for loop like this because then we start from the end go from right to left. 
-        for p in range(len(bed_queue_shared) - 1, -1, -1):
-    
-            if bed_queue_shared[p].days_in_bed >= bed_queue_shared[p].service_time_elderly:
-                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
-                handled_cases_queue_1.append(bed_queue_shared.pop(p))                 
-                
-        
-    
+            
         #Update the waiting time for all the elderly in the waiting list
         for p in range(0,len(waiting_list_1)):
             
@@ -81,6 +54,37 @@ def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shar
             bed_queue_shared[p].increment_days_in_bed()  
           
             
+        
+
+        #we fo the for loop like this because then we start from the end go from right to left. 
+
+        for p in range(len(bed_queue_1) - 1, -1, -1):
+    
+            if bed_queue_1[p].days_in_bed >= bed_queue_1[p].service_time_elderly:
+
+                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
+                handled_cases_queue_1.append(bed_queue_1.pop(p)) 
+
+        
+        #we fo the for loop like this because then we start from the end go from right to left. 
+        for p in range(len(bed_queue_2) - 1, -1, -1):
+    
+            if bed_queue_2[p].days_in_bed >= bed_queue_2[p].service_time_elderly:
+                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
+                handled_cases_queue_1.append(bed_queue_2.pop(p))  
+                
+                
+                
+                
+        #we fo the for loop like this because then we start from the end go from right to left. 
+        for p in range(len(bed_queue_shared) - 1, -1, -1):
+    
+            if bed_queue_shared[p].days_in_bed >= bed_queue_shared[p].service_time_elderly:
+                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
+                handled_cases_queue_1.append(bed_queue_shared.pop(p))                 
+                
+        
+
           
             
           
@@ -98,7 +102,7 @@ def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shar
                         waiting_list_1.append(e1)
 
                         
-                elif care == "Respite_Care":
+                if care == "Respite_Care":
                     for i in range(0,amount_arrive):
                         e1 = make_elderly_class(table_probability, table_arrival_rates, table_E_service_rate, care, medical,0)
                         waiting_list_2.append(e1)        

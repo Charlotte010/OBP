@@ -92,7 +92,8 @@ def compute_expected_waiting_time(info_handled_elderly_queue_1, waiting_queue, c
     
     if waiting_queue == 'waiting_time':
         total_waiting_time = sum(elderly.waiting_time for elderly in info_handled_elderly_queue_1) 
-
+        
+    
     if  waiting_queue == 'waiting_time_in_list_3':
         
         total_waiting_time = sum(elderly.waiting_time_in_list_3 for elderly in info_handled_elderly_queue_1) 
@@ -105,14 +106,20 @@ def compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, waiting
     total_expected_waiting_times = 0
     total_elderly_handled = 0
     all_waiting_times = []
+    tot_e_w = []
     
     for i in info_handled_elderly_queue_1:
         
         
         instances = [elderly_instance for elderly_instance in i if elderly_instance.care_level == care_level]
-
+        
         expected_waiting_times, elderly_handled = compute_expected_waiting_time(instances, waiting_queue, care_level)
         
+        # if elderly_handled>0:
+        #     E_w = expected_waiting_times /elderly_handled
+        #     tot_e_w.append(E_w)
+            
+            
         total_expected_waiting_times +=expected_waiting_times
         total_elderly_handled += elderly_handled
         if elderly_handled>0:
