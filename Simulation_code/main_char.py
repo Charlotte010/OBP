@@ -22,31 +22,31 @@ from main_char_queue_1 import simulation_qeueue_1
 from main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
-amount_beds_available_1 = 66 #low complex 
-amount_beds_available_2 = 12 #Respite care 
+amount_beds_available_1 = 24 #low complex 
+amount_beds_available_2 = 5 #Respite care 
 percentage_1 = 0 #Parameters bedsharing
 
 
 #parameters for queue 2
-amount_beds_available_3 = 172 #High_complex
-amount_beds_available_4 = 23 #GRZ
+amount_beds_available_3 =120 #High_complex
+amount_beds_available_4 = 20 #GRZ
 percentage_2 = 0 #Parameters bedsharing
 
 #up to us
-amount_of_runs = 15000
-amount_of_simulations =50
+amount_of_runs = 2000
+amount_of_simulations =15
 
 
-# #parameters for Constraint 1 (C1)
-# max_expected_waiting_time_1 = 5
-# max_expected_waiting_time_2 = 5
+#parameters for Constraint 1 (C1)
+max_expected_waiting_time_1 = 5
+max_expected_waiting_time_2 = 5
 
 
-# #Decentralisation (C2)
-# amount_beds_nurse_can_handle = 5
+#Decentralisation (C2)
+amount_beds_nurse_can_handle = 5
 
-# list_locations_beds = [[10,5,2], [14,4,4]]  # first LC, RC, Shared
-# list_locations_nurses = [[2,3,0], [2,2,2]] # first LC, RC, Shared
+list_locations_beds = [[8,8,8 ]] # first LC, RC, Shared
+list_locations_nurses = [[5, 5,5]] # first LC, RC, Shared
 
 
 #-------------------------------------------------------------------------------------------------------------------
@@ -60,16 +60,16 @@ amount_of_simulations =50
 
 
 
-total_expected_service_times = (table_probability *(table_E_service_rate)).sum(axis=0)
-E_S = total_expected_service_times.tolist()
+# total_expected_service_times = (table_probability *(table_E_service_rate)).sum(axis=0)
+# E_S = total_expected_service_times.tolist()
 
-arrival_rates = table_arrival_rates.sum(axis=0).tolist()
+# arrival_rates = table_arrival_rates.sum(axis=0).tolist()
 
-rho = [lamb * i for i,lamb  in zip (E_S, arrival_rates) ]
+# rho = [lamb * i for i,lamb  in zip (E_S, arrival_rates) ]
 
-#high complex, GRZ, LC, RC
-rho_we_want = 0.70
-beds1 =    [rho / rho_we_want for rho  in rho ]
+# #high complex, GRZ, LC, RC
+# rho_we_want = 0.7
+# beds1 =    [rho / rho_we_want for rho  in rho ]
 
 
 
@@ -84,7 +84,7 @@ arrival_rates = table_arrival_rates.sum(axis=0).tolist()
 rho = [lamb / u for u,lamb  in zip (service_rate, arrival_rates) ]
 
 #high complex, GRZ, LC, RC
-rho_we_want = 0.70
+rho_we_want = 0.8
 beds =    [rho / rho_we_want for rho  in rho ]
 #-------------------------------------------------------------------------------------------------------------
 #Expected waiting time calculating
@@ -123,7 +123,7 @@ def compute_expected_waiting_time(lambda_arrival, mu_service, num_servers):
     
     return expected_waiting_time
 
-E_W = compute_expected_waiting_time(arrival_rates[3], service_rate[3], 12)
+E_W = compute_expected_waiting_time(arrival_rates[3], service_rate[3], 16)
 
 #--------------------------------------------------------------------------------------------------------------------
 
@@ -143,7 +143,7 @@ queue_1_waiting_time_1, all_waiting_times_1 = compute_expected_waiting_time_all_
 queue_1_waiting_time_2, all_waiting_times_2  = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_1, "waiting_time", "Respite_Care")
 
 
-def CI (all_waiting_times_1,E_W ):
+def CI_EW (all_waiting_times_1,E_W ):
     import numpy as np
     from scipy import stats
     alpha = 0.05
@@ -166,9 +166,15 @@ def CI (all_waiting_times_1,E_W ):
     return CI
     
     
-    
-CI(all_waiting_times_2,E_W )
+E_W = compute_expected_waiting_time(arrival_rates[2], service_rate[2], 66)   
+print("Low_complex")
+P = CI_EW(all_waiting_times_1,E_W )
+print(P[0], P[1])
 
+E_W_2 = compute_expected_waiting_time(arrival_rates[3], service_rate[3], 16)
+print("Respite_care")
+P = CI_EW(all_waiting_times_2,E_W_2 )
+print(P[0], P[1])
 
 
 
@@ -179,6 +185,37 @@ info_handled_elderly_queue_2 = multiple_simulations(simulation_qeueue_2,amount_o
                         table_probability, table_arrival_rates, table_E_service_rate)
 
 
+queue_2_waiting_time_3, all_waiting_times_3 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "High_Complex")
+queue_2_waiting_time_4, all_waiting_times_4 = compute_expected_waiting_time_all_runs(info_handled_elderly_queue_2, "waiting_time_in_list_3", "GRZ")
+
+
+
+def CI (all_waiting_times_1 ):
+    import numpy as np
+    from scipy import stats
+    alpha = 0.05
+    z_critical = stats.norm.ppf(1 - alpha/2)
+    
+    # Calculate mean and standard deviation from simulation
+    mean_simulated = np.mean(all_waiting_times_1)
+    std_dev_simulated = np.std(all_waiting_times_1)
+    margin_of_error2 = z_critical * (std_dev_simulated / np.sqrt(len(all_waiting_times_1 )))
+    
+    
+    
+    CI = [mean_simulated - margin_of_error2, mean_simulated +margin_of_error2 ]
+
+    return CI
+
+
+
+print("High_Complex")
+P = CI(all_waiting_times_3 )
+print(P[0], P[1])
+
+print("GRZ")
+P = CI(all_waiting_times_4 )
+print(P[0], P[1])
 
 
 #getting information ------------------------------------------------------------------------------------
@@ -244,20 +281,11 @@ efficient_beds = efficient_beds_per_care_level(list_locations_beds, list_locatio
     
 
 
-#TO DO 
-# - Percentage of how often are all the beds occupied?
-# - CHANGE percentage shared beds just to a number of beds
-# - DONE - What is the percentage of people going from W2 to W3?  
-# - Check how much average servise time is and compare with waiting for queue2
-# - DONE (C1) - make parameter of percentage how many days should wait
 
 
-
-
-
-
-
-
+#-------------------------
+#ROB
+#- mogen we formules gebruiken, of simulation
 
 
 

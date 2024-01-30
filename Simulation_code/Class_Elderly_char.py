@@ -16,7 +16,7 @@ class elderly:
         self.through_waiting_2 = binary
         self.shared_bed = 0
         self.days_in_bed = 0  
-        self.waiting_time = 0  
+        self.waiting_time = 0 
         self.waiting_time_in_list_3 = 0
     
     def increment_days_in_bed(self):

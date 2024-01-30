@@ -70,7 +70,7 @@ def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shar
         for p in range(len(bed_queue_2) - 1, -1, -1):
     
             if bed_queue_2[p].days_in_bed >= bed_queue_2[p].service_time_elderly:
-                # Remove the elderly instance from bed_queue_1 and add to handled_cases_queue_1
+                # Remove the elderly instance from bed_queue_2 and add to handled_cases_queue_1
                 handled_cases_queue_1.append(bed_queue_2.pop(p))  
                 
                 
