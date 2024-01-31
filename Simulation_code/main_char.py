@@ -4,6 +4,8 @@ Created on Thu Jan 11 17:13:06 2024
 
 @author: charl
 """
+
+
 import pandas as pd
 
 import os
@@ -23,7 +25,7 @@ from main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
 amount_beds_available_1 = 24 #low complex 
-amount_beds_available_2 = 5 #Respite care 
+amount_beds_available_2 = 7 #Respite care 
 percentage_1 = 0 #Parameters bedsharing
 
 
@@ -34,7 +36,7 @@ percentage_2 = 0 #Parameters bedsharing
 
 #up to us
 amount_of_runs = 2000
-amount_of_simulations =15
+amount_of_simulations =25
 
 
 #parameters for Constraint 1 (C1)
@@ -166,12 +168,12 @@ def CI_EW (all_waiting_times_1,E_W ):
     return CI
     
     
-E_W = compute_expected_waiting_time(arrival_rates[2], service_rate[2], 66)   
+E_W = compute_expected_waiting_time(arrival_rates[2], service_rate[2], 24)   
 print("Low_complex")
 P = CI_EW(all_waiting_times_1,E_W )
 print(P[0], P[1])
 
-E_W_2 = compute_expected_waiting_time(arrival_rates[3], service_rate[3], 16)
+E_W_2 = compute_expected_waiting_time(arrival_rates[3], service_rate[3], 7)
 print("Respite_care")
 P = CI_EW(all_waiting_times_2,E_W_2 )
 print(P[0], P[1])
