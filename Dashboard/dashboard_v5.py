@@ -70,8 +70,8 @@ arrival_rate_table = pd.DataFrame(arrival_rate_data, index=arrival_rate_index)
 service_rate_data = {
     "High_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
     "GRZ": [31.1, 43.9, 47.8, 0.0, 22.9, 22.9],
-    "Low_Complex": [31.1, 43.9, 47.8, 29.8, 22.9, 22.9],
-    "Respite_Care": [14.0, 43.9, 47.8, 29.8, 22.9, 22.9]
+    "Low_Complex": [7, 13, 15, 12, 7, 7],
+    "Respite_Care": [6, 7, 9, 6, 6, 6]
 }
 
 # Index (row labels) for the Service Rates table
@@ -116,13 +116,6 @@ def compute_waiting_times(care_type, amount_beds_available_1, amount_beds_availa
         waiting_time_2, _ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3",
                                                                    waiting_time_key_2)
 
-    # info_handled_elderly_queue = multiple_simulations(simulation_queue, amount_of_runs, amount_beds_available_1,
-    #                                                   amount_beds_available_2, shared_beds_percentage, amount_of_simulations,
-    #                                                   table_probability, table_arrival_rates, table_E_service_rate)
-    #
-    # waiting_time_1,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3", waiting_time_key_1)
-    # waiting_time_2,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, "waiting_time_in_list_3", waiting_time_key_2)
-
     return waiting_time_1, waiting_time_2
 
 def cs_sidebar():
@@ -132,7 +125,7 @@ def cs_sidebar():
         st.write('**Low complex**')
         col1, col2 = st.columns(2)
         with col1:
-            st.write('Arrival rate GP')
+            st.write('Arrival rate from GP')
             # st.write('Outflow home rate')
             # st.write('outflow home with adjustments rate')
             # st.write('Outflow long term care rate')
@@ -158,7 +151,7 @@ def cs_sidebar():
         st.write('**Respite care**')
         col1, col2 = st.columns(2)
         with col1:
-            st.write('Arrival rate')
+            st.write('Arrival rate from GP')
             # st.write('Outflow home rate')
             # st.write('outflow home with adjustments rate')
             # st.write('Outflow long term care rate')
@@ -184,9 +177,9 @@ def cs_sidebar():
         st.write('**High complex**')
         col1, col2 = st.columns(2)
         with col1:
-            st.write('Arrival rate GP')
-            st.write('Arrival rate Emergency Department')
-            st.write('Arrival rate Hospital')
+            st.write('Arrival rate from GP')
+            st.write('Arrival rate from Emergency Department')
+            st.write('Arrival rate from hospital')
             # st.write('Outflow home rate')
             # st.write('outflow home with adjustments rate')
             # st.write('Outflow long term care rate')
@@ -216,7 +209,7 @@ def cs_sidebar():
         st.write('**Geriatric rehabilitation**')
         col1, col2 = st.columns(2)
         with col1:
-            st.write('Arrival rate hospital')
+            st.write('Arrival rate from hospital')
             # st.write('Outflow home rate')
             # st.write('outflow home with adjustments rate')
             # st.write('Outflow long term care rate')
@@ -243,31 +236,6 @@ def cs_bed_sharing_selection(care_type):
     # Display a radio button for bed sharing selection
     bed_sharing_option = st.radio("Select a scenario", ['Bed sharing', 'No bed sharing'], key=f'low_respite_bed_radio_{care_type}')
     return bed_sharing_option
-
-# def cs_centralize_selection(care_type):
-#     # Display a radio button for centralize selection
-#     centralizing_option = st.radio("Centralize Option", ['Centralized', 'Decentralized'], key=f'central_radio_{care_type}')
-#     return centralizing_option
-#
-# def cs_scenario_selection(care_type):
-#     col1, col2 = st.columns(2)
-#     with col1:
-#         centralizing_option = cs_centralize_selection(care_type)
-#     with col1:
-#         bed_sharing_option = cs_bed_sharing_selection(care_type)
-#
-#     return centralizing_option, bed_sharing_option
-
-# def add_location(care_type, bed_sharing_option):
-#     for i in range(st.session_state.num_locations):
-#         if care_type == 'low_respite':
-#             body_input(care_type, bed_sharing_option, i)
-#         elif care_type == 'high_grz': #'HC_GRZ':
-#             body_input(care_type, bed_sharing_option, i)
-#
-#     # Button to add a new location
-#     if st.button('Add Location', key=f'location_adding_button_{care_type}'):
-#         st.session_state.num_locations += 1
 
 def body_input(care_type, bed_sharing_option, index):
     # Initialize variables to ensure they are always set
@@ -303,16 +271,19 @@ def body_input(care_type, bed_sharing_option, index):
 
         num_shared_beds = st.number_input('Number of shared beds', min_value=0, max_value=None, value=0, key=shared_bed_key + str(index), disabled=disabled, label_visibility='collapsed')
 
+        st.write('Beds per nurse:')
+
     with col4:
         st.write('Nurses')
         num_nurses = st.number_input('Number of nurses', min_value=0, max_value=None, value=2, key=nurses_key, label_visibility='collapsed')
-        st.number_input('Number of beds one nurse can handle', min_value=0, max_value=None, value=5, key=f'nurses_load_{care_type}_{index}', label_visibility='collapsed')
+
+        load_nurses = st.number_input('Number of beds one nurse can handle', min_value=0, max_value=None, value=5, key=f'nurses_load_{care_type}_{index}', label_visibility='collapsed')
 
     with col6:
         st.write('')
         # Calculate the sum
         total_beds = num_beds_1 + num_beds_2 + num_shared_beds
-        eff_beds = (num_beds_1 + num_beds_2 + num_shared_beds) * num_nurses
+        eff_beds = load_nurses * num_nurses
 
         st.info(f"Total number of beds: {total_beds}\n \nTotal number of effective beds: {eff_beds}", icon="ℹ️")
 
@@ -325,19 +296,16 @@ def sensitivity_analysis(care_type, num_beds_1, num_beds_2, num_shared_beds, amo
     with col1:
         ####beds analysis
         with st.container(border=True):
-            st.subheader('Analysis Beds')
+            st.markdown('**Analysis Beds**')
             bed_range = st.slider('Select a range of values for number of beds',
-                                  min_value=1, max_value=100, value=(1, 10), key= f'beds_range1{care_type}')
+                                  min_value=1, max_value=200, value=(1, 10), key= f'beds_range1{care_type}')
             bed_range_2 = st.slider('Select a range of values for number of second type beds',
-                                    min_value=1, max_value=100, value=(1, 10), key=f'beds_range2{care_type}')
+                                    min_value=1, max_value=200, value=(1, 10), key=f'beds_range2{care_type}')
 
             if st.button("Run beds analysis", key = f'button_beds_{care_type}'):
                 waiting_times_1, waiting_times_2, waiting_times_3 = analysis_beds(care_type, bed_range, bed_range_2,
                                                                 num_shared_beds, amount_of_runs,
                                                                 amount_of_simulations)
-                # waiting_times_shared = analysis_beds(care_type, bed_range, bed_range_2,
-                #                                                  0, amount_of_runs,
-                #                                                  amount_of_simulations)
                 plot_sensitivity_analysis(care_type, bed_range, bed_range_2, waiting_times_1,
                                           waiting_times_2, waiting_times_3)
 
@@ -369,7 +337,7 @@ def optimize_bed_counts(care_type, initial_beds_1, initial_beds_2, shared_beds_p
 
 def analysis_optimal_beds(care_type, initial_beds_1, initial_beds_2, percentage, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate):
     with st.container(border=True):
-        st.subheader('Optimal beds')
+        st.markdown('**Optimal beds**')
 
         col1, col2 = st.columns(2)
         with col1:
@@ -486,127 +454,10 @@ def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1
 
     return queue_1_waiting_time, amount_beds_available_1
 
-# def decentralization_analysis_layout(care_type):
-#     # Define a template for a new analysis
-#     new_analysis_template = {
-#         'type1': {'num_beds': 8, 'num_nurses': 5},
-#         'type2': {'num_beds': 8, 'num_nurses': 5},
-#         'shared': {'num_beds': 8, 'num_nurses': 5}
-#     }
-#
-#     # Customize labels based on care_type
-#     if care_type == 'low_respite':
-#         type1_label = 'Low Complex beds'
-#         type2_label = 'Respite beds'
-#     elif care_type == 'high_grz':
-#         type1_label = 'High Complex beds'
-#         type2_label = 'GRZ beds'
-#
-#     # Initialize the session_state
-#     session_key = f'analyses_{care_type}'
-#     if session_key not in st.session_state:
-#         st.session_state[session_key] = [new_analysis_template.copy()]
-#
-#
-#     # Initialize lists to store the results
-#     list_locations_beds = []
-#     list_locations_nurses = []
-#     list_amount_beds_nurse_can_handle = []
-#
-#     with st.container(border=True):
-#         st.subheader('Decentralization analysis')
-#         # Add a button to trigger the display of additional analyses
-#         if st.button("Add location", key=f'button_add_location_{care_type}'):
-#             st.session_state[f'analyses_{care_type}'].append(new_analysis_template.copy())
-#
-#         # Add a button to remove the latest analysis (only if there are additional analyses)
-#         if st.button("Remove location", key=f'button_remove_location_{care_type}') and len(st.session_state.analyses) > 1:
-#             st.session_state[f'analyses_{care_type}'].pop()
-#
-#         # Display the analyses in separate tabs
-#         for i, analysis in enumerate(st.session_state[f'analyses_{care_type}'], start=1):
-#             col1, col2, col3, col4, col5 = st.columns(5)
-#             with col1:
-#                 st.write(type1_label)
-#                 analysis['type1']['num_beds'] = st.number_input(f'Number of beds (Type 1 Analysis {i})', min_value=0,
-#                                                                 max_value=None,
-#                                                                 value=analysis['type1']['num_beds'],
-#                                                                 key=f'{care_type}_type1_beds_{i}',
-#                                                                 label_visibility='collapsed')
-#
-#                 st.write('Amount of nurses')
-#                 analysis['type1']['num_nurses'] = st.number_input(f'Number of nurses (Type 1 Analysis {i})',
-#                                                                   min_value=0, max_value=None,
-#                                                                   value=analysis['type1']['num_nurses'],
-#                                                                   key=f'{care_type}_type1_nurses_{i}',
-#                                                                   label_visibility='collapsed')
-#
-#             with col2:
-#                 st.write(type2_label)
-#                 analysis['type2']['num_beds'] = st.number_input(f'Number of beds (Type 2 Analysis {i})', min_value=0,
-#                                                                 max_value=None,
-#                                                                 value=analysis['type2']['num_beds'],
-#                                                                 key=f'{care_type}_type2_beds_{i}',
-#                                                                 label_visibility='collapsed')
-#
-#                 st.write('Amount of nurses')
-#                 analysis['type2']['num_nurses'] = st.number_input(f'Number of nurses (Type 2 Analysis {i})',
-#                                                                   min_value=0, max_value=None,
-#                                                                   value=analysis['type2']['num_nurses'],
-#                                                                   key=f'{care_type}_type2_nurses_{i}',
-#                                                                   label_visibility='collapsed')
-#
-#             with col3:
-#                 st.write('Shared beds')
-#                 analysis['shared']['num_beds'] = st.number_input(f'Number of shared beds (Analysis {i})', min_value=0,
-#                                                                  max_value=None,
-#                                                                  value=analysis['shared']['num_beds'],
-#                                                                  key=f'{care_type}_shared_beds_{i}',
-#                                                                  label_visibility='collapsed')
-#
-#                 st.write('Amount of nurses')
-#                 analysis['shared']['num_nurses'] = st.number_input(f'Number of nurses for shared beds (Analysis {i})',
-#                                                                    min_value=0, max_value=None,
-#                                                                    value=analysis['shared']['num_nurses'],
-#                                                                    key=f'{care_type}_shared_nurses_{i}',
-#                                                                    label_visibility='collapsed')
-#
-#             with col4:
-#                 pass
-#
-#             with col5:
-#                 st.write('Number of beds 1 nurse can take care of')
-#                 st.number_input(f'Number of beds 1 nurse can take care of (Analysis {i})',
-#                                 min_value=0, max_value=None,
-#                                 value=5,
-#                                 key=f'{care_type}_nurse_load_{i}',
-#                                 label_visibility='collapsed')
-#
-#             # Append data to lists
-#             beds_data = [analysis['type1']['num_beds'], analysis['type2']['num_beds'], analysis['shared']['num_beds']]
-#             nurses_data = [analysis['type1']['num_nurses'], analysis['type2']['num_nurses'], analysis['shared']['num_nurses']]
-#             load_data = [analysis['type1']['num_nurses'], analysis['type2']['num_nurses'],
-#                            analysis['shared']['num_nurses']]
-#
-#             list_locations_beds.append(beds_data)
-#             list_locations_nurses.append(nurses_data)
-#             list_amount_beds_nurse_can_handle.append(load_data)
-#
-#         # Output the lists
-#         print("List of Beds Data:", list_locations_beds)
-#         print("List of Nurses Data:", list_locations_nurses)
-#         print("List of load Data:", list_amount_beds_nurse_can_handle)
-#
-#         return list_locations_beds, list_locations_nurses, list_amount_beds_nurse_can_handle
-
-# def decentralization_analysis_calculation(care_type):
-#     list_locations_beds, list_locations_nurses, list_amount_beds_nurse_can_handle = decentralization_analysis_layout(care_type)
-#
-#     # efficient_beds_per_care_level(list_locations_beds, list_locations_nurses, list_amount_beds_nurse_can_handle)
-
 def decentralization_analysis_layout(care_type):
+    st.divider()
     # Define a template for a new analysis
-    st.header(f'Decentralization Analysis')
+    st.subheader(f'Decentralization Analysis')
     new_analysis_template = {
         'type1': {'num_beds': 8, 'num_nurses': 5},
         'type2': {'num_beds': 8, 'num_nurses': 5},
@@ -652,7 +503,7 @@ def decentralization_analysis_layout(care_type):
         for i in range(max_locations):
             with st.container():
                 # Display location number above the columns
-                st.markdown(f'*Location {i + 1}*')
+                st.markdown(f'**Location {i + 1}**')
 
                 # Retrieve the specific analysis for this location
                 analysis = st.session_state[f'analyses_{care_type}'][i]
@@ -733,6 +584,7 @@ def decentralization_analysis_calculation(care_type):
             st.write('Expected waiting time for GRZ patients: ', round(result[1], 2), 'days')
 
 def main():
+    st.header('Dashboard for Intermediate Care')
 
     # Define the tabs
     tab1, tab2 = st.tabs(["LC & RC", "HC & GRZ"])
@@ -741,8 +593,8 @@ def main():
 
     with tab1:
         care_type = 'low_respite'
-        # key = 'LCRC'
-        st.header('Low Complex & Respite Care')
+
+        st.subheader('Low Complex & Respite Care')
 
         # Initialize variables with default values
         num_low_complex_beds = 0
@@ -787,7 +639,7 @@ def main():
 
         #Sensitivity analysis part
         st.divider()
-        st.header('Sensitivity Analysis')
+        st.subheader('Sensitivity Analysis')
 
         sensitivity_analysis(care_type, num_low_complex_beds, num_respite_beds, num_shared_lcrc_beds, amount_of_runs,
                              amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
@@ -796,7 +648,7 @@ def main():
 
         care_type = 'high_grz'
 
-        st.header('High Complex & GRZ Care')
+        st.subheader('High Complex & GRZ Care')
 
         # Initialize variables with default values
         num_high_complex_beds = 0
@@ -850,7 +702,7 @@ def main():
 
         # Sensitivity analysis part
         st.divider()
-        st.header('Sensitivity Analysis')
+        st.subheader('Sensitivity Analysis')
         sensitivity_analysis(care_type, num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, amount_of_runs,
                              amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
 
