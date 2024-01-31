@@ -443,7 +443,6 @@ def plot_sensitivity_analysis(care_type, bed_range_1, bed_range_2, waiting_times
             plt.title(f'Waiting time vs number of beds', fontsize=22)
             plt.xlabel('Number of Beds', fontsize=18)
             plt.ylabel('Waiting Time (days)', fontsize=18)
-            # plt.tick_params(axis='both', which='major', labelsize=14)
             plt.xticks(fontsize=16)
             plt.yticks(fontsize=16)
             plt.legend()
@@ -455,15 +454,6 @@ def plot_sensitivity_analysis(care_type, bed_range_1, bed_range_2, waiting_times
         plt.figure(figsize=(10, 6))
 
         beds_values_shared = np.arange(bed_range_1[0]+bed_range_2[0], bed_range_1[1] + bed_range_2[1] + 1)
-        # beds_values_2 = np.arange(bed_range_2[0], bed_range_2[1] + 1)
-
-        # Create a DataFrame for the second plot
-        # df3 = pd.DataFrame({
-        #     'Number of Beds': beds_values_shared,
-        #     f'{care_type} Shared Waiting Time': waiting_times_3
-        # })
-        #
-        # st.line_chart(df3.set_index('Number of Beds'))
 
         plt.plot(beds_values_shared, waiting_times_3)
 
