@@ -128,53 +128,17 @@ def cs_sidebar():
         col1, col2 = st.columns(2)
         with col1:
             st.write('Arrival rate from GP')
-            # st.write('Outflow home rate')
-            # st.write('outflow home with adjustments rate')
-            # st.write('Outflow long term care rate')
-            # st.write('outflow geriatric care rate')
-            # st.write('Outflow hospice rate')
-            # st.write('outflow death rate')
         with col2:
             arrival_low_gp = st.number_input('rate GP for low complex', min_value=0.0, max_value=None, value=1.34,
                             label_visibility='collapsed')
-            # st.number_input("home rate for low complex", min_value=0.0, max_value=1.0,
-            #                 value=0.7, label_visibility='collapsed')
-            # st.number_input("home with adjustments rate for low complex", min_value=0.0, max_value=1.0,
-            #                 value=0.14, label_visibility='collapsed')
-            # st.number_input("Outflow long term care rate for low complex", min_value=0.0, max_value=1.0,
-            #                 value=0.1, label_visibility='collapsed')
-            # st.number_input("outflow geriatric care rate for low complex", min_value=0.0, max_value=1.0,
-            #                 value=0.02, label_visibility='collapsed')
-            # st.number_input("Outflow hospice rate for low complex", min_value=0.0, max_value=1.0,
-            #                 value=0.02, label_visibility='collapsed')
-            # st.number_input("Outflow death rate for low complex", min_value=0.0, max_value=1.0,
-            #                 value=0.02, label_visibility='collapsed')
 
         st.write('**Respite care**')
         col1, col2 = st.columns(2)
         with col1:
             st.write('Arrival rate from GP')
-            # st.write('Outflow home rate')
-            # st.write('outflow home with adjustments rate')
-            # st.write('Outflow long term care rate')
-            # st.write('outflow geriatric care rate')
-            # st.write('Outflow hospice rate')
-            # st.write('outflow death rate')
         with col2:
             arrival_respite_gp = st.number_input("rate GP respite", min_value=0.0, max_value=1.0, value=0.57,
                             label_visibility='collapsed')
-            # st.number_input("home rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.9, label_visibility='collapsed')
-            # st.number_input("home with adjustments rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.05, label_visibility='collapsed')
-            # st.number_input("Outflow long term care rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.03, label_visibility='collapsed')
-            # st.number_input("outflow geriatric care rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.01, label_visibility='collapsed')
-            # st.number_input("Outflow hospice rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.005, label_visibility='collapsed')
-            # st.number_input("Outflow death rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.005, label_visibility='collapsed')
 
         st.write('**High complex**')
         col1, col2 = st.columns(2)
@@ -182,12 +146,6 @@ def cs_sidebar():
             st.write('Arrival rate from GP')
             st.write('Arrival rate from Emergency Department')
             st.write('Arrival rate from hospital')
-            # st.write('Outflow home rate')
-            # st.write('outflow home with adjustments rate')
-            # st.write('Outflow long term care rate')
-            # st.write('outflow geriatric care rate')
-            # st.write('Outflow hospice rate')
-            # st.write('outflow death rate')
         with col2:
             arrival_high_gp = st.number_input("rate GP high", min_value=0.0, max_value=None, value=1.34,
                             label_visibility='collapsed')
@@ -195,44 +153,14 @@ def cs_sidebar():
                             label_visibility='collapsed')
             arrival_high_hospital=st.number_input("rate hospital high", min_value=0.0, max_value=None, value=0.94,
                             label_visibility='collapsed')
-            # st.number_input("home rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.578, label_visibility='collapsed')
-            # st.number_input("home with adjustments rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.107, label_visibility='collapsed')
-            # st.number_input("Outflow long term care rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.198, label_visibility='collapsed')
-            # st.number_input("outflow geriatric care rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.034, label_visibility='collapsed')
-            # st.number_input("Outflow hospice rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.023, label_visibility='collapsed')
-            # st.number_input("Outflow death rate respite", min_value=0.0, max_value=1.0,
-            #                 value=0.06, label_visibility='collapsed')
 
         st.write('**Geriatric rehabilitation**')
         col1, col2 = st.columns(2)
         with col1:
             st.write('Arrival rate from hospital')
-            # st.write('Outflow home rate')
-            # st.write('outflow home with adjustments rate')
-            # st.write('Outflow long term care rate')
-            # st.write('outflow geriatric care rate')
-            # st.write('Outflow hospice rate')
-            # st.write('outflow death rate')
         with col2:
             arrival_grz_hospital = st.number_input("rate hospital Geriatric", min_value=0.0, max_value=None, value=0.54,
                             label_visibility='collapsed')
-            # st.number_input("home rate Geriatric", min_value=0.0, max_value=1.0,
-            #                 value=0.6, label_visibility='collapsed')
-            # st.number_input("home with adjustments rate Geriatric", min_value=0.0, max_value=1.0,
-            #                 value=0.107, label_visibility='collapsed')
-            # st.number_input("Outflow long term care rate Geriatric", min_value=0.0, max_value=1.0,
-            #                 value=0.21, label_visibility='collapsed')
-            # st.number_input("outflow geriatric care rate Geriatric", min_value=0.0, max_value=0.0,
-            #                 value=0.0, label_visibility='collapsed')  # not possible
-            # st.number_input("Outflow hospice rate Geriatric", min_value=0.0, max_value=1.0,
-            #                 value=0.023, label_visibility='collapsed')
-            # st.number_input("Outflow death rate Geriatric", min_value=0.0, max_value=1.0,
-            #                 value=0.06, label_visibility='collapsed')
 
 def cs_bed_sharing_selection(care_type):
     # Display a radio button for bed sharing selection
@@ -354,14 +282,17 @@ def analysis_optimal_beds(care_type, initial_beds_1, initial_beds_2, percentage,
 
             if care_type == 'low_respite':
                 optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 10, 5, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+                st.write(f'Waiting time for low complex patients: ', round(waiting_time_1, 2), 'days')
+                st.write(f'Optimal beds for low complex patients ', round(optimal_beds_1, 2), 'beds')
+                st.write(f'Waiting time for respite care patients: ', round(waiting_time_2, 2), 'days')
+                st.write(f'Optimal beds for respite care patients: ', round(optimal_beds_2, 2), 'beds')
+
             if care_type == 'high_grz':
                 optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 100, 10, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
-
-
-            st.write(f'Waiting time for {care_type} type 1: ', round(waiting_time_1, 2), 'days')
-            st.write(f'Beds for {care_type} type 1: ', round(optimal_beds_1, 2), 'beds')
-            st.write(f'Waiting time for {care_type} type 2: ', round(waiting_time_2, 2), 'days')
-            st.write(f'Beds for {care_type} type 2: ', round(optimal_beds_2, 2), 'beds')
+                st.write(f'Waiting time for high complex patients: ', round(waiting_time_1, 2), 'days')
+                st.write(f'Optimal beds for high complex patients ', round(optimal_beds_1, 2), 'beds')
+                st.write(f'Waiting time for GRZ patients: ', round(waiting_time_2, 2), 'days')
+                st.write(f'Optimal beds for GRZ patients: ', round(optimal_beds_2, 2), 'beds')
 
 def analysis_beds(care_type, bed_range_1, bed_range_2, num_shared_beds, amount_of_runs, amount_of_simulations):
     waiting_times_1 = []
@@ -440,26 +371,6 @@ def plot_sensitivity_analysis(care_type, bed_range_1, bed_range_2, waiting_times
         plt.legend()
 
         st.pyplot(plt)
-
-def c1_on_max_expected_waiting_time(simulation_qeueue_1, amount_beds_available_1, amount_beds_available_2,
-                                    info_handled_elderly_queue, waiting,
-                                    max_waiting_time, amount_of_runs, amount_of_simulations, care_level,
-                                    percentage,
-                                    table_probability, table_arrival_rates, table_E_service_rate):
-
-    queue_1_waiting_time,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-
-    while queue_1_waiting_time > max_waiting_time or queue_1_waiting_time > max_waiting_time:
-        amount_beds_available_1 += 1
-        amount_beds_available_2 += 1
-
-        info_handled_elderly_queue = multiple_simulations(simulation_qeueue_1, amount_of_runs, amount_beds_available_1,
-                                                          amount_beds_available_2, percentage, amount_of_simulations,
-                                                          table_probability, table_arrival_rates, table_E_service_rate)
-
-        queue_1_waiting_time,_ = compute_expected_waiting_time_all_runs(info_handled_elderly_queue, waiting, care_level)
-
-    return queue_1_waiting_time, amount_beds_available_1
 
 def decentralization_analysis_layout(care_type):
     st.divider()
@@ -611,11 +522,10 @@ def main():
 
         # Get the selected bed sharing option
         bed_sharing_option = cs_bed_sharing_selection(care_type)
-        # centralizing_option, bed_sharing_option = cs_scenario_selection(care_type)
 
         with st.container(border = True):
             st.subheader('Input')
-            st.warning("""Warning: ensure minimum input of 10 beds for Low complex and 5 for Respite care to achieve reliable results""",
+            st.warning("""Warning: ensure minimum input of 15 beds for Low complex and 5 for Respite care to achieve reliable results""",
                 icon="⚠️")
 
             num_low_complex_beds, num_respite_beds, num_shared_lcrc_beds, num_nurses_lcrc = body_input(
@@ -642,8 +552,6 @@ def main():
                 st.write('Expected waiting time for low complex patients: ', round(queue_1_waiting_time_1, 2), 'days')
                 st.write('Expected waiting time for respite care patients: ', round(queue_1_waiting_time_2, 2), 'days')
 
-            # run_simulation(selected_scenario, bed_sharing_option, centralizing_option)
-
         #Sensitivity analysis part
         st.divider()
         st.subheader('Sensitivity Analysis')
@@ -665,26 +573,14 @@ def main():
 
         # Get the selected bed sharing option
         bed_sharing_option = cs_bed_sharing_selection(care_type)
-        # centralizing_option, bed_sharing_option = cs_scenario_selection(care_type)
 
         with st.container(border = True):
             st.subheader('Input')
-            st.warning("""Warning: ensure minimum input of 140 beds for High complex and 11 for GRZ to achieve reliable results""",
+            st.warning("""Warning: ensure minimum input of 70 beds for High complex and 10 for GRZ to achieve reliable results""",
                        icon="⚠️")
 
             num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, num_nurses_hc = body_input(
                 care_type, bed_sharing_option, index)
-
-            # if centralizing_option == 'Centralized':
-            #     st.session_state.num_locations = 1
-            #     # num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, num_nurses_hc = body_input_high_grz(bed_sharing_option, st.session_state.num_locations)
-            #     num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, num_nurses_hcgrz = body_input('high_grz',
-            #                                                                                               bed_sharing_option,
-            #                                                                                               index)
-            #
-            # if centralizing_option == 'Decentralized':
-            #     # add_location_hc_grz(bed_sharing_option,key)
-            #     add_location('high_grz', bed_sharing_option)#, key)
 
             if bed_sharing_option == 'No bed sharing':
                 num_shared_hcgrz_beds = 0
