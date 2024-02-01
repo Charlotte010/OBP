@@ -87,7 +87,7 @@ table_arrival_rates = arrival_rate_table
 table_E_service_rate = service_rate_table
 
 amount_of_runs = 1000
-amount_of_simulations = 5
+amount_of_simulations = 15
 
 def compute_waiting_times(care_type, amount_beds_available_1, amount_beds_available_2, shared_beds_percentage, amount_of_runs, amount_of_simulations):
     if care_type == 'low_respite':
@@ -122,6 +122,8 @@ def cs_sidebar():
     global arrival_high_gp, arrival_high_ed, arrival_high_hospital, arrival_low_gp, arrival_respite_gp, arrival_grz_hospital
     # Add any sidebar components if needed
     with st.sidebar:
+        st.write('Note: arrival rates are in days')
+
         st.write('**Low complex**')
         col1, col2 = st.columns(2)
         with col1:
@@ -349,7 +351,12 @@ def analysis_optimal_beds(care_type, initial_beds_1, initial_beds_2, percentage,
                                                key=f'max_waiting_time_{care_type}')
 
         if st.button('Find minimum number of beds', key=f'button_find_optimal_beds_{care_type}'):
-            optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, initial_beds_1, initial_beds_2, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+
+            if care_type == 'low_respite':
+                optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 10, 5, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+            if care_type == 'high_grz':
+                optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 100, 10, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+
 
             st.write(f'Waiting time for {care_type} type 1: ', round(waiting_time_1, 2), 'days')
             st.write(f'Beds for {care_type} type 1: ', round(optimal_beds_1, 2), 'beds')
@@ -608,7 +615,7 @@ def main():
 
         with st.container(border = True):
             st.subheader('Input')
-            st.warning("""Warning: ensure minimum input of 15 beds for Low complex and 5 for Respite care to achieve reliable results""",
+            st.warning("""Warning: ensure minimum input of 10 beds for Low complex and 5 for Respite care to achieve reliable results""",
                 icon="⚠️")
 
             num_low_complex_beds, num_respite_beds, num_shared_lcrc_beds, num_nurses_lcrc = body_input(
