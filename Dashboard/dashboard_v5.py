@@ -281,14 +281,14 @@ def analysis_optimal_beds(care_type, initial_beds_1, initial_beds_2, percentage,
         if st.button('Find minimum number of beds', key=f'button_find_optimal_beds_{care_type}'):
 
             if care_type == 'low_respite':
-                optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 10, 5, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+                optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 10, 3, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
                 st.write(f'Waiting time for low complex patients: ', round(waiting_time_1, 2), 'days')
                 st.write(f'Optimal beds for low complex patients ', round(optimal_beds_1, 2), 'beds')
                 st.write(f'Waiting time for respite care patients: ', round(waiting_time_2, 2), 'days')
                 st.write(f'Optimal beds for respite care patients: ', round(optimal_beds_2, 2), 'beds')
 
             if care_type == 'high_grz':
-                optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 100, 10, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
+                optimal_beds_1, optimal_beds_2, waiting_time_1, waiting_time_2 = optimize_bed_counts(care_type, 60, 7, percentage, max_waiting_time, amount_of_runs, amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
                 st.write(f'Waiting time for high complex patients: ', round(waiting_time_1, 2), 'days')
                 st.write(f'Optimal beds for high complex patients ', round(optimal_beds_1, 2), 'beds')
                 st.write(f'Waiting time for GRZ patients: ', round(waiting_time_2, 2), 'days')
