@@ -9,7 +9,7 @@ Created on Thu Jan 11 17:13:06 2024
 import pandas as pd
 
 import os
-os.chdir('C:\\Users\\charl\\OneDrive\\Documents\\VU vakken\\OBP\\Simulation_code')
+os.chdir('C:\\Users\\zerin\\OneDrive\\Documenten\\Project OBP\\OBP\\Simulation_code')
 
     
 table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')
@@ -18,10 +18,10 @@ table_E_service_rate = pd.read_excel('Service_Rates.xlsx',index_col='Unnamed: 0'
     
 
 # main.py
-from functions_char import *
+from .functions_char import *
 import pandas as pd
-from main_char_queue_1 import simulation_qeueue_1
-from main_char_queue_2 import simulation_qeueue_2
+from .main_char_queue_1 import simulation_qeueue_1
+from .main_char_queue_2 import simulation_qeueue_2
 
 #parameters for queue 1
 amount_beds_available_1 = 0 #low complex 

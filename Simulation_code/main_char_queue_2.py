@@ -5,6 +5,8 @@ Created on Thu Jan 11 13:43:49 2024
 @author: charl
 """
 
+from .functions_char import arrival_per_day,make_elderly_class, bed_shared
+import pandas as pd
 
 def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shared_beds, 
                         table_probability, table_arrival_rates, table_E_service_rate):
@@ -13,8 +15,6 @@ def simulation_qeueue_2(amount_of_runs, beds_available_2, beds_available_3, shar
     
     
     # main.py
-    from functions_char import arrival_per_day,make_elderly_class, bed_shared
-    import pandas as pd
         
      
     # table_probability = pd.read_excel('Outflow_probabilities.xlsx',index_col='Unnamed: 0')

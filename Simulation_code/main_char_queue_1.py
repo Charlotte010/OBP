@@ -4,14 +4,13 @@ Created on Wed Jan 10 21:29:35 2024
 
 @author: charl
 """
-
+import pandas as pd
+from .functions_char import arrival_per_day,make_elderly_class, bed_shared
 
 
 def simulation_qeueue_1(amount_of_runs,beds_available_1, beds_available_2,  shared_beds,
                         table_probability, table_arrival_rates, table_E_service_rate):
     #from functions import *
-    import pandas as pd
-    from functions_char import arrival_per_day,make_elderly_class, bed_shared
 
     
     list_care_queue1 = ["Low_Complex", "Respite_Care"]

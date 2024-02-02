@@ -6,7 +6,7 @@ Created on Wed Jan 10 21:08:43 2024
 """
 
 import numpy as np
-from Class_Elderly_char import elderly
+from .Class_Elderly_char import elderly
 
 
 def arrival_per_day(table, care_level, medical):

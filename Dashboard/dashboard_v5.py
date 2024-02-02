@@ -504,6 +504,18 @@ def decentralization_analysis_calculation(care_type):
 def main():
     st.header('Dashboard for Intermediate Care')
 
+    # Contributors section initially hidden, becomes visible after scrolling
+    st.markdown(
+        """
+
+            <p><strong>Contributors:</strong> Aristeidis Charizanis (2803717), Panagiotis Giannakakos (2805039),
+Charlotte Oorthuizen (2597964), Konstantinos Flampouris (2759315),
+Zerin Arif (2736034)</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     # Define the tabs
     tab1, tab2 = st.tabs(["LC & RC", "HC & GRZ"])
 
