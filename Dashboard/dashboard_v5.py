@@ -609,6 +609,5 @@ def main():
         sensitivity_analysis(care_type, num_high_complex_beds, num_grz_beds, num_shared_hcgrz_beds, amount_of_runs,
                              amount_of_simulations, table_probability, table_arrival_rates, table_E_service_rate)
 
-
 if __name__ == '__main__':
     main()
